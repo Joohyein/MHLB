@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Landing from "../pages/Landing";
 import Login from "../pages/Login";
-import MyPage from "../pages/Mypage";
+import MyPage from "../pages/MyPage";
 import Register from "../pages/Register";
 import SelectWorkspace from "../pages/SelectWorkspace";
 import Workspace from "../pages/Workspace";
@@ -12,12 +12,12 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/" element={<Register />} />
-        <Route path="/" element={<Login />} />
-        <Route path="/" element={<SelectWorkspace />} />
-        <Route path="/" element={<MyPage />} />
-        <Route path="/" element={<Workspace />} />
-        <Route path="/" element={<WorkspaceConfig />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/select-workspace" element={<SelectWorkspace />} />
+        <Route path="/my-page" element={<MyPage />} />
+        <Route path="/workspace" element={<Workspace />} />
+        <Route path="/workspace-config" element={<WorkspaceConfig />} />
       </Routes>
     </BrowserRouter>
   );
