@@ -27,7 +27,7 @@ const StNavBar = styled.div`
     display : flex;
     justify-content : space-between;
     align-items : center;
-    box-shadow : 0px 0px 1rem rgba(0, 0, 0, .15);
+    box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.05);
 `
 
 const StLogo = styled.div`
