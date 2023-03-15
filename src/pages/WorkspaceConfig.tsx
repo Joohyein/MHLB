@@ -30,24 +30,24 @@ const WorkspaceConfig = () => {
         <h3>워크스페이스 관리</h3>
       </StManageTitle>
       <StWorkspaceName>
-        <StTitleBox>워크스페이스 프로필 이미지</StTitleBox>
+        <StSub>워크스페이스 프로필 이미지</StSub>
         <StWorkspaceProfile></StWorkspaceProfile>
       </StWorkspaceName>
       <StWorkspaceName>
-        <StTitleBox>워크스페이스 이름</StTitleBox>
+        <StSub>워크스페이스 이름</StSub>
         <StEditBox>
           <h3>폭스바겐</h3>
           <h5>Edit</h5>
         </StEditBox>
       </StWorkspaceName>
       <StWorkspaceName>
-        <StTitleBox>워크스페이스 설명</StTitleBox>
+        <StSub>워크스페이스 설명</StSub>
         <StEditBox>
           <h3>워크스페이스의 설명을 입력해주세요</h3>
           <h5>Edit</h5>
         </StEditBox>
       </StWorkspaceName>
-      <StTitleBox>멤버 추가 및 삭제</StTitleBox>
+      <StSub>멤버 추가 및 삭제</StSub>
       
       <StSearchInviteBox>
         <StSearchUserInput onChange={(e)=>setSearch(e.target.value)} placeholder="Search People"/>
@@ -128,7 +128,7 @@ const StWorkspaceName = styled.div`
     cursor: pointer;
   }
 `;
-const StTitleBox = styled.div`
+const StSub = styled.div`
   
 `;
 const StEditBox = styled.div`
