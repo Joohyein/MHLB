@@ -1,8 +1,48 @@
 import Wrapper from "../components/common/Wrapper";
 import styled from "styled-components";
 import ArrowBack from "../components/asset/icons/ArrowBack";
+import { useState } from "react";
+import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+
+
+
+const getUserData = async() => {
+  const response = await axios.get('http://localhost:3001/user');
+  console.log(response);
+  return response.data;
+};
+const editUserName = async(userName: string) => {
+  await axios.patch('http://localhost:3001/user', userName);
+}
+
+
 
 const MyPage = () => {
+  const {data} = useQuery('user', getUserData);
+  console.log(data);
+
+  const [edit, setEdit] = useState(false);
+  const [name, setName] = useState(data[0].userName);
+
+  // console.log(data);
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation(editUserName, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('user');
+    }
+  });
+
+  const onClickEditHandler = (userName: string) => {
+    if(!userName) {
+      alert('이름을 입력해주세요');
+      return;
+    }
+    setEdit(false);
+    mutation.mutate(userName);
+  }
+
   return (
     <Wrapper>
       <StContainer>
@@ -16,8 +56,23 @@ const MyPage = () => {
         <StEditContainer>
           <StSub>내 이름</StSub>
           <StEditBox>
-            <h3>황지상</h3>
-            <h5>Edit</h5>
+            {
+              edit
+                ?
+                <>
+                  <StEditInput 
+                    name="userName"
+                    value={name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setName(e.target.value)}
+                  />
+                  <h5 onClick={() => onClickEditHandler(name)}>Done</h5>
+                </>
+                :
+                <>
+                  <h3>{data[0].userName}</h3>
+                  <h5 onClick={() => setEdit(true)}>Edit</h5>
+                </>
+            }
           </StEditBox>
         </StEditContainer>
 
@@ -122,6 +177,13 @@ const StEditBox = styled.div`
     color: #007AFF;
     font-weight: 400;
     cursor: pointer;
+  }
+`;
+const StEditInput = styled.input`
+  border: none;
+  border-bottom: 1px solid gray;
+  &:focus {
+    outline : none;
   }
 `;
 
