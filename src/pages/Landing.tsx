@@ -1,5 +1,12 @@
+import NavBarLanding from "../components/common/NavBarLanding";
+import Wrapper from "../components/common/Wrapper";
+
 const Landing = () => {
-  return <div>Landing</div>;
+  return (
+    <Wrapper>
+      <NavBarLanding />
+    </Wrapper>
+  );
 };
 
 export default Landing;
