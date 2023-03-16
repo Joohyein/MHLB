@@ -7,6 +7,7 @@ import Wrapper from "../components/common/Wrapper";
 import useInput from "../hooks/useInput";
 import useInputRefFocus from "../hooks/useInputRefFocus";
 import useIsLogin from "../hooks/useIsLogin";
+import { setCookie } from "../cookie/cookies";
 
 const Login = () => {
   const isLogin = useIsLogin();
@@ -27,6 +28,7 @@ const Login = () => {
   const [emailFormValidation, setEmailFormValidation] = useState(false);
   const [emailValidation, setEmailValidation] = useState(false);
   const [passwordValidation, setPasswordValidation] = useState(false);
+  const [wrongValidation, setWrongValidation] = useState(false);
 
   const onEnterKeyDownEmail = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -45,25 +47,32 @@ const Login = () => {
       setEmptyValidation(true);
     } else if (!emailValue) {
       setEmailValidation(true);
+    } else if (
+      !(emailValue.includes("@") || emailValue.includes("@")
+        ? emailValue.split("@")[1].includes(".")
+        : null)
+    ) {
+      setEmailFormValidation(true);
     } else if (!passwordValue) {
       setPasswordValidation(true);
     } else {
-      if (
-        emailValue.includes("@") || emailValue.includes("@")
-          ? emailValue.split("@")[1].includes(".")
-          : null
-      ) {
-        login({ email: emailValue, password: passwordValue })
-          .then((res) => {
-            console.log("a");
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        setEmailFormValidation(true);
-      }
+      login({ email: emailValue, password: passwordValue })
+        .then((res) => {
+          setCookie("authorization", res.headers.authorization);
+          navigate("/select-workspace");
+        })
+        .catch((error) => {
+          if (error.response.status === 400) return setWrongValidation(true);
+        });
     }
+  };
+
+  const clearWarningMessage = () => {
+    setEmptyValidation(false);
+    setEmailFormValidation(false);
+    setEmailValidation(false);
+    setPasswordValidation(false);
+    setWrongValidation(false);
   };
 
   return (
@@ -83,15 +92,10 @@ const Login = () => {
             value={emailValue}
             onChange={(e) => {
               setEmailValue(e);
-              setEmailValidation(false);
-              setEmptyValidation(false);
-              setEmailFormValidation(false);
+              clearWarningMessage();
             }}
             placeholder="Email"
           />
-          {emptyValidation ? (
-            <StValidationText>모든 정보를 입력해주세요.</StValidationText>
-          ) : null}
           {emailValidation ? (
             <StValidationText>이메일을 입력해주세요.</StValidationText>
           ) : null}
@@ -109,14 +113,20 @@ const Login = () => {
             value={passwordValue}
             onChange={(e) => {
               setPasswordValue(e);
-              setPasswordValidation(false);
-              setEmptyValidation(false);
-              setEmailFormValidation(false);
+              clearWarningMessage();
             }}
             placeholder="Password"
           />
           {passwordValidation ? (
             <StValidationText>비밀번호를 입력해주세요.</StValidationText>
+          ) : null}
+          {emptyValidation ? (
+            <StValidationText>모든 정보를 입력해주세요.</StValidationText>
+          ) : null}
+          {wrongValidation ? (
+            <StValidationText>
+              이메일이나 비밀번호가 틀렸습니다.
+            </StValidationText>
           ) : null}
           <StFindPassword to="/find-password">
             비밀번호를 잊어버리셨나요?
@@ -321,5 +331,4 @@ const StValidationText = styled.div`
   font-size: 0.75rem;
   font-weight: 700;
   color: #ff3b30;
-  transition: 200ms;
 `;
