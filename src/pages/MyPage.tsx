@@ -2,37 +2,27 @@ import Wrapper from "../components/common/Wrapper";
 import styled from "styled-components";
 import ArrowBack from "../components/asset/icons/ArrowBack";
 import { useState } from "react";
-import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-
-
-
-const getUserData = async() => {
-  const response = await axios.get('http://localhost:3001/user');
-  console.log(response);
-  return response.data;
-};
-const editUserName = async(userName: string) => {
-  await axios.patch('http://localhost:3001/user', userName);
-}
-
-
+import { getUserData, editUserName } from "../api/myPage";
+import LeaveWorkspaceModal from "../components/workspaceConfig/LeaveWorkspaceModal";
+import useOutsideClick from "../hooks/useOutsideClick";
 
 const MyPage = () => {
-  const {data} = useQuery('user', getUserData);
-  console.log(data);
-
-  const [edit, setEdit] = useState(false);
-  const [name, setName] = useState(data[0].userName);
-
+  // const { data } = useQuery('user', getUserData);
   // console.log(data);
 
-  const queryClient = useQueryClient();
-  const mutation = useMutation(editUserName, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('user');
-    }
-  });
+  const [edit, setEdit] = useState(false);
+  const [name, setName] = useState('');
+  const [leaveModal, setLeaveModal] = useState(false);
+  const modalRef = useOutsideClick(() => setLeaveModal(false));
+
+  // const queryClient = useQueryClient();
+  // const mutation = useMutation(editUserName, {
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries('user');
+  //   }
+  // });
+
 
   const onClickEditHandler = (userName: string) => {
     if(!userName) {
@@ -40,7 +30,15 @@ const MyPage = () => {
       return;
     }
     setEdit(false);
-    mutation.mutate(userName);
+    // mutation.mutate(userName);
+  };
+  const onKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') onClickEditHandler(name);
+  };
+
+  const leaveModalOpenHandler = () => {
+    setLeaveModal(true);
+    document.body.style.overflow = "hidden";
   }
 
   return (
@@ -64,12 +62,13 @@ const MyPage = () => {
                     name="userName"
                     value={name}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setName(e.target.value)}
+                    onKeyPress={onKeyPressHandler}
                   />
                   <h5 onClick={() => onClickEditHandler(name)}>Done</h5>
                 </>
                 :
                 <>
-                  <h3>{data[0].userName}</h3>
+                  <h3>username</h3>
                   <h5 onClick={() => setEdit(true)}>Edit</h5>
                 </>
             }
@@ -121,11 +120,21 @@ const MyPage = () => {
               </StContributionBox>
             </StWorkspaceData>
 
-            <StWithdrawBtn>워크스페이스 탈퇴</StWithdrawBtn>
-          </StWorkspaceBox>
+            <StWithdrawBtn onClick={leaveModalOpenHandler}>워크스페이스 탈퇴</StWithdrawBtn>
 
+          </StWorkspaceBox>
         </StMyWorkspaceContainer>
       </StContainer>
+      {
+        leaveModal
+          ?
+          <LeaveWorkspaceModal 
+            modalRef={modalRef}
+            setLeaveModal={(v: boolean) => setLeaveModal(v)}
+          />
+          :
+          null
+      }
     </Wrapper>
   )
 };
