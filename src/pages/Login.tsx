@@ -1,11 +1,21 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import GoogleSocialIcon from "../components/asset/icons/GoogleSocialIcon";
 import Wrapper from "../components/common/Wrapper";
 import useInput from "../hooks/useInput";
 import useInputRefFocus from "../hooks/useInputRefFocus";
+import useIsLogin from "../hooks/useIsLogin";
 
 const Login = () => {
+
+  const isLogin = useIsLogin();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(isLogin);
+    if(isLogin === true) return navigate('/select-workspace');
+  }, [isLogin])
 
   const [emailValue, setEmailValue, clearEmailValue] = useInput();
   const [passwordValue, setPasswordValue, clearPasswordValue] = useInput();
