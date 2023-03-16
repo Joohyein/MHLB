@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import GoogleSocialIcon from "../components/asset/icons/GoogleSocialIcon";
@@ -13,7 +13,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(isLogin);
     if(isLogin === true) return navigate('/select-workspace');
   }, [isLogin])
 
@@ -22,6 +21,24 @@ const Login = () => {
 
   const [emailInputRef, emailInputRefFocus] = useInputRefFocus();
   const [passwordInputRef, passwordInputRefFocus] = useInputRefFocus();
+  const loginButtonRef = useRef<HTMLButtonElement>(null);
+
+  const onEnterKeyDownEmail = (e : React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') {
+      passwordInputRef.current.focus();
+    }
+  
+  }
+
+  const onEnterKeyDownPassword = (e : React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') {
+      onClickLogin();
+    }
+  }
+
+  const onClickLogin = () => {
+
+  }
 
   return (
     <Wrapper>
@@ -30,11 +47,11 @@ const Login = () => {
           <StPageTitle>로그인</StPageTitle>
           <StPageSubTitle>이메일과 비밀번호를 입력해주세요!</StPageSubTitle>
           <StInputLabel htmlFor = "email" isFocus = {emailInputRefFocus}>이메일</StInputLabel>
-          <StInput type = {'text'} ref = {emailInputRef} id = "email" value = {emailValue} onChange = {(e) => {setEmailValue(e)}} placeholder = "Email"/>
+          <StInput type = {'text'} onKeyDown = {(e) => onEnterKeyDownEmail(e)} ref = {emailInputRef} id = "email" value = {emailValue} onChange = {(e) => {setEmailValue(e)}} placeholder = "Email"/>
           <StInputLabel htmlFor = "password" isFocus = {passwordInputRefFocus}>비밀번호</StInputLabel>
-          <StInput type = {'password'} ref = {passwordInputRef} id = "password" value = {passwordValue} onChange = {(e) => {setPasswordValue(e)}} placeholder = "Password"/>
+          <StInput type = {'password'} onKeyDown = {(e) => onEnterKeyDownPassword(e)} ref = {passwordInputRef} id = "password" value = {passwordValue} onChange = {(e) => {setPasswordValue(e)}} placeholder = "Password"/>
           <StFindPassword to = '/find-password'>비밀번호를 잊어버리셨나요?</StFindPassword>
-          <StLoginButton>로그인</StLoginButton>
+          <StLoginButton ref = {loginButtonRef} onClick = {() => {console.log('a')}}>로그인</StLoginButton>
           <StOrDiv>
             <StHrTag />
             <StOrText>or</StOrText>
