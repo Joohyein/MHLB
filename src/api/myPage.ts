@@ -1,13 +1,24 @@
-import axios from "axios";
 import instance from "./instance/instance";
 
 const getUserData = async() => {
-    const response = await axios.get('http://localhost:3001/user');
-    console.log(response);
+    const response = await instance.get('/api/mypage');
     return response.data;
   };
-const editUserName = async(userName: string) => {
-    await instance.patch('/user', userName);
+
+const editUserName = async({userName}: {userName: string}) => {
+    const response = await instance.patch('/api/mypage/name', {userName});
+    return response.data;
 };
 
-export { getUserData, editUserName };
+const editUserJob = async({userJob}: {userJob: string}) => {
+  const response = await instance.patch('/api/mypage/job', {userJob});
+  return response.data;
+}
+
+const editUserDesc = async({userDesc}: {userDesc: string}) => {
+  const response = await instance.patch('/api/mypage/desc', {userDesc});
+  console.log(response)
+  return response.data;
+}
+
+export { getUserData, editUserName, editUserJob, editUserDesc };

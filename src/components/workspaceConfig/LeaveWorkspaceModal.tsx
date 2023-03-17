@@ -4,7 +4,8 @@ import Close from '../asset/icons/Close';
 
 function LeaveWorkspaceModal({modalRef, setLeaveModal}:{modalRef:React.MutableRefObject<any>, setLeaveModal: (v: boolean) => void}) {
   return (
-   <StModalContainer ref={modalRef}>
+    <StWrap>
+    <StModalContainer ref={modalRef}>
       <StTitle>
         <h3>워크스페이스 탈퇴</h3>
         <Close size="24px" fill="gray" onClick={()=>setLeaveModal(false)} cursor="pointer"/>
@@ -28,12 +29,19 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal}:{modalRef:React.MutableRe
         <StInput />
         <StLeaveBtn>워크스페이스 탈퇴</StLeaveBtn>
       </StInputBox>
-   </StModalContainer>
+    </StModalContainer>
+    </StWrap>
   )
 }
 
 export default LeaveWorkspaceModal;
 
+const StWrap = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0,0,0,0.3);
+`;
 const StModalContainer = styled.div`
   width: 512px;
   z-index: 999;

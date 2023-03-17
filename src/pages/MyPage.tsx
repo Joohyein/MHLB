@@ -1,40 +1,96 @@
 import Wrapper from "../components/common/Wrapper";
 import styled from "styled-components";
 import ArrowBack from "../components/asset/icons/ArrowBack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { getUserData, editUserName } from "../api/myPage";
+import { getUserData, editUserName, editUserJob, editUserDesc } from "../api/myPage";
 import LeaveWorkspaceModal from "../components/workspaceConfig/LeaveWorkspaceModal";
 import useOutsideClick from "../hooks/useOutsideClick";
 
 const MyPage = () => {
-  // const { data } = useQuery('user', getUserData);
-  // console.log(data);
+  const { data } = useQuery('user', getUserData);
+  console.log("getUserData : ", data);
 
-  const [edit, setEdit] = useState(false);
-  const [name, setName] = useState('');
+  const [editName, setEditName] = useState(false);
+  const [name, setName] = useState(data?.userName);
+  const [editJob, setEditJob] = useState(false);
+  const [job, setJob] = useState(data?.userJob);
+  const [editDesc, setEditDesc] = useState(false);
+  const [desc, setDesc] = useState(data?.userDesc);
+
   const [leaveModal, setLeaveModal] = useState(false);
   const modalRef = useOutsideClick(() => setLeaveModal(false));
 
-  // const queryClient = useQueryClient();
-  // const mutation = useMutation(editUserName, {
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries('user');
-  //   }
-  // });
+  useEffect(() => {
+    setName(data?.userName);
+    setJob(data?.userJob);
+    setDesc(data?.userDesc);
+  }, [data]);
+  
+  const queryClient = useQueryClient();
+
+  const mutationName = useMutation(editUserName, {
+    onSuccess: (response) => {
+      queryClient.invalidateQueries('user');
+      console.log("userName: ", response);
+      setName(response.userName);
+    },
+    onError: (error) =>{console.log("error : ", error)}
+  });
+
+  const mutationJob = useMutation(editUserJob, {
+    onSuccess: (response) => {
+      queryClient.invalidateQueries('user');
+      setJob(response.userJob);
+    },
+    onError: (error) => {console.log(error)}
+  })
+
+  const mutationDesc = useMutation(editUserDesc, {
+    onSuccess: (response) => {
+      queryClient.invalidateQueries('user');
+      setDesc(response.userDesc);
+    },
+    onError: (error) => {console.log(error)}
+  })
 
 
-  const onClickEditHandler = (userName: string) => {
+  const onClickEditNameHandler = (userName: string) => {
     if(!userName) {
       alert('이름을 입력해주세요');
       return;
-    }
-    setEdit(false);
-    // mutation.mutate(userName);
+    };
+    setEditName(false);
+    mutationName.mutate({userName});
   };
-  const onKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if(e.key === 'Enter') onClickEditHandler(name);
+  const onClickEditJobHandler = (userJob: string) => {
+    if(!userJob) {
+      alert('직업을 입력해주세요');
+      return;
+    };
+    setEditJob(false);
+    mutationJob.mutate({userJob});
+  }
+  const onClickEditDescHandler = (userDesc: string) => {
+    if(!userDesc) {
+      alert('상태 메시지를 입력해주세요');
+      return;
+    };
+    setEditDesc(false);
+    mutationDesc.mutate({userDesc});
+  }
+
+
+  const onKeyPressNameHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') onClickEditNameHandler(name);
   };
+  const onKeyPressJobHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') onClickEditJobHandler(job);
+  }
+  const onKeyPressDescHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') onClickEditDescHandler(desc);
+  }
+
 
   const leaveModalOpenHandler = () => {
     setLeaveModal(true);
@@ -55,21 +111,21 @@ const MyPage = () => {
           <StSub>내 이름</StSub>
           <StEditBox>
             {
-              edit
+              editName
                 ?
                 <>
                   <StEditInput 
                     name="userName"
                     value={name}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setName(e.target.value)}
-                    onKeyPress={onKeyPressHandler}
+                    onKeyPress={onKeyPressNameHandler}
                   />
-                  <h5 onClick={() => onClickEditHandler(name)}>Done</h5>
+                  <h5 onClick={() => onClickEditNameHandler(name)}>Done</h5>
                 </>
                 :
                 <>
-                  <h3>username</h3>
-                  <h5 onClick={() => setEdit(true)}>Edit</h5>
+                  <h3>{name}</h3>
+                  <h5 onClick = {() => setEditName(true)}>Edit</h5>
                 </>
             }
           </StEditBox>
@@ -78,16 +134,48 @@ const MyPage = () => {
         <StEditContainer>
           <StSub>직업</StSub>
           <StEditBox>
-            <h3>개발자</h3>
-            <h5>Edit</h5>
+            {
+              editJob
+                ?
+                <>
+                  <StEditInput 
+                    name = "userJob"
+                    value = {job}
+                    onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value)}
+                    onKeyPress = {onKeyPressJobHandler}
+                  />
+                  <h5 onClick = {() => onClickEditJobHandler(job)}>Done</h5>
+                </>
+                :
+                <>
+                  <h3>{job}</h3>
+                  <h5 onClick = {() => setEditJob(true)}>Edit</h5>
+                </>
+            }
           </StEditBox>
         </StEditContainer>
 
         <StEditContainer>
           <StSub>상태 메시지</StSub>
           <StEditBox>
-            <h3>내 이름은 황지상</h3>
-            <h5>Edit</h5>
+            {
+              editDesc
+                ?
+                <>
+                  <StEditInput 
+                    name = "userDesc"
+                    value = {desc}
+                    onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setDesc(e.target.value)}
+                    onKeyPress = {onKeyPressDescHandler}
+                  />
+                  <h5 onClick = {() => onClickEditDescHandler(desc)}>Done</h5>
+                </>
+                :
+                <>
+                  <h3>{desc}</h3>
+                  <h5 onClick = {() => setEditDesc(true)}>Edit</h5>
+                </>
+            }
           </StEditBox>
         </StEditContainer>
 
