@@ -4,24 +4,85 @@ import Wrapper from "../components/common/Wrapper";
 import ArrowBack from "../components/asset/icons/ArrowBack";
 import AddMemberModal from "../components/modal/AddMemberModal";
 import useOutsideClick from "../hooks/useOutsideClick";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { editWorkspaceDesc, editWorkspaceTitle, getWorkspaceInfo, getWorkspaceMember } from "../api/workspaceConfig";
 
 const WorkspaceConfig = () => {
+  const { data : workspaceInfoData } = useQuery('workspaceInfo', getWorkspaceInfo);
+  const { data : workspaceMember } = useQuery('workspaceMember', getWorkspaceMember);
+
   const modalRef = useOutsideClick(()=>setInviteModal(false));
   const [inviteModal, setInviteModal] = useState(false);
+
+  const [editTitle, setEditTitle] = useState(false);
+  const [editDesc, setEditDesc] = useState(false);
+  const [title, setTitle] = useState(workspaceInfoData?.workspaceTitle);
+  const [description, setDescription] = useState(workspaceInfoData?.workspaceDesc);
 
   const [search, setSearch] = useState('');
   const [member, setMember] = useState(['']);
   const [memberCopy, setMemberCopy] = useState(['']);
 
   useEffect(() => {
-    const arr: string[] = ['권재현', '권다빈', '전다빈', '전지상', '전재현', '주혜인', '주다빈', '주지상', '황지상', '황다빈', '황우람', '홍우람', '홍지상', '홍재현'];
-    setMember(arr);
-    setMemberCopy(arr);
-  }, []);
+    setTitle(workspaceInfoData?.workspaceTitle);
+    setDescription(workspaceInfoData?.workspaceDesc);
+  }, [workspaceInfoData]);
 
   useEffect(() => {
-    setMember(memberCopy.filter((e)=>e.toLowerCase().includes(search.toLowerCase())));
+    // const arr: string[] = ['권재현', '권다빈', '전다빈', '전지상', '전재현', '주혜인', '주다빈', '주지상', '황지상', '황다빈', '황우람', '홍우람', '홍지상', '홍재현'];
+    const arr = workspaceMember?.map((item:any) => item.userName);
+    setMember(arr);
+    setMemberCopy(arr);
+  }, [workspaceMember]);
+
+  const queryClient = useQueryClient();
+
+  const mutationTitle = useMutation(editWorkspaceTitle, {
+    onSuccess: (response) => {
+      queryClient.invalidateQueries('workspaceInfo');
+      console.log("Title: ", response);
+      setTitle(response.workspaceTitle);
+    },
+    onError: (error) =>{console.log("error : ", error)}
+  });
+  const mutationDesc = useMutation(editWorkspaceDesc, {
+    onSuccess: (response) => {
+      queryClient.invalidateQueries('workspaceInfo');
+      console.log("Title: ", response);
+      setDescription(response.workspaceDesc);
+    },
+    onError: (error) =>{console.log("error : ", error)}
+  });
+
+  const onClickEditTitleHandler = (workspaceTitle: string) => {
+    if(!workspaceTitle) {
+      alert('워크스페이스 이름을 입력해주세요');
+      return;
+    };
+    setEditTitle(false);
+    mutationTitle.mutate({workspaceTitle});
+  };
+  const onClickEditDescHandler = (workspaceDesc: string) => {
+    if(!workspaceDesc) {
+      alert('워크스페이스 이름을 입력해주세요');
+      return;
+    };
+    setEditDesc(false);
+    mutationDesc.mutate({workspaceDesc});
+  };
+
+  const onKeyPressTitleHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') onClickEditTitleHandler(title);
+  };
+  const onKeyPressDescHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') onClickEditTitleHandler(description);
+  };
+
+  useEffect(() => {
+    setMember(memberCopy?.filter((e)=>e.toLowerCase().includes(search.toLowerCase())));
   }, [search, memberCopy]);
+
+
 
   return <Wrapper>
     <StContainer>
@@ -36,15 +97,47 @@ const WorkspaceConfig = () => {
       <StWorkspaceName>
         <StTitleBox>워크스페이스 이름</StTitleBox>
         <StEditBox>
-          <h3>폭스바겐</h3>
-          <h5>Edit</h5>
+          {
+            editTitle
+              ?
+              <>
+                <StEditInput 
+                  name="workspaceTitle"
+                  value={title}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setTitle(e.target.value)}
+                  onKeyPress={onKeyPressTitleHandler}
+                />
+                <h5 onClick={() => onClickEditTitleHandler(title)}>Done</h5>
+              </>
+              :
+              <>
+                <h3>{title}</h3>
+                <h5 onClick = {() => setEditTitle(true)}>Edit</h5>
+              </>
+          }
         </StEditBox>
       </StWorkspaceName>
       <StWorkspaceName>
         <StTitleBox>워크스페이스 설명</StTitleBox>
         <StEditBox>
-          <h3>워크스페이스의 설명을 입력해주세요</h3>
-          <h5>Edit</h5>
+          {
+            editDesc
+              ?
+              <>
+                <StEditInput 
+                  name="workspaceDesc"
+                  value={description}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setDescription(e.target.value)}
+                  onKeyPress={onKeyPressDescHandler}
+                />
+                <h5 onClick={() => onClickEditDescHandler(description)}>Done</h5>
+              </>
+              :
+              <>
+                <h3>{description}</h3>
+                <h5 onClick = {() => setEditDesc(true)}>Edit</h5>
+              </>
+          }
         </StEditBox>
       </StWorkspaceName>
       <StTitleBox>멤버 추가 및 삭제</StTitleBox>
@@ -58,8 +151,8 @@ const WorkspaceConfig = () => {
       </StSearchInviteBox>
       <StSearchUserData>
         {
-          member.map((item) => {
-            return <StUserData>
+          member?.map((item, index) => {
+            return <StUserData key={index}>
               <StUserProfileImg></StUserProfileImg>
               <StUserNameEmail>
                 <h3>{item}</h3>
@@ -134,6 +227,13 @@ const StTitleBox = styled.div`
 const StEditBox = styled.div`
   display: flex;
   gap: 8px;
+`;
+const StEditInput = styled.input`
+  border: none;
+  border-bottom: 1px solid gray;
+  &:focus {
+    outline : none;
+  }
 `;
 
 const StAddMemBtn = styled.button`

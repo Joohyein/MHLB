@@ -1,0 +1,11 @@
+{
+  "user": [
+    {
+      "userId": 1,
+      "userImage": "json-server",
+      "userName": "황지상",
+      "userDesc": "description",
+      "userJob": "programmer"
+    }
+  ]
+}
