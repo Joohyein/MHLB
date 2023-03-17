@@ -130,16 +130,14 @@ const Register = () => {
   const onClickRegister = () => {
     if (!nameValue) {
       setNameValidation(true);
-    } else if (!passwordValue) {
-      setPasswordValidation(true);
     } else {
       register({email: emailValue, password: passwordValue, userName: nameValue, userImage: "temp", userJob: jobValue, userDesc: descValue})
-        .then((res) => {
-          navigate('/celebrate-sign-up');
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      .then((res) => {
+        navigate('/celebrate-sign-up');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
   };
 
