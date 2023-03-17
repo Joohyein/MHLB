@@ -29,17 +29,24 @@ const Register = () => {
 
   const duplicateEmail = useDebounce(emailValue, 1000);
   const [duplicateEmailValidation, setDuplicateEmailValidation] = useState(false);
+  const [allowedEmailValidation, setAllowedEmailValidation] = useState(false);
+  const [allowEmailMessage, setAllowEmailMessage] = useState(false);
   const [isEmailInput, setIsEmailInput] = useState(false);
 
   useEffect(() => {
-    if (isEmailInput) {
-      duplicateEmailCheck({email : duplicateEmail})
-      .then((res) => {
-        setDuplicateEmailValidation(false);
-      })
-      .catch((error) => {
-        setDuplicateEmailValidation(true);
-      });
+    if (allowedEmailValidation === true) {
+      if (isEmailInput) {
+        duplicateEmailCheck({email : duplicateEmail})
+        .then((res) => {
+          setDuplicateEmailValidation(false);
+          if ((/[a-z0-9]+@[a-z]+\.[a-z]{2,3}|\.[a-z]{2,3}\.[a-z]{2,3}/g).test(emailValue)) {
+            setAllowEmailMessage(true);
+          }
+        })
+        .catch((error) => {
+          setDuplicateEmailValidation(true);
+        });
+      }
     }
   }, [duplicateEmail]);
 
@@ -114,7 +121,9 @@ const Register = () => {
     } else if (!(passwordValue === passwordCheckValue)) {
       setPasswordMatchValidation(true);
     } else {
-      setIsEmailForm(true);
+      if (duplicateEmailValidation === true) {
+        setIsEmailForm(true);
+      }
     }
   };
 
@@ -126,7 +135,7 @@ const Register = () => {
     } else {
       register({email: emailValue, password: passwordValue, userName: nameValue, userImage: "temp", userJob: jobValue, userDesc: descValue})
         .then((res) => {
-          console.log(res);
+          navigate('/celebrate-sign-up');
         })
         .catch((error) => {
           console.log(error);
@@ -135,6 +144,7 @@ const Register = () => {
   };
 
   const clearWarningMessage = () => {
+    setAllowedEmailValidation(true);
     setEmptyValidation(false);
     setEmailFormValidation(false);
     setEmailValidation(false);
@@ -155,10 +165,10 @@ const Register = () => {
           ? (<>
               <StPageSubTitle>이메일과 비밀번호를 입력해주세요!</StPageSubTitle>
               <StInputLabel htmlFor="email" isFocus={emailInputRefFocus}>이메일*</StInputLabel>
-              <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownEmail(e)} ref={emailInputRef} id="email" value={emailValue} onChange={(e) => {setEmailValue(e); clearWarningMessage(); setIsEmailInput(true);}} placeholder="Email"/>
+              <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownEmail(e)} ref={emailInputRef} id="email" value={emailValue} onChange={(e) => {setEmailValue(e); clearWarningMessage(); setIsEmailInput(true); setAllowEmailMessage(false);}} placeholder="Email"/>
               {emailValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
               {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
-              {duplicateEmailValidation ? <StValidationText>해당 이메일이 이미 존재합니다.</StValidationText> : null}
+              {duplicateEmailValidation ? <StValidationText>해당 이메일이 이미 존재합니다.</StValidationText> : allowedEmailValidation && allowEmailMessage ? <StValidationTextSucceed>사용할 수 있는 이메일입니다.</StValidationTextSucceed> : null}
               <StInputLabel htmlFor="password" isFocus={passwordInputRefFocus}>비밀번호*</StInputLabel>
               <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPassword(e)} ref={passwordInputRef} id="password" value={passwordValue} onChange={(e) => {setPasswordValue(e); clearWarningMessage();}} placeholder="Password"/>
               <StValidationInfo>글자수 8~20자, 알파벳 대문자, 소문자, 숫자를 반드시 포함해주세요.</StValidationInfo>
@@ -352,6 +362,12 @@ const StValidationText = styled.div`
   font-size: 0.75rem;
   font-weight: 700;
   color: #ff3b30;
+`;
+
+const StValidationTextSucceed = styled.div`
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #007aff;
 `;
 
 const StValidationInfo = styled.div`
