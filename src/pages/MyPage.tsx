@@ -4,12 +4,13 @@ import ArrowBack from "../components/asset/icons/ArrowBack";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getUserData, editUserName, editUserJob, editUserDesc } from "../api/myPage";
-import LeaveWorkspaceModal from "../components/workspaceConfig/LeaveWorkspaceModal";
+import MyWorkspace from "../components/workspaceConfig/MyWorkspace";
 import useOutsideClick from "../hooks/useOutsideClick";
+import LeaveWorkspaceModal from "../components/workspaceConfig/LeaveWorkspaceModal";
 
 const MyPage = () => {
   const { data } = useQuery('user', getUserData);
-  console.log("getUserData : ", data);
+  // console.log("getUserData : ", data);
 
   const [editName, setEditName] = useState(false);
   const [name, setName] = useState(data?.userName);
@@ -89,12 +90,6 @@ const MyPage = () => {
   }
   const onKeyPressDescHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === 'Enter') onClickEditDescHandler(desc);
-  }
-
-
-  const leaveModalOpenHandler = () => {
-    setLeaveModal(true);
-    document.body.style.overflow = "hidden";
   }
 
   return (
@@ -196,29 +191,16 @@ const MyPage = () => {
             </StBtnBox>
           </StInvited>
 
-          <StWorkspaceBox>
-            <StWorkspaceData>
-              <StWorkspaceImg src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'/>
-              <StContributionBox>
-                <h3>테슬라에서의 나의 기여도</h3>
-                <StContribution>
-                  <StDone></StDone>
-                  <StRemain></StRemain>
-                </StContribution>
-              </StContributionBox>
-            </StWorkspaceData>
+          <MyWorkspace setLeaveModal={(v: boolean) => setLeaveModal(v)}/>
 
-            <StWithdrawBtn onClick={leaveModalOpenHandler}>워크스페이스 탈퇴</StWithdrawBtn>
-
-          </StWorkspaceBox>
         </StMyWorkspaceContainer>
       </StContainer>
       {
-        leaveModal
+          leaveModal
           ?
           <LeaveWorkspaceModal 
-            modalRef={modalRef}
-            setLeaveModal={(v: boolean) => setLeaveModal(v)}
+              modalRef={modalRef}
+              setLeaveModal={(v: boolean) => setLeaveModal(v)}
           />
           :
           null
@@ -331,41 +313,3 @@ const StRejectBtn = styled.button`
   
 `;
 
-const StWorkspaceBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-`;
-const StWorkspaceData = styled.div`
-  display: flex;
-  gap: 12px;
-`;
-const StContributionBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  h3 {
-  font-size: 16px;
-  font-weight: 400;
-  }
-`;
-
-const StContribution = styled.div`
-  width: 512px;
-  height: 12px;
-  display: flex;
-`;
-const StDone = styled.div`
-  width: 70%;
-  height: 100%;
-  background-color: #0F82FF;
-`;
-const StRemain = styled.div`
-  width: 30%;
-  height: 100%;
-  background-color: #D9D9D9;
-`;
-const StWithdrawBtn = styled.button`
-  
-`;

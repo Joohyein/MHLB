@@ -21,4 +21,9 @@ const editUserDesc = async({userDesc}: {userDesc: string}) => {
   return response.data;
 }
 
-export { getUserData, editUserName, editUserJob, editUserDesc };
+const getWorkspaces = async() => {
+  const response = await instance.get('/api/mypage/workspace');
+  console.log(response.data);
+};
+
+export { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces };
