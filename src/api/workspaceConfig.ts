@@ -18,6 +18,15 @@ const editWorkspaceDesc = async ({workspaceDesc}:{workspaceDesc:string}) => {
 const getWorkspaceMember = async () => {
     const response = await instance.get(`/api/managing/1/people`);
     return response.data;
-}
+};
 
-export {getWorkspaceInfo, editWorkspaceTitle, editWorkspaceDesc, getWorkspaceMember};
+const editProfileImg = async ({workspaceImage} : {workspaceImage: FormData}) => {
+    const response = await instance.post(`/api/managing/1/image`, {workspaceImage}, 
+        {
+            headers: {"Context-Type": "multipart/form-data"},
+        }
+    );
+    return response.data;
+};
+
+export {getWorkspaceInfo, editWorkspaceTitle, editWorkspaceDesc, getWorkspaceMember, editProfileImg};
