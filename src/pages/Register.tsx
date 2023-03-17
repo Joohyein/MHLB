@@ -161,6 +161,7 @@ const Register = () => {
               {duplicateEmailValidation ? <StValidationText>해당 이메일이 이미 존재합니다.</StValidationText> : null}
               <StInputLabel htmlFor="password" isFocus={passwordInputRefFocus}>비밀번호*</StInputLabel>
               <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPassword(e)} ref={passwordInputRef} id="password" value={passwordValue} onChange={(e) => {setPasswordValue(e); clearWarningMessage();}} placeholder="Password"/>
+              <StValidationInfo>글자수 8~20자, 알파벳 대문자, 소문자, 숫자를 반드시 포함해주세요.</StValidationInfo>
               {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
               {passwordFormValidation ? <StValidationText>비밀번호 형식을 맞춰주세요.</StValidationText> : null}
               <StInputLabel htmlFor="passwordCheck" isFocus={passwordCheckInputRefFocus}>비밀번호 확인*</StInputLabel>
@@ -352,3 +353,9 @@ const StValidationText = styled.div`
   font-weight: 700;
   color: #ff3b30;
 `;
+
+const StValidationInfo = styled.div`
+  font-size : 0.75rem;
+  font-weight : 400;
+  color : #303030;
+`
