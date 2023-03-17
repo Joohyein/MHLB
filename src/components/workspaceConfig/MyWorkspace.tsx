@@ -1,30 +1,36 @@
+import { useState } from "react";
 import styled from "styled-components";
-import { useQuery } from "react-query";
-import { getWorkspaces } from "../../api/myPage";
 
-function MyWorkspace({setLeaveModal}:{setLeaveModal:(v: boolean) => void}) {
-    const { data } = useQuery('workspace', getWorkspaces);
-    console.log(data);
+function MyWorkspace({setLeaveModal, dataWorkspace, setWorkspaceId}:{setLeaveModal:(v: boolean) => void, dataWorkspace: [], setWorkspaceId:(v: number)=>void}) {
 
-    const leaveModalOpenHandler = () => {
+    const leaveModalOpenHandler = (workspaceId: number) => {
     setLeaveModal(true);
+    setWorkspaceId(workspaceId);
     document.body.style.overflow = "hidden";
     }
 
   return (
     <StWorkspaceBox>
-        <StWorkspaceData>
-            <StWorkspaceImg src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'/>
-            <StContributionBox>
-            <h3>테슬라에서의 나의 기여도</h3>
-            <StContribution>
-                <StDone></StDone>
-                <StRemain></StRemain>
-            </StContribution>
-            </StContributionBox>
-        </StWorkspaceData>
+      {
+        dataWorkspace?.map((item:any) => {
+          return (
+            <StWorkspaceData key={item.workspaceId}>
+              <StWorkspaceDataBox>
+                <StWorkspaceImg src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'/>
+                <StContributionBox>
+                <h3>{item.workspaceTitle}에서의 나의 기여도</h3>
+                <StContribution>
+                    <StDone></StDone>
+                    <StRemain></StRemain>
+                </StContribution>
+                </StContributionBox>
+              </StWorkspaceDataBox>
+              <StWithdrawBtn onClick={() => leaveModalOpenHandler(item.workspaceId)}>워크스페이스 탈퇴</StWithdrawBtn>
+          </StWorkspaceData>
 
-        <StWithdrawBtn onClick={leaveModalOpenHandler}>워크스페이스 탈퇴</StWithdrawBtn>
+          )
+        })
+      }
     </StWorkspaceBox>
   )
 }
@@ -33,13 +39,17 @@ export default MyWorkspace;
 
 const StWorkspaceBox = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 32px;
 `;
 const StWorkspaceData = styled.div`
   display: flex;
+  justify-content: space-between;
   gap: 12px;
+`;
+const StWorkspaceDataBox = styled.div`
+  display: flex;
+  gap: 24px;
 `;
 const StWorkspaceImg = styled.img`
   width: 56px;

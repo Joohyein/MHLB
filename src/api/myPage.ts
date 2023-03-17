@@ -23,7 +23,7 @@ const editUserDesc = async({userDesc}: {userDesc: string}) => {
 
 const getWorkspaces = async() => {
   const response = await instance.get('/api/mypage/workspace');
-  console.log(response.data);
+  return response.data;
 };
 
 export { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces };

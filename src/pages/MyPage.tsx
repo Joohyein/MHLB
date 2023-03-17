@@ -3,14 +3,14 @@ import styled from "styled-components";
 import ArrowBack from "../components/asset/icons/ArrowBack";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { getUserData, editUserName, editUserJob, editUserDesc } from "../api/myPage";
+import { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces } from "../api/myPage";
 import MyWorkspace from "../components/workspaceConfig/MyWorkspace";
 import useOutsideClick from "../hooks/useOutsideClick";
 import LeaveWorkspaceModal from "../components/workspaceConfig/LeaveWorkspaceModal";
 
 const MyPage = () => {
   const { data } = useQuery('user', getUserData);
-  // console.log("getUserData : ", data);
+  const { data : dataWorkspace } = useQuery('workspace', getWorkspaces);
 
   const [editName, setEditName] = useState(false);
   const [name, setName] = useState(data?.userName);
@@ -18,6 +18,8 @@ const MyPage = () => {
   const [job, setJob] = useState(data?.userJob);
   const [editDesc, setEditDesc] = useState(false);
   const [desc, setDesc] = useState(data?.userDesc);
+
+  const [workspaceId, setWorkspaceId] = useState(1);
 
   const [leaveModal, setLeaveModal] = useState(false);
   const modalRef = useOutsideClick(() => setLeaveModal(false));
@@ -191,7 +193,11 @@ const MyPage = () => {
             </StBtnBox>
           </StInvited>
 
-          <MyWorkspace setLeaveModal={(v: boolean) => setLeaveModal(v)}/>
+          <MyWorkspace 
+            setLeaveModal={(v: boolean) => setLeaveModal(v)} 
+            dataWorkspace={dataWorkspace} 
+            setWorkspaceId={(v:number) => setWorkspaceId(v)}
+          />
 
         </StMyWorkspaceContainer>
       </StContainer>
@@ -201,6 +207,8 @@ const MyPage = () => {
           <LeaveWorkspaceModal 
               modalRef={modalRef}
               setLeaveModal={(v: boolean) => setLeaveModal(v)}
+              dataWorkspace = {dataWorkspace}
+              myWorkspaceId = {workspaceId}
           />
           :
           null
@@ -286,7 +294,7 @@ const StInvited = styled.div`
 const StInvitedWorkspaceData = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 24px;
 `;
 const StWorkspaceNameSub = styled.div`
   display: flex;

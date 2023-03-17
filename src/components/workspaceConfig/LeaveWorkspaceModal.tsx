@@ -2,7 +2,15 @@ import React from 'react'
 import styled from 'styled-components';
 import Close from '../asset/icons/Close';
 
-function LeaveWorkspaceModal({modalRef, setLeaveModal}:{modalRef:React.MutableRefObject<any>, setLeaveModal: (v: boolean) => void}) {
+interface DataType  {
+  workspaceDesc: string,
+  workspaceId: number,
+  workspaceImage: string,
+  workspaceTitle: string
+}
+function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspaceId}:{modalRef:React.MutableRefObject<any>, setLeaveModal: (v: boolean) => void, dataWorkspace: DataType[], myWorkspaceId: number}) {
+  const myworkspace = dataWorkspace.filter(({workspaceId}) => workspaceId === myWorkspaceId)[0];
+
   return (
     <StWrap>
       <StModalContainer ref={modalRef}>
@@ -14,7 +22,7 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal}:{modalRef:React.MutableRe
         <StWorkspaceDataBox>
           <StWorkspaceProfile src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'/>
           <StWorkspaceData>
-            <h3>Folks Wegan</h3>
+            <h3>{myworkspace.workspaceTitle}</h3>
             <h5>워크스페이스에 대한 설명이 이곳에 들어갑니다.</h5>
           </StWorkspaceData>
         </StWorkspaceDataBox>
@@ -22,7 +30,7 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal}:{modalRef:React.MutableRe
         <StWarnningText>
           <h3>워크스페이스에서 탈퇴하면 모든 기록이 삭제됩니다. 기록은 복구할 수 없고,</h3>
           <h3>관리자에게 다시 초대를 받지 않는 이상 재참여가 불가능합니다.</h3>
-          <h5>이에 동의하고 탈퇴를 원하시면 "워크스페이스 이름"을 똑같이 입력해주세요.</h5>
+          <h5>이에 동의하고 탈퇴를 원하시면 "{myworkspace.workspaceTitle}"을 똑같이 입력해주세요.</h5>
         </StWarnningText>
 
         <StInputBox>
