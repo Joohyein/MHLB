@@ -121,7 +121,7 @@ const Register = () => {
     } else if (!(passwordValue === passwordCheckValue)) {
       setPasswordMatchValidation(true);
     } else {
-      if (duplicateEmailValidation === true) {
+      if (allowEmailMessage === true) {
         setIsEmailForm(true);
       }
     }
@@ -153,7 +153,6 @@ const Register = () => {
     setPasswordCheckValidation(false);
     setPasswordMatchValidation(false);
     setNameValidation(false);
-    setDuplicateEmailValidation(false);
   };
 
   return (
@@ -165,7 +164,7 @@ const Register = () => {
           ? (<>
               <StPageSubTitle>이메일과 비밀번호를 입력해주세요!</StPageSubTitle>
               <StInputLabel htmlFor="email" isFocus={emailInputRefFocus}>이메일*</StInputLabel>
-              <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownEmail(e)} ref={emailInputRef} id="email" value={emailValue} onChange={(e) => {setEmailValue(e); clearWarningMessage(); setIsEmailInput(true); setAllowEmailMessage(false);}} placeholder="Email"/>
+              <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownEmail(e)} ref={emailInputRef} id="email" value={emailValue} onChange={(e) => {setEmailValue(e); clearWarningMessage(); setIsEmailInput(true); setAllowEmailMessage(false); setDuplicateEmailValidation(false);}} placeholder="Email"/>
               {emailValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
               {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
               {duplicateEmailValidation ? <StValidationText>해당 이메일이 이미 존재합니다.</StValidationText> : allowedEmailValidation && allowEmailMessage ? <StValidationTextSucceed>사용할 수 있는 이메일입니다.</StValidationTextSucceed> : null}
