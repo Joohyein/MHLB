@@ -18,6 +18,8 @@ const Register = () => {
     if (isLogin === true) return navigate("/select-workspace");
   }, [isLogin]);
 
+  const emailValidationRegex = new RegExp(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/g);
+
   const [emailValue, setEmailValue, clearEmailValue] = useInput();
   const [passwordValue, setPasswordValue, clearPasswordValue] = useInput();
   const [passwordCheckValue, setPasswordCheckValue, clearPasswordCheckValue] =
@@ -29,15 +31,20 @@ const Register = () => {
   const [isEmailForm, setIsEmailForm] = useState(false);
 
   const duplicateEmail = useDebounce(emailValue, 1000);
+  const [duplicateEmailValidation, setDuplicateEmailValidation] =
+    useState(false);
+  const [isEmailInput, setIsEmailInput] = useState(false);
 
   useEffect(() => {
-    duplicateEmailCheck(duplicateEmail)
-      .then((res) => {
-        console.log("yes");
-      })
-      .catch((error) => {
-        console.log("no");
-      });
+    if (isEmailInput) {
+      duplicateEmailCheck({ email: duplicateEmail })
+        .then((res) => {
+          setDuplicateEmailValidation(false);
+        })
+        .catch((error) => {
+          setDuplicateEmailValidation(true);
+        });
+    }
   }, [duplicateEmail]);
 
   const [emailInputRef, emailInputRefFocus] = useInputRefFocus();
@@ -100,11 +107,7 @@ const Register = () => {
       setEmptyValidation(true);
     } else if (!emailValue) {
       setEmailValidation(true);
-    } else if (
-      !(emailValue.includes("@") || emailValue.includes("@")
-        ? emailValue.split("@")[1].includes(".")
-        : null)
-    ) {
+    } else if (!emailValidationRegex.test(emailValue)) {
       setEmailFormValidation(true);
     } else if (!passwordValue) {
       setPasswordValidation(true);
@@ -148,6 +151,7 @@ const Register = () => {
     setPasswordCheckValidation(false);
     setPasswordMatchValidation(false);
     setNameValidation(false);
+    setDuplicateEmailValidation(false);
   };
 
   return (
@@ -170,6 +174,7 @@ const Register = () => {
                 onChange={(e) => {
                   setEmailValue(e);
                   clearWarningMessage();
+                  setIsEmailInput(true);
                 }}
                 placeholder="Email"
               />
@@ -178,6 +183,11 @@ const Register = () => {
               ) : null}
               {emailFormValidation ? (
                 <StValidationText>이메일 형식을 확인해주세요.</StValidationText>
+              ) : null}
+              {duplicateEmailValidation ? (
+                <StValidationText>
+                  해당 이메일이 이미 존재합니다.
+                </StValidationText>
               ) : null}
               <StInputLabel htmlFor="password" isFocus={passwordInputRefFocus}>
                 비밀번호*
