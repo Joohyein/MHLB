@@ -22,8 +22,7 @@ const Register = () => {
 
   const [emailValue, setEmailValue, clearEmailValue] = useInput();
   const [passwordValue, setPasswordValue, clearPasswordValue] = useInput();
-  const [passwordCheckValue, setPasswordCheckValue, clearPasswordCheckValue] =
-    useInput();
+  const [passwordCheckValue, setPasswordCheckValue, clearPasswordCheckValue] = useInput();
   const [nameValue, setNameValue, clearNameValue] = useInput();
   const [jobValue, setJobValue, clearJobValue] = useInput();
   const [descValue, setDescValue, clearDescValue] = useInput();
@@ -31,26 +30,24 @@ const Register = () => {
   const [isEmailForm, setIsEmailForm] = useState(false);
 
   const duplicateEmail = useDebounce(emailValue, 1000);
-  const [duplicateEmailValidation, setDuplicateEmailValidation] =
-    useState(false);
+  const [duplicateEmailValidation, setDuplicateEmailValidation] = useState(false);
   const [isEmailInput, setIsEmailInput] = useState(false);
 
   useEffect(() => {
     if (isEmailInput) {
-      duplicateEmailCheck({ email: duplicateEmail })
-        .then((res) => {
-          setDuplicateEmailValidation(false);
-        })
-        .catch((error) => {
-          setDuplicateEmailValidation(true);
-        });
+      duplicateEmailCheck({email : duplicateEmail})
+      .then((res) => {
+        setDuplicateEmailValidation(false);
+      })
+      .catch((error) => {
+        setDuplicateEmailValidation(true);
+      });
     }
   }, [duplicateEmail]);
 
   const [emailInputRef, emailInputRefFocus] = useInputRefFocus();
   const [passwordInputRef, passwordInputRefFocus] = useInputRefFocus();
-  const [passwordCheckInputRef, passwordCheckInputRefFocus] =
-    useInputRefFocus();
+  const [passwordCheckInputRef, passwordCheckInputRefFocus] = useInputRefFocus();
   const [nameInputRef, nameInputRefFocus] = useInputRefFocus();
   const [jobInputRef, jobInputRefFocus] = useInputRefFocus();
   const [descInputRef, descInputRefFocus] = useInputRefFocus();
@@ -126,14 +123,7 @@ const Register = () => {
     } else if (!passwordValue) {
       setPasswordValidation(true);
     } else {
-      register({
-        email: emailValue,
-        password: passwordValue,
-        userName: nameValue,
-        userImage: "temp",
-        userJob: jobValue,
-        userDesc: descValue,
-      })
+      register({email: emailValue, password: passwordValue, userName: nameValue, userImage: "temp", userJob: jobValue, userDesc: descValue})
         .then((res) => {
           console.log(res);
         })
@@ -159,168 +149,42 @@ const Register = () => {
       <StBackground>
         <StContainer>
           <StPageTitle>회원가입</StPageTitle>
-          {!isEmailForm ? (
-            <>
+          {!isEmailForm
+          ? (<>
               <StPageSubTitle>이메일과 비밀번호를 입력해주세요!</StPageSubTitle>
-              <StInputLabel htmlFor="email" isFocus={emailInputRefFocus}>
-                이메일*
-              </StInputLabel>
-              <StInput
-                type={"text"}
-                onKeyDown={(e) => onEnterKeyDownEmail(e)}
-                ref={emailInputRef}
-                id="email"
-                value={emailValue}
-                onChange={(e) => {
-                  setEmailValue(e);
-                  clearWarningMessage();
-                  setIsEmailInput(true);
-                }}
-                placeholder="Email"
-              />
-              {emailValidation ? (
-                <StValidationText>이메일을 입력해주세요.</StValidationText>
-              ) : null}
-              {emailFormValidation ? (
-                <StValidationText>이메일 형식을 확인해주세요.</StValidationText>
-              ) : null}
-              {duplicateEmailValidation ? (
-                <StValidationText>
-                  해당 이메일이 이미 존재합니다.
-                </StValidationText>
-              ) : null}
-              <StInputLabel htmlFor="password" isFocus={passwordInputRefFocus}>
-                비밀번호*
-              </StInputLabel>
-              <StInput
-                type={"password"}
-                onKeyDown={(e) => onEnterKeyDownPassword(e)}
-                ref={passwordInputRef}
-                id="password"
-                value={passwordValue}
-                onChange={(e) => {
-                  setPasswordValue(e);
-                  clearWarningMessage();
-                }}
-                placeholder="Password"
-              />
-              {passwordValidation ? (
-                <StValidationText>비밀번호를 입력해주세요.</StValidationText>
-              ) : null}
-              <StInputLabel
-                htmlFor="passwordCheck"
-                isFocus={passwordCheckInputRefFocus}
-              >
-                비밀번호 확인*
-              </StInputLabel>
-              <StInput
-                type={"password"}
-                onKeyDown={(e) => onEnterKeyDownPasswordCheck(e)}
-                ref={passwordCheckInputRef}
-                id="passwordCheck"
-                value={passwordCheckValue}
-                onChange={(e) => {
-                  setPasswordCheckValue(e);
-                  clearWarningMessage();
-                }}
-                placeholder="Password Check"
-              />
-              {passwordCheckValidation ? (
-                <StValidationText>
-                  비밀번호 확인을 입력해주세요.
-                </StValidationText>
-              ) : null}
-              {emptyValidation ? (
-                <StValidationText>모든 정보를 입력해주세요.</StValidationText>
-              ) : null}
-              {passwordMatchValidation ? (
-                <StValidationText>
-                  비밀번호가 일치하지 않습니다.
-                </StValidationText>
-              ) : null}
-              <StRegisterButton
-                ref={registerButtonRef}
-                onClick={() => {
-                  onClickContinue();
-                }}
-              >
-                회원가입 계속하기
-              </StRegisterButton>
+              <StInputLabel htmlFor="email" isFocus={emailInputRefFocus}>이메일*</StInputLabel>
+              <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownEmail(e)} ref={emailInputRef} id="email" value={emailValue} onChange={(e) => {setEmailValue(e); clearWarningMessage(); setIsEmailInput(true);}} placeholder="Email"/>
+              {emailValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
+              {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
+              {duplicateEmailValidation ? <StValidationText>해당 이메일이 이미 존재합니다.</StValidationText> : null}
+              <StInputLabel htmlFor="password" isFocus={passwordInputRefFocus}>비밀번호*</StInputLabel>
+              <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPassword(e)} ref={passwordInputRef} id="password" value={passwordValue} onChange={(e) => {setPasswordValue(e); clearWarningMessage();}} placeholder="Password"/>
+              {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
+              <StInputLabel htmlFor="passwordCheck" isFocus={passwordCheckInputRefFocus}>비밀번호 확인*</StInputLabel>
+              <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPasswordCheck(e)} ref={passwordCheckInputRef} id="passwordCheck" value={passwordCheckValue} onChange={(e) => {setPasswordCheckValue(e); clearWarningMessage();}} placeholder="Password Check"/>
+              {passwordCheckValidation ? <StValidationText>비밀번호 확인을 입력해주세요.</StValidationText> : null}
+              {emptyValidation ? <StValidationText>모든 정보를 입력해주세요.</StValidationText> : null}
+              {passwordMatchValidation ? <StValidationText>비밀번호가 일치하지 않습니다.</StValidationText> : null}
+              <StRegisterButton ref={registerButtonRef} onClick={() => {onClickContinue();}}>회원가입 계속하기</StRegisterButton>
               <StOrDiv>
                 <StHrTag />
                 <StOrText>or</StOrText>
                 <StHrTag />
               </StOrDiv>
-              <StGoogleRegisterButton>
-                <GoogleSocialIcon />
-                Google로 계속하기
-              </StGoogleRegisterButton>
-              <StLoginRecommend>
-                이미 계정이 있으신가요?
-                <StLoginRecommendLink to="/login">
-                  로그인 하러가기
-                </StLoginRecommendLink>
-              </StLoginRecommend>
+              <StGoogleRegisterButton><GoogleSocialIcon />Google로 계속하기</StGoogleRegisterButton>
+              <StLoginRecommend>이미 계정이 있으신가요?<StLoginRecommendLink to="/login">로그인 하러가기</StLoginRecommendLink></StLoginRecommend>
             </>
-          ) : (
-            <>
+          )
+          : (<>
               <StPageSubTitle>정보를 기입해주세요!</StPageSubTitle>
-              <StInputLabel htmlFor="name" isFocus={nameInputRefFocus}>
-                이름*
-              </StInputLabel>
-              <StInput
-                type={"text"}
-                onKeyDown={(e) => onEnterKeyDownName(e)}
-                ref={nameInputRef}
-                id="name"
-                value={nameValue}
-                onChange={(e) => {
-                  setNameValue(e);
-                  clearWarningMessage();
-                }}
-                placeholder="Name"
-              />
-              {nameValidation ? (
-                <StValidationText>이름을 입력해주세요.</StValidationText>
-              ) : null}
-              <StInputLabel htmlFor="job" isFocus={jobInputRefFocus}>
-                직업
-              </StInputLabel>
-              <StInput
-                type={"text"}
-                onKeyDown={(e) => onEnterKeyDownJob(e)}
-                ref={jobInputRef}
-                id="job"
-                value={jobValue}
-                onChange={(e) => {
-                  setJobValue(e);
-                  clearWarningMessage();
-                }}
-                placeholder="Job - Default value : White collar"
-              />
-              <StInputLabel htmlFor="desc" isFocus={descInputRefFocus}>
-                자기소개
-              </StInputLabel>
-              <StInput
-                type={"text"}
-                onKeyDown={(e) => onEnterKeyDownDesc(e)}
-                ref={descInputRef}
-                id="desc"
-                value={descValue}
-                onChange={(e) => {
-                  setDescValue(e);
-                  clearWarningMessage();
-                }}
-                placeholder="Desciption - Default value : Hello!"
-              />
-              <StRegisterButton
-                ref={registerButtonRef}
-                onClick={() => {
-                  onClickRegister();
-                }}
-              >
-                회원가입 계속하기
-              </StRegisterButton>
+              <StInputLabel htmlFor="name" isFocus={nameInputRefFocus}>이름*</StInputLabel>
+              <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownName(e)} ref={nameInputRef} id="name" value={nameValue} onChange={(e) => {setNameValue(e); clearWarningMessage();}} placeholder="Name"/>
+              {nameValidation ? (<StValidationText>이름을 입력해주세요.</StValidationText>) : null}
+              <StInputLabel htmlFor="job" isFocus={jobInputRefFocus}>직업</StInputLabel>
+              <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownJob(e)} ref={jobInputRef} id="job" value={jobValue} onChange={(e) => {setJobValue(e); clearWarningMessage();}} placeholder="Job - Default value : White collar"/>
+              <StInputLabel htmlFor="desc" isFocus={descInputRefFocus}>자기소개</StInputLabel>
+              <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownDesc(e)} ref={descInputRef} id="desc" value={descValue} onChange={(e) => {setDescValue(e); clearWarningMessage();}} placeholder="Desciption - Default value : Hello!"/>
+              <StRegisterButton ref={registerButtonRef} onClick={() => {onClickRegister();}}>회원가입 계속하기</StRegisterButton>
             </>
           )}
         </StContainer>
