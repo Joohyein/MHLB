@@ -18,8 +18,6 @@ const Register = () => {
     if (isLogin === true) return navigate("/select-workspace");
   }, [isLogin]);
 
-  const emailValidationRegex = new RegExp(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/g);
-
   const [emailValue, setEmailValue, clearEmailValue] = useInput();
   const [passwordValue, setPasswordValue, clearPasswordValue] = useInput();
   const [passwordCheckValue, setPasswordCheckValue, clearPasswordCheckValue] = useInput();
@@ -57,6 +55,7 @@ const Register = () => {
   const [emailFormValidation, setEmailFormValidation] = useState(false);
   const [emailValidation, setEmailValidation] = useState(false);
   const [passwordValidation, setPasswordValidation] = useState(false);
+  const [passwordFormValidation, setPasswordFormValidation] = useState(false);
   const [passwordCheckValidation, setPasswordCheckValidation] = useState(false);
   const [passwordMatchValidation, setPasswordMatchValidation] = useState(false);
   const [nameValidation, setNameValidation] = useState(false);
@@ -104,10 +103,12 @@ const Register = () => {
       setEmptyValidation(true);
     } else if (!emailValue) {
       setEmailValidation(true);
-    } else if (!emailValidationRegex.test(emailValue)) {
+    } else if (!(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}|\.[a-z]{2,3}\.[a-z]{2,3}/g).test(emailValue)) {
       setEmailFormValidation(true);
     } else if (!passwordValue) {
       setPasswordValidation(true);
+    } else if (!(passwordValue.length >= 8 && passwordValue.length <= 20 && passwordValue.search(/[0-9]/g) >= 0 && passwordValue.search(/[a-z]/g) >= 0 && passwordValue.search(/[A-Z]/g) >= 0)) {
+      setPasswordFormValidation(true);
     } else if (!passwordCheckValue) {
       setPasswordCheckValidation(true);
     } else if (!(passwordValue === passwordCheckValue)) {
@@ -138,6 +139,7 @@ const Register = () => {
     setEmailFormValidation(false);
     setEmailValidation(false);
     setPasswordValidation(false);
+    setPasswordFormValidation(false);
     setPasswordCheckValidation(false);
     setPasswordMatchValidation(false);
     setNameValidation(false);
@@ -160,6 +162,7 @@ const Register = () => {
               <StInputLabel htmlFor="password" isFocus={passwordInputRefFocus}>비밀번호*</StInputLabel>
               <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPassword(e)} ref={passwordInputRef} id="password" value={passwordValue} onChange={(e) => {setPasswordValue(e); clearWarningMessage();}} placeholder="Password"/>
               {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
+              {passwordFormValidation ? <StValidationText>비밀번호 형식을 맞춰주세요.</StValidationText> : null}
               <StInputLabel htmlFor="passwordCheck" isFocus={passwordCheckInputRefFocus}>비밀번호 확인*</StInputLabel>
               <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPasswordCheck(e)} ref={passwordCheckInputRef} id="passwordCheck" value={passwordCheckValue} onChange={(e) => {setPasswordCheckValue(e); clearWarningMessage();}} placeholder="Password Check"/>
               {passwordCheckValidation ? <StValidationText>비밀번호 확인을 입력해주세요.</StValidationText> : null}
