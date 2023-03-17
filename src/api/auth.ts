@@ -5,4 +5,9 @@ const login = async ({email, password} : {email: string, password: string}) => {
   return response;
 };
 
-export { login };
+const register = async ({email, password, userName, userImage, userJob, userDesc} : {email: string, password: string, userName: string, userImage: any, userJob: string, userDesc: string}) => {
+  const response = instance.post("/api/users/register", {email, password, userName, userImage, userJob, userDesc});
+  return response;
+};
+
+export { login, register };

@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import CelebrateSignUp from "../pages/CelebrateSignUp";
 import Landing from "../pages/Landing";
 import Login from "../pages/Login";
 import MyPage from "../pages/MyPage";
@@ -18,6 +19,7 @@ const Router = () => {
         <Route path="/my-page" element={<MyPage />} />
         <Route path="/workspace" element={<Workspace />} />
         <Route path="/workspace-config" element={<WorkspaceConfig />} />
+        <Route path="/celebrate-sign-up" element={<CelebrateSignUp />} />
       </Routes>
     </BrowserRouter>
   );
