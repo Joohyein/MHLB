@@ -17,11 +17,10 @@ const WorkspaceConfig = () => {
   const modalRef = useOutsideClick(()=>setInviteModal(false));
   const [inviteModal, setInviteModal] = useState(false);
 
-  const [editImage, setEditImage] = useState(false);
   const [editTitle, setEditTitle] = useState(false);
   const [editDesc, setEditDesc] = useState(false);
-  const [imgFile, setImgFile] = useState<File>();
-  const [image, setImage] = useState('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
+  const [imgFile, setImgFile] = useState<any>();
+  const [image, setImage] = useState(workspaceInfoData?.workspaceImage);
   const [title, setTitle] = useState(workspaceInfoData?.workspaceTitle);
   const [description, setDescription] = useState(workspaceInfoData?.workspaceDesc);
 
@@ -32,6 +31,7 @@ const WorkspaceConfig = () => {
   useEffect(() => {
     setTitle(workspaceInfoData?.workspaceTitle);
     setDescription(workspaceInfoData?.workspaceDesc);
+    setImage(workspaceInfoData?.workspaceImage);
   }, [workspaceInfoData]);
 
   useEffect(() => {
@@ -40,12 +40,6 @@ const WorkspaceConfig = () => {
     setMemberCopy(arr);
   }, [workspaceMember]);
 
-  const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const target = e.currentTarget;
-    // const files = (target.files as FileList)[0];
-    // if(files) setImage(files);
-    if(e.target.files) setImgFile(e.target.files[0]);
-  };
 
   // 버튼 클릭시 input으로 포커스
   const onClickImgUpload = () => {
@@ -56,44 +50,39 @@ const WorkspaceConfig = () => {
 
   const mutationImg = useMutation(editProfileImg, {
     onSuccess: async (response) => {
-      setImage(response);
-      // url to file object
-      const res = await fetch(response);
-      const data = await res.blob();
-      const ext = response.split('.').pop();
-      const filename = response.split('/').pop();
-      const metadata = { type: `image/${ext}` };
-      const file = new File([data], filename!, metadata);
-      console.log("file : ", file);
-      setImgFile(file);
+      queryClient.invalidateQueries('workspaceInfo');
+      console.log("서버 통신 성공 후 받은 response(url) : ", response)
     }
-  })
+  });
+  
   const mutationTitle = useMutation(editWorkspaceTitle, {
     onSuccess: (response) => {
       queryClient.invalidateQueries('workspaceInfo');
-      console.log("Title: ", response);
       setTitle(response.workspaceTitle);
     },
     onError: (error) =>{console.log("error : ", error)}
   });
+
   const mutationDesc = useMutation(editWorkspaceDesc, {
     onSuccess: (response) => {
       queryClient.invalidateQueries('workspaceInfo');
-      console.log("Title: ", response);
       setDescription(response.workspaceDesc);
     },
     onError: (error) =>{console.log("error : ", error)}
   });
 
-  const onImgUploadBtnHandler = () => {
-    if(!imgFile) {
-      alert('이미지를 첨부한 후 버튼을 눌러주세요');
-      return;
-    };
+  const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if(e.target.files) setImgFile(e.target.files[0]);
+  };
+
+  useEffect(()=>{
+    if(!imgFile) return;
     const workspaceImage = new FormData();
     workspaceImage.append('workspaceImage', imgFile);
-    mutationImg.mutate({workspaceImage});
-  };
+    mutationImg.mutate(workspaceImage);
+  }, [imgFile]);
+
+
   const onClickEditTitleHandler = (workspaceTitle: string) => {
     if(!workspaceTitle) {
       alert('워크스페이스 이름을 입력해주세요');
@@ -102,6 +91,7 @@ const WorkspaceConfig = () => {
     setEditTitle(false);
     mutationTitle.mutate({workspaceTitle});
   };
+
   const onClickEditDescHandler = (workspaceDesc: string) => {
     if(!workspaceDesc) {
       alert('워크스페이스 설명을 입력해주세요');
@@ -109,10 +99,6 @@ const WorkspaceConfig = () => {
     };
     setEditDesc(false);
     mutationDesc.mutate({workspaceDesc});
-  };
-
-  const onClickEditImgHandler = () => {
-    setEditImage(true);
   };
 
   const onKeyPressTitleHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -140,10 +126,8 @@ const WorkspaceConfig = () => {
         <StWorkspaceProfile>
           <StImgBox src={image}/>
           <StProfileImg />
-          <StImgInput type="file" ref={imgInputRef} onChange={onImgChange} accept='image/png, image/jpg, image/jpeg, image/gif'/>
-          <StImgEditBtn onClick={onClickImgUpload}></StImgEditBtn>
-          <StProfileImgEditBtn onClick={onClickEditImgHandler}>Edit button</StProfileImgEditBtn>
-          <StUploadBtn onClick={onImgUploadBtnHandler}>업로드 버튼</StUploadBtn>
+          <StImgInput type="file" name="workspaceImage" ref={imgInputRef} onChange={onImgChange} accept='image/png, image/jpg, image/jpeg, image/gif'/>
+          <StImgEditBtn onClick={onClickImgUpload}>Edit</StImgEditBtn>
         </StWorkspaceProfile>
       </StWorkspaceName>
 
@@ -256,8 +240,8 @@ const StManageTitle = styled.div`
 `;
 
 const StWorkspaceProfile = styled.div`
-  width: 64px;
-  height: 64px;
+  width: 128px;
+  height: 128px;
   background-color: gray;
   border-radius: 50%;
   position: relative;
@@ -265,6 +249,7 @@ const StWorkspaceProfile = styled.div`
 const StImgBox = styled.img`
   width: 100%;
   height: 100%;
+  border-radius: 50%;
 `;
 const StProfileImg = styled.img`
   width: 64px;
@@ -278,15 +263,12 @@ const StImgEditBtn = styled.div`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: #7f3b2f;
+  background-color: #e3e3e3;
   cursor: pointer;
 
   position: absolute;
   top: 0px;
   right: 0px;
-`;
-const StProfileImgEditBtn = styled.div`
-  background-color: green;
 `;
 const StUploadBtn = styled.div`
   background-color: pink;

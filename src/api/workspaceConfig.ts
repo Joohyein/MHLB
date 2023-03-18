@@ -20,12 +20,13 @@ const getWorkspaceMember = async () => {
     return response.data;
 };
 
-const editProfileImg = async ({workspaceImage} : {workspaceImage: FormData}) => {
-    const response = await instance.post(`/api/managing/1/image`, {workspaceImage}, 
+const editProfileImg = async (workspaceImage: FormData) => {
+    const response = await instance.post(`/api/managing/1/image`, workspaceImage, 
         {
-            headers: {"Context-Type": "multipart/form-data"},
+            headers: {"Content-Type": "multipart/form-data"},
         }
     );
+    console.log("post response : ", response);
     return response.data;
 };
 
