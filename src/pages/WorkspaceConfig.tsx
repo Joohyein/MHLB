@@ -5,12 +5,11 @@ import ArrowBack from "../components/asset/icons/ArrowBack";
 import AddMemberModal from "../components/modal/AddMemberModal";
 import useOutsideClick from "../hooks/useOutsideClick";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { editProfileImg, editWorkspaceDesc, editWorkspaceTitle, getWorkspaceInfo, getWorkspaceMember } from "../api/workspaceConfig";
+import { editProfileImg, editUserRole, editWorkspaceDesc, editWorkspaceTitle, getWorkspaceInfo, getWorkspaceMember } from "../api/workspaceConfig";
 
 const WorkspaceConfig = () => {
-  const { data : workspaceInfoData } = useQuery('workspaceInfo', getWorkspaceInfo);
-  const { data : workspaceMember } = useQuery('workspaceMember', getWorkspaceMember);
-
+  const { isLoading: isLoadingInfo, data : workspaceInfoData } = useQuery('workspaceInfo', getWorkspaceInfo);
+  const { isLoading: isLoadingMember, data : workspaceMember } = useQuery('workspaceMember', getWorkspaceMember);
   // const imgInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null);
   const imgInputRef = useRef<any>(null);
 
@@ -26,19 +25,20 @@ const WorkspaceConfig = () => {
 
   const [search, setSearch] = useState('');
   const [member, setMember] = useState(['']);
-  const [memberCopy, setMemberCopy] = useState(['']);
+  const [memberCopy, setMemberCopy] = useState([]);
+
+  const [removeToggle, setRemoveToggle] = useState(false);
 
   useEffect(() => {
     setTitle(workspaceInfoData?.workspaceTitle);
     setDescription(workspaceInfoData?.workspaceDesc);
     setImage(workspaceInfoData?.workspaceImage);
-  }, [workspaceInfoData]);
+  }, [workspaceInfoData, isLoadingInfo]);
 
   useEffect(() => {
-    const arr = workspaceMember?.map((item:any) => item.userName);
-    setMember(arr);
+    const arr = workspaceMember?.map((item:any) => item);
     setMemberCopy(arr);
-  }, [workspaceMember]);
+  }, [workspaceMember, isLoadingMember]);
 
 
   // 버튼 클릭시 input으로 포커스
@@ -51,25 +51,28 @@ const WorkspaceConfig = () => {
   const mutationImg = useMutation(editProfileImg, {
     onSuccess: async (response) => {
       queryClient.invalidateQueries('workspaceInfo');
-      console.log("서버 통신 성공 후 받은 response(url) : ", response)
     }
   });
   
   const mutationTitle = useMutation(editWorkspaceTitle, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries('workspaceInfo');
-      setTitle(response.workspaceTitle);
     },
     onError: (error) =>{console.log("error : ", error)}
   });
 
   const mutationDesc = useMutation(editWorkspaceDesc, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries('workspaceInfo');
-      setDescription(response.workspaceDesc);
     },
     onError: (error) =>{console.log("error : ", error)}
   });
+
+  const mutationRole = useMutation(editUserRole, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('workspaceMember');
+    }
+  })
 
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if(e.target.files) setImgFile(e.target.files[0]);
@@ -101,6 +104,7 @@ const WorkspaceConfig = () => {
     mutationDesc.mutate({workspaceDesc});
   };
 
+  // onKeyPress
   const onKeyPressTitleHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === 'Enter') onClickEditTitleHandler(title);
   };
@@ -108,10 +112,23 @@ const WorkspaceConfig = () => {
     if(e.key === 'Enter') onClickEditTitleHandler(description);
   };
 
+  // Search Member 
+  interface UserDataType {
+    id: number, 
+    userName: string,
+    userEmail: string,
+    userImage: string
+  }
   useEffect(() => {
-    setMember(memberCopy?.filter((e)=>e.toLowerCase().includes(search.toLowerCase())));
+    setMember(memberCopy?.filter((item: UserDataType) => item.userName.toLowerCase().includes(search.toLowerCase())));
   }, [search, memberCopy]);
 
+  // checkbox
+  const onChangeCheckboxHandler = (userId: number, userRole: string) => {
+    if(userRole === "MANAGER") userRole = "MEMBER";
+    else userRole = "MANAGER";
+    mutationRole.mutate({userId, userRole})
+  };
 
 
   return <Wrapper>
@@ -189,23 +206,59 @@ const WorkspaceConfig = () => {
       </StSearchInviteBox>
       <StSearchUserData>
         {
-          member?.map((item, index) => {
-            return <StUserData key={index}>
-              <StUserProfileImg></StUserProfileImg>
-              <StUserNameEmail>
-                <h3>{item}</h3>
-                <h5>email@gmail.com</h5>
-              </StUserNameEmail>
-              <StUserJob>
-                <h3>Product Manager</h3>
-                <h5>Edit</h5>
-              </StUserJob>
-              <StUserRole>
-                Admin
-              </StUserRole>
-              <StUserRemove>워크스페이스에서 삭제</StUserRemove>
-            </StUserData>
-          })
+          workspaceInfoData?.userRole === "ADMIN"
+            ?
+            member?.map((item:any) => {
+              return <StUserData key={String(item.userId)}>
+                <StUserProfileImg src={item.userImage}/>
+                <StUserNameEmail>
+                  <h3>{item.userName}</h3>
+                  <h5>{item.userEmail}</h5>
+                </StUserNameEmail>
+                <StUserJob>
+                  <h3>{item.userJob}</h3>
+                  <h5>Edit</h5>
+                </StUserJob>
+                <StUserRole>
+                  { item.userRole === "ADMIN" ? null : <StUserRoleCheckbox type="checkbox" onChange={() => onChangeCheckboxHandler(item.userId, item.userRole)} /> }
+                  { item.userRole }
+                </StUserRole>
+                {
+                  item.userRole === "ADMIN"
+                    ?
+                    null
+                    :
+                    removeToggle
+                      ?
+                      <StRemoveToggleBox>
+                        <h3>정말로 삭제하시겠습니까?</h3>
+                        <StRemoveCancelBtn>
+                          <StRemoveBtn>삭제</StRemoveBtn>
+                          <StRemoveBtn onClick={() => setRemoveToggle(false)}>취소</StRemoveBtn>
+                        </StRemoveCancelBtn>
+                      </StRemoveToggleBox>
+                      :
+                    <StUserRemove onClick={() => setRemoveToggle(true)}>워크스페이스에서 삭제</StUserRemove>
+                }
+              </StUserData>
+            })
+            :
+            member?.map((item:any) => {
+              return <StUserData key={String(item.userId)}>
+                <StUserProfileImg src={item.userImage}/>
+                <StUserNameEmail>
+                  <h3>{item.userName}</h3>
+                  <h5>{item.userEmail}</h5>
+                </StUserNameEmail>
+                <StUserJob>
+                  <h3>{item.userJob}</h3>
+                </StUserJob>
+                <StUserRole>
+                  {item.userRole}
+                </StUserRole>
+                <StUserRemove >워크스페이스에서 삭제</StUserRemove>
+              </StUserData>
+            })
         }
       </StSearchUserData>
     </StContainer>
@@ -270,9 +323,6 @@ const StImgEditBtn = styled.div`
   top: 0px;
   right: 0px;
 `;
-const StUploadBtn = styled.div`
-  background-color: pink;
-`;
 
 const StWorkspaceName = styled.div`
   display: flex;
@@ -327,7 +377,7 @@ const StUserData = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-const StUserProfileImg = styled.div`
+const StUserProfileImg = styled.img`
   width: 32px;
   height: 32px;
   box-shadow: 0 0 5px 0 gray;
@@ -360,8 +410,15 @@ const StUserJob = styled.div`
   }
 `;
 const StUserRole = styled.div`
-    font-size: 12px;
-    color: #707070;
+  font-size: 12px;
+  color: #707070;
+`;
+const StAdminBox = styled.div`
+  font-size: 12px;
+  padding: 4px 6px;
+  color: white;
+`
+const StUserRoleCheckbox = styled.input`
 `;
 const StUserRemove = styled.button`
   font-size: 12px;
@@ -371,4 +428,18 @@ const StUserRemove = styled.button`
   border-radius: 6px;
   padding: 4px 6px;
   cursor: pointer;
+`;
+// remove toggle box 삭제, 취소 버튼
+const StRemoveToggleBox = styled.div`
+  display: flex;
+  h3 {
+    font-size: 12px;
+    font-weight: 400;
+  }
+`;
+const StRemoveCancelBtn = styled.div`
+  
+`;
+const StRemoveBtn = styled.button`
+  
 `;

@@ -6,13 +6,11 @@ const getWorkspaceInfo = async () => {
 };
 
 const editWorkspaceTitle = async ({workspaceTitle}:{workspaceTitle:string}) => {
-    const response = await instance.patch(`/api/managing/1/title`, {workspaceTitle});
-    return response.data;
+    await instance.patch(`/api/managing/1/title`, {workspaceTitle});
 };
 
 const editWorkspaceDesc = async ({workspaceDesc}:{workspaceDesc:string}) => {
-    const response = await instance.patch(`/api/managing/1/description`, {workspaceDesc});
-    return response.data;
+    await instance.patch(`/api/managing/1/description`, {workspaceDesc});
 };
 
 const getWorkspaceMember = async () => {
@@ -22,12 +20,14 @@ const getWorkspaceMember = async () => {
 
 const editProfileImg = async (workspaceImage: FormData) => {
     const response = await instance.post(`/api/managing/1/image`, workspaceImage, 
-        {
-            headers: {"Content-Type": "multipart/form-data"},
-        }
+        {headers: {"Content-Type": "multipart/form-data"}},
     );
     console.log("post response : ", response);
     return response.data;
 };
 
-export {getWorkspaceInfo, editWorkspaceTitle, editWorkspaceDesc, getWorkspaceMember, editProfileImg};
+const editUserRole = async ({userId , userRole}:{userId: number, userRole: string}) => {
+    await instance.patch(`/api/managing/1/people/${userId}`, {userRole});
+};
+
+export {getWorkspaceInfo, editWorkspaceTitle, editWorkspaceDesc, getWorkspaceMember, editProfileImg, editUserRole};
