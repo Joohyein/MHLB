@@ -17,7 +17,7 @@ const CelebrateSignUp = () => {
     <Wrapper>
       <StContainer>
         <StTitleMessage>회원가입을 축하합니다!</StTitleMessage>
-        <StDescMessage onClick = {() => {navigate('/login')}}>로그인 화면으로 돌아가기</StDescMessage>
+        <StDescButton onClick = {() => {navigate('/login')}}>로그인 화면으로 돌아가기</StDescButton>
       </StContainer>
     </Wrapper>
   );
@@ -35,12 +35,12 @@ const StContainer = styled.div`
 `
 
 const StTitleMessage = styled.div`
-  font-size : 4rem;
+  font-size : 3rem;
   font-weight : 900;
   color : #303030;
 `
 
-const StDescMessage = styled.button`
+const StDescButton = styled.button`
   margin-top : 1rem;
   font-size : 1rem;
   font-weight : 700;

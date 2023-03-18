@@ -87,7 +87,7 @@ const Login = () => {
           {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
           {emptyValidation ? <StValidationText>모든 정보를 입력해주세요.</StValidationText> : null}
           {wrongValidation ? <StValidationText>이메일이나 비밀번호가 틀렸습니다.</StValidationText> : null}
-          <StFindPassword to = '/find-password'>비밀번호를 잊어버리셨나요?</StFindPassword>
+          <StFindPassword to = '/reset-password-send-email'>비밀번호를 잊어버리셨나요?</StFindPassword>
           <StLoginButton ref = {loginButtonRef} onClick = {() => {onClickLogin()}}>로그인</StLoginButton>
           <StOrDiv>
             <StHrTag />
