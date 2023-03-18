@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import Wrapper from "../components/common/Wrapper";
 import useIsLogin from "../hooks/useIsLogin";
 
@@ -14,9 +15,47 @@ const CelebrateSignUp = () => {
 
   return (
     <Wrapper>
-      CelebrateSignUp
+      <StContainer>
+        <StTitleMessage>회원가입을 축하합니다!</StTitleMessage>
+        <StDescMessage onClick = {() => {navigate('/login')}}>로그인 화면으로 돌아가기</StDescMessage>
+      </StContainer>
     </Wrapper>
   );
 };
 
 export default CelebrateSignUp;
+
+const StContainer = styled.div`
+  width : 100%;
+  height : 100vh;
+  display : flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+const StTitleMessage = styled.div`
+  font-size : 4rem;
+  font-weight : 900;
+  color : #303030;
+`
+
+const StDescMessage = styled.button`
+  margin-top : 1rem;
+  font-size : 1rem;
+  font-weight : 700;
+  color : white;
+  background-color : #007aff;
+  padding : 0.25rem 1rem;
+  border : none;
+  border-radius : 0.25rem;
+  line-height : 1.5rem;
+  transition : 200ms;
+  &:hover {
+    background-color : #429dff;
+    cursor : pointer;
+  }
+  &:active {
+    scale : 1.05;
+  }
+`
