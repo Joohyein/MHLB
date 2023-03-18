@@ -10,4 +10,9 @@ const register = async ({email, password, userName, userImage, userJob, userDesc
   return response;
 };
 
-export { login, register };
+const sendResetPasswordEmail = ({email} : {email : string}) => {
+  const response = instance.post("/api/users/check/email", {email});
+  return response;
+}
+
+export { login, register, sendResetPasswordEmail };

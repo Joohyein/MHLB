@@ -5,4 +5,9 @@ const duplicateEmailCheck = async ({ email }: { email: string }) => {
   return response;
 };
 
-export { duplicateEmailCheck };
+const validateEmailCheck = async ({ email }: { email: string }) => {
+  const response = instance.post("/api/users/validate-email", { email });
+  return response;
+};
+
+export { validateEmailCheck, duplicateEmailCheck };

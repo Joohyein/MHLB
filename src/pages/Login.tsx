@@ -48,7 +48,7 @@ const Login = () => {
       setEmptyValidation(true);
     } else if (!emailValue) {
       setEmailValidation(true);
-    } else if (!(emailValue.includes("@") || emailValue.includes("@") ? emailValue.split("@")[1].includes(".") : null)) {
+    } else if (!(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}|\.[a-z]{2,3}\.[a-z]{2,3}/g).test(emailValue)) {
       setEmailFormValidation(true);
     } else if (!passwordValue) {
       setPasswordValidation(true);
@@ -181,6 +181,7 @@ const StFindPassword = styled(Link)`
     text-decoration-line : none;
   }
   &:hover {
+    cursor : pointer;
     color : #429dff;
   }
 `
@@ -197,6 +198,7 @@ const StLoginButton = styled.button`
   line-height : 1.5rem;
   transition : 200ms;
   &:hover {
+    cursor : pointer;
     background-color : #429dff;
   }
 `
@@ -240,6 +242,7 @@ const StGoogleLoginButton = styled.button`
   line-height : 1.5rem;
   transition : 200ms;
   &:hover {
+    cursor : pointer;
     background-color : #f0f0f0;
   }
 `
@@ -264,6 +267,7 @@ const StRegisterRecommendLink = styled(Link)`
     text-decoration-line : none;
   }
   &:hover {
+    cursor : pointer;
     color : #429dff;
   }
 `
