@@ -34,7 +34,7 @@ const Register = () => {
   const [isEmailInput, setIsEmailInput] = useState(false);
 
   useEffect(() => {
-    if (allowedEmailValidation === true) {
+    if (allowedEmailValidation) {
       if (isEmailInput) {
         duplicateEmailCheck({email : duplicateEmail})
         .then((res) => {
@@ -284,6 +284,7 @@ const StRegisterButton = styled.button`
   line-height: 1.5rem;
   transition: 200ms;
   &:hover {
+    cursor : pointer;
     background-color: #429dff;
   }
 `;
@@ -327,6 +328,7 @@ const StGoogleRegisterButton = styled.button`
   line-height: 1.5rem;
   transition: 200ms;
   &:hover {
+    cursor : pointer;
     background-color: #f0f0f0;
   }
 `;
@@ -351,6 +353,7 @@ const StLoginRecommendLink = styled(Link)`
     text-decoration-line: none;
   }
   &:hover {
+    cursor : pointer;
     color: #429dff;
   }
 `;

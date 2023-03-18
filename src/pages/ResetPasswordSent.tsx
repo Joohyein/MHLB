@@ -4,26 +4,30 @@ import styled from "styled-components";
 import Wrapper from "../components/common/Wrapper";
 import useIsLogin from "../hooks/useIsLogin";
 
-const CelebrateSignUp = () => {
+const ResetPasswordSent = () => {
 
-  const isLogin = useIsLogin();
-  const navigate = useNavigate();
+    const isLogin = useIsLogin();
+    const navigate = useNavigate();
+  
+    useEffect(() => {
+      if(isLogin === true) return navigate('/select-workspace');
+    }, [isLogin])
 
-  useEffect(() => {
-    if(isLogin === true) return navigate('/select-workspace');
-  }, [isLogin])
-
-  return (
+    return (
     <Wrapper>
-      <StContainer>
-        <StTitleMessage>회원가입을 축하합니다!</StTitleMessage>
+        <StContainer>
+        <StTitleMessage>
+            이메일로 링크를 보냈습니다.
+            <br/>
+            메일함을 확인 해주세요.
+        </StTitleMessage>
         <StDescButton onClick = {() => {navigate('/login')}}>로그인 화면으로 돌아가기</StDescButton>
-      </StContainer>
+        </StContainer>
     </Wrapper>
-  );
+    );
 };
 
-export default CelebrateSignUp;
+export default ResetPasswordSent;
 
 const StContainer = styled.div`
   width : 100%;
@@ -35,11 +39,11 @@ const StContainer = styled.div`
 `
 
 const StTitleMessage = styled.div`
-font-size : 3rem;
-font-weight : 900;
-line-height : 4.5rem;
-color : #303030;
-text-align : center;
+  font-size : 3rem;
+  font-weight : 900;
+  line-height : 4.5rem;
+  color : #303030;
+  text-align : center;
 `
 
 const StDescButton = styled.button`
