@@ -26,4 +26,12 @@ const getWorkspaces = async() => {
   return response.data;
 };
 
-export { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces };
+const editProfileImg = async (userImage: FormData) => {
+  await instance.post('/api/mypage/image', userImage, 
+    {
+      headers: {"Content-Type": "multipart/form-data"},
+    }
+  );
+}
+
+export { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces, editProfileImg };
