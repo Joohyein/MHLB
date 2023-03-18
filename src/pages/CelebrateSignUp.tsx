@@ -35,9 +35,11 @@ const StContainer = styled.div`
 `
 
 const StTitleMessage = styled.div`
-  font-size : 3rem;
-  font-weight : 900;
-  color : #303030;
+font-size : 3rem;
+font-weight : 900;
+line-height : 4.5rem;
+color : #303030;
+text-align : center;
 `
 
 const StDescButton = styled.button`
