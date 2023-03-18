@@ -1,8 +1,8 @@
 import instance from "./instance/instance";
 
-const temp = async () => {
-  const response = instance.get("/");
+const duplicateEmailCheck = async ({ email }: { email: string }) => {
+  const response = instance.post("/api/users/duplicate-email", { email });
   return response;
 };
 
-export { temp };
+export { duplicateEmailCheck };
