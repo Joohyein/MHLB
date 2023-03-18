@@ -122,7 +122,7 @@ const WorkspaceConfig = () => {
       </StManageTitle>
 
       <StWorkspaceName>
-        <StTitleBox>워크스페이스 프로필 이미지</StTitleBox>
+        <StSub>워크스페이스 프로필 이미지</StSub>
         <StWorkspaceProfile>
           <StImgBox src={image}/>
           <StProfileImg />
