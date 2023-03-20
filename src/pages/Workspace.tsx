@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Wrapper from '../components/common/Wrapper';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import axios from 'axios';
+import userInfoMock from './userInfo.json';
 
 const Workspace = () => {
   interface Userdata {
@@ -13,6 +14,7 @@ const Workspace = () => {
     userJob: string;
     userEmail: string;
     status: string;
+    isHover: boolean;
   }
   interface Workspace {
     workspaceDesc: string;
@@ -20,110 +22,106 @@ const Workspace = () => {
     workspaceImage: string;
     workspaceTitle: string;
   }
+
   useEffect(() => {
     axios.get('http://localhost:4000/workspaceList').then(({ data }) => {
       setWorkspaceList(data);
     });
-    axios.get('http://localhost:4000/users').then(({ data }) => {
-      setUserList(data);
+
+    const temp = userInfoMock.map((item) => {
+      return {
+        ...item,
+        isHover: false,
+      };
     });
+    setUserList(temp);
   }, []);
+  const [isHover, setIsHover] = useState(false);
   const [workspaceList, setWorkspaceList] = useState([]);
-  const [userList, setUserList] = useState<Userdata | null>(null);
+  const [userList, setUserList] = useState<Userdata[] | undefined>();
 
   const navigate = useNavigate();
   const [searchInputVal, setSearhInputVal] = useState('');
-  const [users] = useState([
-    {
-      userId: 1,
-      userImage:
-        'https://i.discogs.com/Lv_olIaeY11SsEpuPq860kA8k5c4DyNHJWr4Q9gCXXs/rs:fit/g:sm/q:40/h:300/w:300/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIwODIz/NC0xNDU5MTIzODcx/LTUzODUuanBlZw.jpeg',
-      userName: 'Pino Palladino',
-      userJob: 'Product Manager',
-      userEmail: 'email@example.com',
-      status: 'COB',
-    },
-    {
-      userId: 2,
-      userImage:
-        'https://i.discogs.com/SNIt6JKnkqMg316sgu4eC9DgD58GK0s9uGEXX_h8-Lw/rs:fit/g:sm/q:40/h:300/w:300/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTM0MDU2/OC0xMjU3MzcwNzE0/LmpwZWc.jpeg',
-      userName: 'Robert Glasper',
-      userJob: 'CEO',
-      userEmail: 'email@example.com',
-      status: 'WIP',
-    },
-    {
-      userId: 3,
-      userImage: 'https://ninjatune.net/images/artists/thundercat-main.jpg',
-      userName: 'ThunderCat',
-      userJob: 'CTO',
-      userEmail: 'email@example.com',
-      status: 'WIP',
-    },
-    {
-      userId: 4,
-      userImage:
-        'https://i.discogs.com/m1hqHs3YjQSIT1jOVq7Co2gthabb1NdiB00vl6cX23Y/rs:fit/g:sm/q:90/h:400/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTI1NDQ3/OS0xNjQ1Njc2NDI1/LTMyNDcuanBlZw.jpeg',
-      userName: 'John Mayer',
-      userJob: 'CTO',
-      userEmail: 'email@example.com',
-      status: 'COB',
-    },
+  // const [userList, setUsers] = useState([
+  //   {
+  //     userId: 1,
+  //     userImage:
+  //       'https://i.discogs.com/Lv_olIaeY11SsEpuPq860kA8k5c4DyNHJWr4Q9gCXXs/rs:fit/g:sm/q:40/h:300/w:300/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIwODIz/NC0xNDU5MTIzODcx/LTUzODUuanBlZw.jpeg',
+  //     userName: 'Pino Palladino',
+  //     userJob: 'Product Manager',
+  //     userEmail: 'email@example.com',
+  //     status: 'WIP',
+  //   },
+  //   {
+  //     userId: 2,
+  //     userImage:
+  //       'https://i.discogs.com/SNIt6JKnkqMg316sgu4eC9DgD58GK0s9uGEXX_h8-Lw/rs:fit/g:sm/q:40/h:300/w:300/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTM0MDU2/OC0xMjU3MzcwNzE0/LmpwZWc.jpeg',
+  //     userName: 'Robert Glasper',
+  //     userJob: 'CEO',
+  //     userEmail: 'email@example.com',
+  //     status: 'WIP',
+  //   },
+  //   {
+  //     userId: 3,
+  //     userImage: 'https://ninjatune.net/images/artists/thundercat-main.jpg',
+  //     userName: 'ThunderCat',
+  //     userJob: 'CTO',
+  //     userEmail: 'email@example.com',
+  //     status: 'WIP',
+  //   },
+  //   {
+  //     userId: 4,
+  //     userImage:
+  //       'https://i.discogs.com/m1hqHs3YjQSIT1jOVq7Co2gthabb1NdiB00vl6cX23Y/rs:fit/g:sm/q:90/h:400/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTI1NDQ3/OS0xNjQ1Njc2NDI1/LTMyNDcuanBlZw.jpeg',
+  //     userName: 'John Mayer',
+  //     userJob: 'CTO',
+  //     userEmail: 'email@example.com',
+  //     status: 'WIP',
+  //   },
 
-    {
-      userId: 6,
-      userImage:
-        'https://blz-contentstack-images.akamaized.net/v3/assets/bltf408a0557f4e4998/bltbeb5ffc091f7e13a/6125581fc203863c736d8629/253-472.png?width=2048&format=webply&dpr=2&disable=upscale&quality=80',
-      userName: 'Baal',
-      userJob: 'Lord of Destruction',
-      userEmail: 'email@example.com',
-      status: 'OTL',
-    },
-    {
-      userId: 7,
-      userImage:
-        'https://i.namu.wiki/i/Ak-lxq7mdjAp6VsFJZY5pMeg8ECQeORfkFvUrSA-AuNuFcHro7uljy3bF22BYUxdMoKpsIHJ7XOC_aGutmnbshvs9qjE9L1fQZ7VrhyDtOJbGZajKZZyqmLWArjhrPkKUJvN7g0jQW9XQzQVgseKUA.webp',
-      userName: 'Diablo',
-      userJob: 'Lord of Terror',
-      userEmail: 'email@example.com',
-      status: 'OOO',
-    },
-    {
-      userId: 8,
-      userImage:
-        'https://w7.pngwing.com/pngs/283/839/png-transparent-bank-of-montreal-mobile-phones-text-messaging-bmo-angle-smiley-grass.png',
-      userName: 'BMO',
-      userJob: 'Computer',
-      userEmail: 'email@example.com',
-      status: 'OOT',
-    },
-    {
-      userId: 9,
-      userImage:
-        'https://www.onthisday.com/images/people/homer-simpson-medium.jpg',
-      userName: 'Homer Simpson',
-      userJob: 'Nuclear Technician',
-      userEmail: 'email@example.com',
-      status: 'IC',
-    },
-  ]);
+  //   {
+  //     userId: 6,
+  //     userImage:
+  //       'https://blz-contentstack-images.akamaized.net/v3/assets/bltf408a0557f4e4998/bltbeb5ffc091f7e13a/6125581fc203863c736d8629/253-472.png?width=2048&format=webply&dpr=2&disable=upscale&quality=80',
+  //     userName: 'Baal',
+  //     userJob: 'Lord of Destruction',
+  //     userEmail: 'email@example.com',
+  //     status: 'WIP',
+  //   },
+  //   {
+  //     userId: 7,
+  //     userImage:
+  //       'https://i.namu.wiki/i/Ak-lxq7mdjAp6VsFJZY5pMeg8ECQeORfkFvUrSA-AuNuFcHro7uljy3bF22BYUxdMoKpsIHJ7XOC_aGutmnbshvs9qjE9L1fQZ7VrhyDtOJbGZajKZZyqmLWArjhrPkKUJvN7g0jQW9XQzQVgseKUA.webp',
+  //     userName: 'Diablo',
+  //     userJob: 'Lord of Terror',
+  //     userEmail: 'email@example.com',
+  //     status: 'WIP',
+  //   },
+  //   {
+  //     userId: 8,
+  //     userImage:
+  //       'https://w7.pngwing.com/pngs/283/839/png-transparent-bank-of-montreal-mobile-phones-text-messaging-bmo-angle-smiley-grass.png',
+  //     userName: 'BMO',
+  //     userJob: 'Computer',
+  //     userEmail: 'email@example.com',
+  //     status: 'WIP',
+  //   },
+  //   {
+  //     userId: 9,
+  //     userImage:
+  //       'https://www.onthisday.com/images/people/homer-simpson-medium.jpg',
+  //     userName: 'Homer Simpson',
+  //     userJob: 'Nuclear Technician',
+  //     userEmail: 'email@example.com',
+  //     status: 'WIP',
+  //   },
+  // ]);
 
   const searchInputValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearhInputVal(e.target.value);
   };
 
-  console.log(Array.isArray(userList));
-  console.log(workspaceList);
-
-  // userList?.filter;
-  // userList.map((item) => {
-  //   console.log(item);
-  // });
-  // userList?.filter((item) => {
-
-  // })
-
-  const searchPeopleList = users.filter((item) => {
+  const searchPeopleList = userList?.filter((item) => {
     return item.userName
       .toLowerCase()
       .replaceAll(' ', '')
@@ -131,31 +129,31 @@ const Workspace = () => {
   });
 
   // 근무중 리스트
-  const wip = users.filter((item) => {
+  const wip = userList?.filter((item) => {
     return item.status === 'WIP';
   });
   // 자리비움 리스트
-  const brb = users.filter((item) => {
+  const brb = userList?.filter((item) => {
     return item.status === 'BRB';
   });
   // 업무종료 리스트
-  const cob = users.filter((item) => {
+  const cob = userList?.filter((item) => {
     return item.status === 'COB';
   });
   // 휴가중 리스트
-  const ooo = users.filter((item) => {
+  const ooo = userList?.filter((item) => {
     return item.status === 'OOO';
   });
   // 식사중 리스트
-  const otl = users.filter((item) => {
+  const otl = userList?.filter((item) => {
     return item.status === 'OTL';
   });
   // 회의중 리스트
-  const ic = users.filter((item) => {
+  const ic = userList?.filter((item) => {
     return item.status === 'IC';
   });
   // 출장중 리스트
-  const oot = users.filter((item) => {
+  const oot = userList?.filter((item) => {
     return item.status === 'OOT';
   });
 
@@ -166,13 +164,22 @@ const Workspace = () => {
   //   return 0;
   // });
   // console.log(usersByStatus);
-  const handleDragEnd = async (result: any) => {
+
+  const handleDragEnd = (result: any) => {
     if (!result.destination) return;
     const items = Array.from(workspaceList);
     const [reorderData] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderData);
     setWorkspaceList(items);
   };
+  // 인박스 드래그이벤트
+  // const statusBoxDragEnd = (result: any) => {
+  //   if (!result.destination) return;
+  //   const items = Array.from(userList);
+  //   const [reorderData] = items.splice(result.source.index, 1);
+  //   items.splice(result.destination.index, 0, reorderData);
+  //   setUserList(items);
+  // };
   return (
     <Wrapper>
       <StNav>
@@ -205,23 +212,52 @@ const Workspace = () => {
             >
               {workspaceList?.map((item: Workspace, index) => {
                 return (
-                  <Draggable
-                    key={item.workspaceId}
-                    draggableId={`${item.workspaceId}`}
-                    index={index}
-                  >
-                    {(provided) => (
-                      <StWorkspaceImgWrap
-                        {...provided.dragHandleProps}
-                        {...provided.draggableProps}
-                        ref={provided.innerRef}
-                      >
-                        <StWorkspaceImg
-                          src={item.workspaceImage}
-                        ></StWorkspaceImg>
-                      </StWorkspaceImgWrap>
-                    )}
-                  </Draggable>
+                  <StDiv>
+                    <div
+                      className="asdf"
+                      style={{
+                        display: 'none',
+                        position: 'absolute',
+                        top: '20px',
+                        left: '100px',
+                        background: 'white',
+                        width: '300px',
+                        height: '300px',
+                        border: '1px solid black',
+                      }}
+                    >
+                      {item.workspaceDesc}
+                    </div>
+                    <Draggable
+                      key={item.workspaceId}
+                      draggableId={`${item.workspaceId}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <StWorkspaceImgWrap
+                          {...provided.dragHandleProps}
+                          {...provided.draggableProps}
+                          ref={provided.innerRef}
+                        >
+                          {/* <div
+                          style={{
+                            position: 'absolute',
+                            right: '-220px',
+                            width: '200px',
+                            height: '120px',
+                            backgroundColor: 'white',
+                          }}
+                        >
+                          흠냐리
+                        </div> */}
+
+                          <StWorkspaceImg
+                            src={item.workspaceImage}
+                          ></StWorkspaceImg>
+                        </StWorkspaceImgWrap>
+                      )}
+                    </Draggable>
+                  </StDiv>
                 );
               })}
             </StWorkspaceListContainer>
@@ -234,7 +270,6 @@ const Workspace = () => {
           flexDirection: 'column',
         }}
       >
-        {/* <div style={{ display: 'flex', flexDirection: 'row' }}> */}
         <StAppMainWrap>
           <div
             style={{
@@ -271,9 +306,7 @@ const Workspace = () => {
 
             <div>
               <button
-                onClick={() => {
-                  alert('멤버추가 버튼');
-                }}
+                onClick={() => {}}
                 style={{
                   height: '36px',
                   width: '104px',
@@ -287,10 +320,26 @@ const Workspace = () => {
                   cursor: 'pointer',
                 }}
               >
-                멤버 추가{' '}
+                이메일 중복 조회
               </button>
+              <StDiv>
+                <div
+                  className="asdf"
+                  style={{
+                    display: 'none',
+                    width: '100px',
+                    height: '100px',
+                    background: 'red',
+                    position: 'absolute',
+                  }}
+                >
+                  gd
+                </div>
+                <div>test</div>
+              </StDiv>
             </div>
           </div>
+
           <StStatusContainer>
             <div
               style={{
@@ -301,7 +350,17 @@ const Workspace = () => {
                 gap: '12px',
               }}
             >
-              <StStatusBox size="small">
+              <StStatusBox
+                // 다시보고 이해해야됨..
+                isHover={userList
+                  ?.filter((item) => {
+                    return item.status === 'WIP';
+                  })
+                  .some((item) => {
+                    return item.isHover;
+                  })}
+                size="small"
+              >
                 <div
                   style={{
                     width: '100%',
@@ -311,42 +370,76 @@ const Workspace = () => {
                     alignItems: 'center',
                   }}
                 >
-                  <h3 style={{ margin: '0px 24px' }}>근무</h3>
+                  <h3 style={{ margin: '0px 24px' }}>근무중</h3>
                 </div>
-                <div
-                  style={{
-                    height: '68%',
-                    padding: '12px 24px',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'flex-start',
-                    alignContent: 'flex-start',
-                    gap: '4px',
-                  }}
-                >
-                  {wip.map((item) => {
-                    return (
-                      <div
-                        key={item.userId}
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          // background: 'blue',
-                          borderRadius: '50%',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img
-                          src={item.userImage}
-                          width="100%"
-                          height="100%"
-                        ></img>
-                      </div>
-                    );
-                  })}
-                </div>
+                {wip?.length !== 0 ? (
+                  <div
+                    style={{
+                      height: '68%',
+                      padding: '12px 24px',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'flex-start',
+                      alignContent: 'flex-start',
+                      gap: '4px',
+                    }}
+                  >
+                    {wip?.map((item, index) => {
+                      return (
+                        <div
+                          key={item.userId}
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            background: 'blue',
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <img
+                            src={item.userImage}
+                            width="100%"
+                            height="100%"
+                          ></img>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      height: '68%',
+                      padding: '12px 24px',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+
+                      gap: '8px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        marginTop: '44px',
+                        fontSize: '.9rem',
+                        color: '#7F7F7F',
+                      }}
+                    >
+                      Empty Space
+                    </div>
+                  </div>
+                )}
               </StStatusBox>
-              <StStatusBox size="small">
+
+              <StStatusBox
+                isHover={userList
+                  ?.filter((item) => {
+                    return item.status === 'IC';
+                  })
+                  .some((item) => {
+                    return item.isHover;
+                  })}
+                size="small"
+              >
                 <div
                   style={{
                     width: '100%',
@@ -358,41 +451,69 @@ const Workspace = () => {
                 >
                   <h3 style={{ margin: '0px 24px' }}>회의</h3>
                 </div>
-                <div
-                  style={{
-                    height: '68%',
-                    padding: '12px 24px',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'flex-start',
-                    alignContent: 'flex-start',
-                    gap: '8px',
-                  }}
-                >
-                  {ic.map((item) => {
-                    return (
-                      <div
-                        key={item.userId}
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          background: 'blue',
-                          borderRadius: '50%',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img
-                          src={item.userImage}
-                          width="100%"
-                          height="100%"
-                          // height="auto"
-                        ></img>
-                      </div>
-                    );
-                  })}
-                </div>
+                {ic?.length !== 0 ? (
+                  <div
+                    style={{
+                      height: '68%',
+                      padding: '12px 24px',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'flex-start',
+                      alignContent: 'flex-start',
+                      gap: '8px',
+                    }}
+                  >
+                    {ic?.map((item) => {
+                      return (
+                        <div
+                          key={item.userId}
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            background: 'blue',
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <img
+                            src={item.userImage}
+                            width="100%"
+                            height="100%"
+                          ></img>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      padding: '12px 24px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div
+                      style={{
+                        marginTop: '44px',
+                        fontSize: '.9rem',
+                        color: '#7F7F7F',
+                      }}
+                    >
+                      Empty Space
+                    </div>
+                  </div>
+                )}
               </StStatusBox>
-              <StStatusBox size="small">
+              <StStatusBox
+                isHover={userList
+                  ?.filter((item) => {
+                    return item.status === 'OTL';
+                  })
+                  .some((item) => {
+                    return item.isHover;
+                  })}
+                size="small"
+              >
                 <div
                   style={{
                     width: '100%',
@@ -404,41 +525,70 @@ const Workspace = () => {
                 >
                   <h3 style={{ margin: '0px 24px' }}>식사</h3>
                 </div>
-                <div
-                  style={{
-                    height: '68%',
-                    padding: '12px 24px',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'flex-start',
-                    alignContent: 'flex-start',
-                    gap: '8px',
-                  }}
-                >
-                  {otl.map((item) => {
-                    return (
-                      <div
-                        key={item.userId}
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          background: 'blue',
-                          borderRadius: '50%',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img
-                          src={item.userImage}
-                          width="100%"
-                          height="100%"
-                          // height="auto"
-                        ></img>
-                      </div>
-                    );
-                  })}
-                </div>
+                {otl?.length !== 0 ? (
+                  <div
+                    style={{
+                      height: '68%',
+                      padding: '12px 24px',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'flex-start',
+                      alignContent: 'flex-start',
+                      gap: '4px',
+                    }}
+                  >
+                    {otl?.map((item) => {
+                      return (
+                        <div
+                          key={item.userId}
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            background: 'blue',
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <img
+                            src={item.userImage}
+                            width="100%"
+                            height="100%"
+                          ></img>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      padding: '12px 24px',
+                      display: 'flex',
+
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div
+                      style={{
+                        marginTop: '44px',
+                        fontSize: '.9rem',
+                        color: '#7F7F7F',
+                      }}
+                    >
+                      Empty Space
+                    </div>
+                  </div>
+                )}
               </StStatusBox>
-              <StStatusBox size="small">
+              <StStatusBox
+                isHover={userList
+                  ?.filter((item) => {
+                    return item.status === 'BRB';
+                  })
+                  .some((item) => {
+                    return item.isHover;
+                  })}
+                size="small"
+              >
                 <div
                   style={{
                     width: '100%',
@@ -450,40 +600,71 @@ const Workspace = () => {
                 >
                   <h3 style={{ margin: '0px 24px' }}>자리비움</h3>
                 </div>
-                <div
-                  style={{
-                    height: '68%',
-                    padding: '12px 24px',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'flex-start',
-                    alignContent: 'flex-start',
-                    gap: '8px',
-                  }}
-                >
-                  {brb.map((item) => {
-                    return (
-                      <div
-                        key={item.userId}
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          background: 'blue',
-                          borderRadius: '50%',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img
-                          src={item.userImage}
-                          width="100%"
-                          height="100%"
-                        ></img>
-                      </div>
-                    );
-                  })}
-                </div>
+
+                {brb?.length !== 0 ? (
+                  <div
+                    style={{
+                      height: '68%',
+                      padding: '12px 24px',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'flex-start',
+                      alignContent: 'flex-start',
+                      gap: '4px',
+                    }}
+                  >
+                    {brb?.map((item) => {
+                      return (
+                        <div
+                          key={item.userId}
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            background: 'blue',
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <img
+                            src={item.userImage}
+                            width="100%"
+                            height="100%"
+                          ></img>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      padding: '12px 24px',
+                      display: 'flex',
+
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div
+                      style={{
+                        marginTop: '44px',
+                        fontSize: '.9rem',
+                        color: '#7F7F7F',
+                      }}
+                    >
+                      Empty Space
+                    </div>
+                  </div>
+                )}
               </StStatusBox>
-              <StStatusBox size="small">
+              <StStatusBox
+                isHover={userList
+                  ?.filter((item) => {
+                    return item.status === 'OOT';
+                  })
+                  .some((item) => {
+                    return item.isHover;
+                  })}
+                size="small"
+              >
                 <div
                   style={{
                     width: '100%',
@@ -495,41 +676,70 @@ const Workspace = () => {
                 >
                   <h3 style={{ margin: '0px 24px' }}>출장</h3>
                 </div>
-                <div
-                  style={{
-                    height: '68%',
-                    padding: '12px 24px',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'flex-start',
-                    alignContent: 'flex-start',
-                    gap: '8px',
-                  }}
-                >
-                  {oot.map((item) => {
-                    return (
-                      <div
-                        key={item.userId}
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          background: 'blue',
-                          borderRadius: '50%',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img
-                          src={item.userImage}
-                          width="100%"
-                          height="100%"
-                          // height="auto"
-                        ></img>
-                      </div>
-                    );
-                  })}
-                </div>
+                {oot?.length !== 0 ? (
+                  <div
+                    style={{
+                      height: '68%',
+                      padding: '12px 24px',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'flex-start',
+                      alignContent: 'flex-start',
+                      gap: '4px',
+                    }}
+                  >
+                    {oot?.map((item) => {
+                      return (
+                        <div
+                          key={item.userId}
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            background: 'blue',
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <img
+                            src={item.userImage}
+                            width="100%"
+                            height="100%"
+                          ></img>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      padding: '12px 24px',
+                      display: 'flex',
+
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div
+                      style={{
+                        marginTop: '44px',
+                        fontSize: '.9rem',
+                        color: '#7F7F7F',
+                      }}
+                    >
+                      Empty Space
+                    </div>
+                  </div>
+                )}
               </StStatusBox>
-              <StStatusBox size="small">
+              <StStatusBox
+                isHover={userList
+                  ?.filter((item) => {
+                    return item.status === 'OOO';
+                  })
+                  .some((item) => {
+                    return item.isHover;
+                  })}
+                size="small"
+              >
                 <div
                   style={{
                     width: '100%',
@@ -541,43 +751,72 @@ const Workspace = () => {
                 >
                   <h3 style={{ margin: '0px 24px' }}>휴가중</h3>
                 </div>
-                <div
-                  style={{
-                    height: '68%',
-                    padding: '12px 24px',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'flex-start',
-                    alignContent: 'flex-start',
-                    gap: '8px',
-                  }}
-                >
-                  {ooo.map((item) => {
-                    return (
-                      <div
-                        key={item.userId}
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          background: 'blue',
-                          borderRadius: '50%',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img
-                          src={item.userImage}
-                          width="100%"
-                          height="100%"
-                          // height="auto"
-                        ></img>
-                      </div>
-                    );
-                  })}
-                </div>
+                {ooo?.length !== 0 ? (
+                  <div
+                    style={{
+                      height: '68%',
+                      padding: '12px 24px',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'flex-start',
+                      alignContent: 'flex-start',
+                      gap: '4px',
+                    }}
+                  >
+                    {ooo?.map((item) => {
+                      return (
+                        <div
+                          key={item.userId}
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            background: 'blue',
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <img
+                            src={item.userImage}
+                            width="100%"
+                            height="100%"
+                          ></img>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      padding: '12px 24px',
+                      display: 'flex',
+
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div
+                      style={{
+                        marginTop: '44px',
+                        fontSize: '.9rem',
+                        color: '#7F7F7F',
+                      }}
+                    >
+                      Empty Space
+                    </div>
+                  </div>
+                )}
               </StStatusBox>
             </div>
             <div>
-              <StStatusBox size="large">
+              <StStatusBox
+                isHover={userList
+                  ?.filter((item) => {
+                    return item.status === 'COB';
+                  })
+                  .some((item) => {
+                    return item.isHover;
+                  })}
+                size="large"
+              >
                 <div
                   style={{
                     // margin: '24px',
@@ -590,43 +829,65 @@ const Workspace = () => {
                 >
                   <h3 style={{ margin: '0px 24px' }}>업무 종료</h3>
                 </div>
-                <div
-                  style={{
-                    height: '85%',
-                    padding: '12px 24px',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'flex-start',
-                    alignContent: 'flex-start',
-                    gap: '6px',
-                  }}
-                >
-                  {cob.map((item) => {
-                    return (
-                      <div
-                        key={item.userId}
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          background: 'blue',
-                          borderRadius: '50%',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img
-                          src={item.userImage}
-                          width="100%"
-                          height="100%"
-                          // height="auto"
-                        ></img>
-                      </div>
-                    );
-                  })}{' '}
-                </div>
+                {cob?.length !== 0 ? (
+                  <div
+                    style={{
+                      height: '85%',
+                      padding: '12px 24px',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'flex-start',
+                      alignContent: 'flex-start',
+                      gap: '6px',
+                    }}
+                  >
+                    {cob?.map((item) => {
+                      return (
+                        <div
+                          key={item.userId}
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            background: 'blue',
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <img
+                            src={item.userImage}
+                            width="100%"
+                            height="100%"
+                            // height="auto"
+                          ></img>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      padding: '12px 24px',
+                      display: 'flex',
+
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div
+                      style={{
+                        marginTop: '148px',
+                        fontSize: '.9rem',
+                        color: '#7F7F7F',
+                      }}
+                    >
+                      Empty Space
+                    </div>
+                  </div>
+                )}
               </StStatusBox>
             </div>
           </StStatusContainer>
         </StAppMainWrap>
+
         <StGraphBox>
           <div>
             <h3>업무 기여도</h3>
@@ -717,16 +978,32 @@ const Workspace = () => {
             overflow: 'auto',
           }}
         >
-          {searchPeopleList.map((item) => {
+          {searchPeopleList?.map((item, index) => {
             return (
-              <div
-                key={item.userId}
-                style={{
-                  padding: '18px 14px',
-                  backgroundColor: 'white',
-                  borderBottom: '1px solid #F1F1F1',
-                  display: 'flex',
-                  alignItems: 'center',
+              <StUserWrap
+                onMouseEnter={() => {
+                  const temp = userList?.map((user) => {
+                    if (user.userId === item.userId) {
+                      return {
+                        ...user,
+                        isHover: true,
+                      };
+                    }
+                    return user;
+                  });
+                  setUserList(temp);
+                }}
+                onMouseLeave={() => {
+                  const temp = userList?.map((user) => {
+                    // if (user.userId === item.userId) {
+                    return {
+                      ...user,
+                      isHover: false,
+                    };
+                    // }
+                    // return user;
+                  });
+                  setUserList(temp);
                 }}
               >
                 <img
@@ -772,7 +1049,7 @@ const Workspace = () => {
                 </div>
 
                 <StStatusDot status={item.status}></StStatusDot>
-              </div>
+              </StUserWrap>
             );
           })}
         </div>
@@ -783,8 +1060,6 @@ const Workspace = () => {
             height: '64px',
             position: 'fixed',
             bottom: '0',
-
-            // border: '1px solid',
             boxShadow: '0px 0px 5px lightgray',
             cursor: 'pointer',
             display: 'flex',
@@ -806,42 +1081,58 @@ const Workspace = () => {
 // 워크스페이스 사진
 // 'https://www.volkswagen.co.kr/idhub/etc/clientlibs/vwa-ngw18/ngw18-frontend/clientlibs/statics/img/vw-logo-2x.png';
 export default Workspace;
-const StStatusDot = styled.div<{
-  status: string;
-}>`
+const StDiv = styled.div`
+  position: relative;
+  /* .asdf {
+    display: block;
+    &:hover {
+      display: block;
+    }
+  } */
+
+  .asdf:hover {
+    background-color: red;
+    display: block;
+  }
+`;
+const StUserWrap = styled.div`
+  padding: 18px 14px;
+  background-color: white;
+  border-bottom: 1px solid #f1f1f1;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background-color: #f2f2f2;
+  }
+  /* style={{
+                  padding: '18px 14px',
+                  backgroundColor: 'white',
+                  borderBottom: '1px solid #F1F1F1',
+                  display: 'flex',
+                  alignItems: 'center', */
+`;
+
+const StStatusDot = styled.div`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: ${(props) => {
+  margin-left: auto;
+  background: ${(props: { status: string }) => {
     if (props.status === 'WIP') {
       return '#2e9a49';
-    }
-    if (props.status === 'OOT') {
+    } else if (props.status === 'OOT') {
       return '#E31E3F';
-    }
-    if (props.status === 'BRB' || 'OTL' || 'IC') {
+    } else if (
+      props.status === 'BRB' ||
+      props.status === 'OTL' ||
+      props.status === 'IC'
+    ) {
       return '#FFCC00';
-    }
-
-    if (props.status === 'COB' || 'OOO') {
+    } else if (props.status === 'COB' || props.status === 'OOO') {
       return '#BEBEBE';
     }
-    // else return '#BEBEBE';
   }};
-
-  /* #2e9a49 WIP */
-  /* #FFCC00 BRB , OTL , IC*/
-  /* #E31E3F  OOT */
-  /*  #BEBEBE  COB ,OOO*/
-  /* 1. 근무 : WIP (Work In Progress), 녹색
-2. 자리비움 : BRB      (Be Right Back. ), 노랑
-3. 업무종료 : COB (close of business), 회색
-4. 휴가중 : OOO (out of office), 빨강
-5. 식사중 : OTL (out to lunch ), 노랑
-6. 회의 : IC (in conference), 노랑
-7. 출장중 : OOT (out of town), 빨강 */
-
-  margin-left: auto;
 `;
 const StGraphBox = styled.div`
   position: fixed;
@@ -905,7 +1196,10 @@ const StMessageBox = styled.div`
 //  width: '296px',
 //                   height: '480px',
 //                   background: 'white',
-const StStatusBox = styled.div<{ size: 'small' | 'large' }>`
+const StStatusBox = styled.div<{
+  size: 'small' | 'large';
+  isHover?: boolean | undefined;
+}>`
   width: ${(props) => {
     if (props.size === 'small') return '206px';
     if (props.size === 'large') return '296px';
@@ -916,7 +1210,7 @@ const StStatusBox = styled.div<{ size: 'small' | 'large' }>`
     if (props.size === 'large') return '480px';
   }};
   overflow: hidden;
-
+  box-shadow: ${(props) => (props.isHover ? '0px 0px 10px red' : '')};
   display: flex;
   flex-direction: column;
   background: white;
@@ -933,6 +1227,7 @@ const StStatusContainer = styled.div`
 `;
 
 const StWorkspaceImgWrap = styled.div`
+  position: relative;
   width: 3.4rem;
   height: 3.4rem;
   border-radius: 50%;
