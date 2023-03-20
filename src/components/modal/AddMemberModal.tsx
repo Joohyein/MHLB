@@ -4,33 +4,41 @@ import Close from "../asset/icons/Close";
 function AddMemberModal({modalRef, setInviteModal}:{modalRef:React.MutableRefObject<any>, setInviteModal:(v:boolean)=>void}) { 
     
   return (
-    <StModalContainer ref={modalRef}>
-        <StTitle>
-            <h3>멤버 초대하기</h3>
-            <Close size="24" fill="#363636" onClick={()=>setInviteModal(false)} cursor="pointer"/>
-        </StTitle>
-        <StInputContainer>
-            <StInputBox type="email" />
-            <StInviteBtn>초대 보내기</StInviteBtn>
-        </StInputContainer>
+    <StWrap>
+      <StModalContainer ref={modalRef}>
+          <StTitle>
+              <h3>멤버 초대하기</h3>
+              <Close size="24" fill="#363636" onClick={()=>setInviteModal(false)} cursor="pointer"/>
+          </StTitle>
+          <StInputContainer>
+              <StInputBox type="email" />
+              <StInviteBtn>초대 보내기</StInviteBtn>
+          </StInputContainer>
 
-        <StSub>초대 중인 사람</StSub>
+          <StSub>초대 중인 사람</StSub>
 
-        <StInviting>
-            <StMember>
-            <StUser>
-                <h3>김코코</h3>
-                <h5>coco@gmail.com</h5>
-            </StUser>
-            </StMember>
-            <StCancelBtn>초대 취소</StCancelBtn>
-        </StInviting>
-    </StModalContainer>
+          <StInviting>
+              <StMember>
+              <StUser>
+                  <h3>김코코</h3>
+                  <h5>coco@gmail.com</h5>
+              </StUser>
+              </StMember>
+              <StCancelBtn>초대 취소</StCancelBtn>
+          </StInviting>
+      </StModalContainer>
+    </StWrap>
   )
 }
 
 export default AddMemberModal;
 
+const StWrap = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0,0,0,0.3);
+`;
 const StModalContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -46,7 +54,6 @@ const StModalContainer = styled.div`
     border: 3px solid gray;
     padding: 20px;
     box-sizing: border-box;
-    overflow: hidden;
 `;
 const StTitle = styled.div`
     display: flex;
