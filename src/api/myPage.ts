@@ -32,6 +32,10 @@ const editProfileImg = async (userImage: FormData) => {
       headers: {"Content-Type": "multipart/form-data"},
     }
   );
-}
+};
 
-export { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces, editProfileImg };
+const leaveWorkspace = async ({myWorkspaceId} : {myWorkspaceId: number}) => {
+  await instance.delete(`/api/mypage/${myWorkspaceId}`);
+};
+
+export { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces, editProfileImg, leaveWorkspace };

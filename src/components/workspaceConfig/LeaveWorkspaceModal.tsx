@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
+import { leaveWorkspace } from '../../api/myPage';
 import Close from '../asset/icons/Close';
 
 interface DataType  {
@@ -10,6 +12,30 @@ interface DataType  {
 }
 function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspaceId}:{modalRef:React.MutableRefObject<any>, setLeaveModal: (v: boolean) => void, dataWorkspace: DataType[], myWorkspaceId: number}) {
   const myworkspace = dataWorkspace.filter(({workspaceId}) => workspaceId === myWorkspaceId)[0];
+  const [inputTitle, setInputTitle] = useState('');
+  const [withDrawBtn, setWithdrawBtn] = useState(false);
+  console.log("myworkspaceid: ", myWorkspaceId)
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(leaveWorkspace, {
+    onSuccess: (response) => {
+      queryClient.invalidateQueries('workspace');
+      console.log("leave workspace onSuccess response: ", response);
+      setLeaveModal(false);
+    },
+    onError: (error) => console.log("error: ", error)
+  });
+  
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputTitle(e.target.value);
+  };
+  const onClickLeaveWorkspaceHandler = () => {
+    mutation.mutate({myWorkspaceId});
+  };
+  useEffect(()=>{
+    if(inputTitle === myworkspace.workspaceTitle) setWithdrawBtn(true);
+    else setWithdrawBtn(false);
+  }, [inputTitle]);
 
   return (
     <StWrap>
@@ -34,8 +60,14 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspac
         </StWarnningText>
 
         <StInputBox>
-          <StInput />
-          <StLeaveBtn>워크스페이스 탈퇴</StLeaveBtn>
+          <StInput  value={inputTitle} onChange={onChangeHandler} />
+          {
+            withDrawBtn
+              ?
+              <StLeaveBtnTrue onClick={onClickLeaveWorkspaceHandler}>워크스페이스 탈퇴</StLeaveBtnTrue>
+              :
+              <StLeaveBtn>워크스페이스 탈퇴</StLeaveBtn>
+          }
         </StInputBox>
       </StModalContainer>
     </StWrap>
@@ -125,7 +157,14 @@ const StInput = styled.input`
   border: none;
   background-color: lightgray;
 `;
+const StLeaveBtnTrue = styled.button`
+  width: 30%;
+  border: none;
+  color: #FE1F1D;
+  cursor: pointer;
+`;
 const StLeaveBtn = styled.button`
   width: 30%;
   border: none;
+  cursor: pointer;
 `;
