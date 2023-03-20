@@ -4,8 +4,10 @@ import Landing from "../pages/Landing";
 import Login from "../pages/Login";
 import MyPage from "../pages/MyPage";
 import Register from "../pages/Register";
+import ResetPassword from "../pages/ResetPassword";
 import ResetPasswordSendEmail from "../pages/ResetPasswordSendEmail";
 import ResetPasswordSent from "../pages/ResetPasswordSent";
+import ResetPasswordSucceed from "../pages/ResetPasswordSucceed";
 import SelectWorkspace from "../pages/SelectWorkspace";
 import Workspace from "../pages/Workspace";
 import WorkspaceConfig from "../pages/WorkspaceConfig";
@@ -24,6 +26,8 @@ const Router = () => {
         <Route path="/celebrate-sign-up" element={<CelebrateSignUp />} />
         <Route path="/reset-password-send-email" element={<ResetPasswordSendEmail />} />
         <Route path="/reset-password-sent" element={<ResetPasswordSent />} />
+        <Route path="/reset-password/:path" element={<ResetPassword />} />
+        <Route path="/reset-password-succeed" element={<ResetPasswordSucceed />} />
       </Routes>
     </BrowserRouter>
   );

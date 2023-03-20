@@ -1,7 +1,7 @@
 import instance from "./instance/instance";
 
 const temp = async () => {
-  const response = instance.get("/");
+  const response = await instance.get("/");
   return response;
 };
 
