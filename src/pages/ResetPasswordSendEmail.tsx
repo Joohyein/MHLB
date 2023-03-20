@@ -16,7 +16,7 @@ const ResetPasswordSendEmail = () => {
 
     useEffect(() => {
         if(isLogin === true) return navigate('/select-workspace');
-    }, [isLogin])    
+    }, [isLogin])
 
     const [emailValue, setEmailValue, clearEmailValue] = useInput();
 
