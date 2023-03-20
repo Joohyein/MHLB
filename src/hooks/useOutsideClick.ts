@@ -15,6 +15,7 @@ const useOutsideClick = (handler: any) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "unset";
     };
   }, [ref, handler]);
 
