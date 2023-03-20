@@ -23,7 +23,7 @@ const MyPage = () => {
   const [editDesc, setEditDesc] = useState(false);
   const [desc, setDesc] = useState(dataUser?.userDesc);
 
-  const [workspaceId, setWorkspaceId] = useState(1);
+  const [workspaceId, setWorkspaceId] = useState<any>();
 
   const [leaveModal, setLeaveModal] = useState(false);
   const modalRef = useOutsideClick(() => setLeaveModal(false));

@@ -3,11 +3,11 @@ import styled from "styled-components";
 
 function MyWorkspace({setLeaveModal, dataWorkspace, setWorkspaceId}:{setLeaveModal:(v: boolean) => void, dataWorkspace: [], setWorkspaceId:(v: number)=>void}) {
 
-    const leaveModalOpenHandler = (workspaceId: number) => {
+  const leaveModalOpenHandler = (workspaceId: number) => {
     setLeaveModal(true);
     setWorkspaceId(workspaceId);
     document.body.style.overflow = "hidden";
-    }
+  };
 
   return (
     <StWorkspaceBox>
