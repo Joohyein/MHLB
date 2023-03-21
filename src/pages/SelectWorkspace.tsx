@@ -3,8 +3,13 @@ import styled from "styled-components";
 import Wrapper from "../components/common/Wrapper";
 import CreateWorkspaceModal from "../components/selectWorkspace/CreateWorkspaceModal";
 import useOutsideClick from "../hooks/useOutsideClick";
+import { useQuery } from "react-query";
+import { getWorkspaceList } from "../api/selectWorkspace";
+import MyWorkspaceList from "../components/selectWorkspace/MyWorkspaceList";
 
 const SelectWorkspace = () => {
+  const { data } = useQuery('workspaceList', getWorkspaceList);
+
   const [createModal, setCreateModal] = useState(false);
   const modalRef = useOutsideClick(() => setCreateModal(false));
 
@@ -17,6 +22,7 @@ const SelectWorkspace = () => {
           document.body.style.overflow = "hidden";
         }}>워크스페이스 생성</StCreateWorkspaceBtn>
       </StTopBox>
+      <MyWorkspaceList workspaceList={ data } />
     </StContainer>
     { createModal ? <CreateWorkspaceModal modalRef={modalRef} setCreateModal={(v: boolean) => setCreateModal(v)} /> : null }
   </Wrapper>

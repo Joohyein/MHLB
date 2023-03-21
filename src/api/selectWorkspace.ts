@@ -6,4 +6,9 @@ const createWorkspace = async (formData: FormData) => {
     { headers: { "Content-Type": "multipart/form-data" } });
 };
 
-export { createWorkspace };
+const getWorkspaceList = async () => {
+    const response = await instance.get('/api/workspaces');
+    return response.data;
+};
+
+export { getWorkspaceList, createWorkspace };
