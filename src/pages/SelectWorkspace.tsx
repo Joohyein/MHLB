@@ -7,7 +7,7 @@ const SelectWorkspace = () => {
   const { data } = useQuery('workspaceList', getWorkspaceList);
 
   return <Wrapper>
-    <MyWorkspaceList workspaceList={data} />
+    <MyWorkspaceList workspaceList={ data } />
   </Wrapper>
 };
 
