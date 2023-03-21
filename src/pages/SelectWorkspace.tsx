@@ -30,7 +30,7 @@ const SelectWorkspace = () => {
 export default SelectWorkspace;
 
 const StContainer = styled.div`
-  width: 90%;
+  width: 80%;
   height: 100%;
   margin: 36px;
 `;

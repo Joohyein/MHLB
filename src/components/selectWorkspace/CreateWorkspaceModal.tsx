@@ -38,9 +38,8 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
       workspaceTitle: name,
       workspaceDesc: desc
     };
-    const image = imgFile;
     const formData = new FormData();
-    formData.append("image", image);
+    formData.append("image", imgFile);
     const data = new Blob([JSON.stringify(body)], { type: "application/json" });
     formData.append('data', data);
 
@@ -75,7 +74,7 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
           <StNameInput type="text" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
         </StNameBox>
         <StDescBox>
-          <h3>워크스페이스 설명</h3>
+          <h3>워크스페이스 소개</h3>
           <StDescInput value={desc} onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => setDesc(e.target.value)}></StDescInput>
         </StDescBox>
         <StCreateBtn onClick={onClickCreateHandler}>워크스페이스 생성</StCreateBtn>
