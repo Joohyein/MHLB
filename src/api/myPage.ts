@@ -22,7 +22,7 @@ const editUserDesc = async({userDesc}: {userDesc: string}) => {
 }
 
 const getWorkspaces = async() => {
-  const response = await instance.get('/api/mypage/workspace');
+  const response = await instance.get('/api/mypage/workspaces');
   return response.data;
 };
 
