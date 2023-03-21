@@ -266,7 +266,7 @@ const WorkspaceConfig = () => {
           null
       }
     </StContainer>
-    { inviteModal ? <AddMemberModal modalRef={modalRef} setInviteModal={(v:boolean) => setInviteModal(v)} /> : null }
+    { inviteModal ? <AddMemberModal modalRef={modalRef} workspaceId={workspaceInfoData?.workspaceId} setInviteModal={(v:boolean) => setInviteModal(v)} /> : null }
     { workspaceDeleteModal ? <DeleteWorkspaceModal deleteModalRef={deleteModalRef} workspaceInfoData={workspaceInfoData} setWorkspaceDeleteModal={(v:boolean) => setWorkspaceDeleteModal(v)} /> : null }
   </Wrapper>
 };
