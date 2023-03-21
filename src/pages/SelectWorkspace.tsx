@@ -5,7 +5,6 @@ import MyWorkspaceList from "../components/selectWorkspace/MyWorkspaceList";
 
 const SelectWorkspace = () => {
   const { data } = useQuery('workspaceList', getWorkspaceList);
-
   return <Wrapper>
     <MyWorkspaceList workspaceList={ data } />
   </Wrapper>

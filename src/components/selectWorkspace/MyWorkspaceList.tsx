@@ -7,13 +7,13 @@ interface workspaceListType {
     workspaceTitle: string
 };
 
-function MyWorkspaceList({workspaceList}: {workspaceList: workspaceListType[]}) {
-  console.log("workspaceList : ", workspaceList)
+function MyWorkspaceList({workspaceList}: {workspaceList: any}) {
+  console.log(workspaceList);
   return (
     <StContainer>
       {
-        workspaceList.map((item: workspaceListType) => {
-          return <StWorkspaceBox>
+        workspaceList?.map((item: workspaceListType) => {
+          return <StWorkspaceBox key={item.workspaceId}>
             <StTitleBox>
               <StImage src={item.workspaceImage}/>
               <StTitle>{item.workspaceTitle}</StTitle>
@@ -29,14 +29,14 @@ function MyWorkspaceList({workspaceList}: {workspaceList: workspaceListType[]}) 
 export default MyWorkspaceList;
 
 const StContainer = styled.div`
-    width: 100%;
+    width: 80%;
     display: flex;
-    gap: 24px;
+    gap: 36px;
     margin: 32px;
-
+    flex-wrap: wrap;
 `;
 const StWorkspaceBox = styled.div`
-    width: 24%;
+    width: 324px;
     background-color: lightgray;
     padding: 24px;
     box-sizing: border-box;
