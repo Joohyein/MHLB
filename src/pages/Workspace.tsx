@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Wrapper from '../components/common/Wrapper';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import axios from 'axios';
-import userInfoMock from './userInfo.json';
+// import userInfoMock from './userInfo.json';
 
 const Workspace = () => {
   interface Userdata {
@@ -23,23 +23,23 @@ const Workspace = () => {
     workspaceTitle: string;
   }
 
-  useEffect(() => {
-    axios.get('http://localhost:4000/workspaceList').then(({ data }) => {
-      setWorkspaceList(data);
-    });
+  // useEffect(() => {
+  //   axios.get('http://localhost:4000/workspaceList').then(({ data }) => {
+  //     setWorkspaceList(data);
+  //   });
 
-    const temp = userInfoMock.map((item) => {
-      return {
-        ...item,
-        isHover: false,
-      };
-    });
-    setUserList(temp);
-  }, []);
-  const [isHover, setIsHover] = useState(false);
+  //   const temp = userInfoMock.map((item) => {
+  //     return {
+  //       ...item,
+  //       isHover: false,
+  //     };
+  //   });
+  //   setUserList(temp);
+  // }, []);
+  // const [isHover, setIsHover] = useState(false);
   const [workspaceList, setWorkspaceList] = useState([]);
   const [userList, setUserList] = useState<Userdata[] | undefined>();
-
+  console.log(workspaceList[0]);
   const navigate = useNavigate();
   const [searchInputVal, setSearhInputVal] = useState('');
   // const [userList, setUsers] = useState([
@@ -180,6 +180,7 @@ const Workspace = () => {
   //   items.splice(result.destination.index, 0, reorderData);
   //   setUserList(items);
   // };
+
   return (
     <Wrapper>
       <StNav>
@@ -286,7 +287,7 @@ const Workspace = () => {
           >
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div>
-                <StWorkspaceImg src="https://www.volkswagen.co.kr/idhub/etc/clientlibs/vwa-ngw18/ngw18-frontend/clientlibs/statics/img/vw-logo-2x.png"></StWorkspaceImg>
+                <StWorkspaceImg src=""></StWorkspaceImg>
               </div>
               <div style={{ marginLeft: '16px' }}>
                 <div style={{ margin: '8px 0' }}>
@@ -980,75 +981,76 @@ const Workspace = () => {
         >
           {searchPeopleList?.map((item, index) => {
             return (
-              <StUserWrap
-                onMouseEnter={() => {
-                  const temp = userList?.map((user) => {
-                    if (user.userId === item.userId) {
+              <StUserWrap>
+                <StUserInfoWrap
+                  onMouseEnter={() => {
+                    const temp = userList?.map((user) => {
+                      if (user.userId === item.userId) {
+                        return {
+                          ...user,
+                          isHover: true,
+                        };
+                      }
+                      return user;
+                    });
+                    setUserList(temp);
+                  }}
+                  onMouseLeave={() => {
+                    const temp = userList?.map((user) => {
+                      // if (user.userId === item.userId) {
                       return {
                         ...user,
-                        isHover: true,
+                        isHover: false,
                       };
-                    }
-                    return user;
-                  });
-                  setUserList(temp);
-                }}
-                onMouseLeave={() => {
-                  const temp = userList?.map((user) => {
-                    // if (user.userId === item.userId) {
-                    return {
-                      ...user,
-                      isHover: false,
-                    };
-                    // }
-                    // return user;
-                  });
-                  setUserList(temp);
-                }}
-              >
-                <img
-                  src={item.userImage}
-                  width="100%"
-                  height="100%"
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    background: 'lightgray',
-                    borderRadius: '50%',
+                      // }
+                      // return user;
+                    });
+                    setUserList(temp);
                   }}
-                ></img>
-                <div style={{ marginLeft: '8px' }}>
-                  <div
+                >
+                  <img
+                    src={item.userImage}
+                    width="100%"
+                    height="100%"
                     style={{
-                      fontSize: '1rem',
-                      fontWeight: 'bold',
-                      whiteSpace: 'nowrap',
+                      width: '48px',
+                      height: '48px',
+                      background: 'lightgray',
+                      borderRadius: '50%',
                     }}
-                  >
-                    {item.userName}
-                    <span
+                  ></img>
+                  <div style={{ marginLeft: '8px' }}>
+                    <div
                       style={{
-                        fontSize: '.8rem',
-                        marginLeft: '8px',
-                        color: '#7F7F7F',
+                        fontSize: '1rem',
+                        fontWeight: 'bold',
+                        whiteSpace: 'nowrap',
                       }}
                     >
-                      {item.userJob}
-                    </span>
-                  </div>
+                      {item.userName}
+                      <span
+                        style={{
+                          fontSize: '.8rem',
+                          marginLeft: '8px',
+                          color: '#7F7F7F',
+                        }}
+                      >
+                        {item.userJob}
+                      </span>
+                    </div>
 
-                  <div
-                    style={{
-                      fontSize: '.8rem',
-                      color: '#7F7F7F',
-                      margin: '8px 0px 0px 4px',
-                    }}
-                  >
-                    {item.userEmail}
+                    <div
+                      style={{
+                        fontSize: '.8rem',
+                        color: '#7F7F7F',
+                        margin: '8px 0px 0px 4px',
+                      }}
+                    >
+                      {item.userEmail}
+                    </div>
                   </div>
-                </div>
-
-                <StStatusDot status={item.status}></StStatusDot>
+                  <StStatusDot status={item.status}></StStatusDot>
+                </StUserInfoWrap>
               </StUserWrap>
             );
           })}
@@ -1081,6 +1083,18 @@ const Workspace = () => {
 // 워크스페이스 사진
 // 'https://www.volkswagen.co.kr/idhub/etc/clientlibs/vwa-ngw18/ngw18-frontend/clientlibs/statics/img/vw-logo-2x.png';
 export default Workspace;
+const StUserInfoWrap = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 12px;
+  align-items: center;
+  border-radius: 8px;
+  /* height: 100%; */
+  /* padding: 24; */
+  &:hover {
+    background-color: #f2f2f2;
+  }
+`;
 const StDiv = styled.div`
   position: relative;
   /* .asdf {
@@ -1096,15 +1110,16 @@ const StDiv = styled.div`
   }
 `;
 const StUserWrap = styled.div`
-  padding: 18px 14px;
+  padding: 4px;
   background-color: white;
   border-bottom: 1px solid #f1f1f1;
   display: flex;
   align-items: center;
+  /* margin-bottom: 10px; */
 
-  &:hover {
+  /* &:hover {
     background-color: #f2f2f2;
-  }
+  } */
   /* style={{
                   padding: '18px 14px',
                   backgroundColor: 'white',
@@ -1210,14 +1225,15 @@ const StStatusBox = styled.div<{
     if (props.size === 'large') return '480px';
   }};
   overflow: hidden;
-  box-shadow: ${(props) => (props.isHover ? '0px 0px 10px red' : '')};
+  box-shadow: ${(props) => (props.isHover ? '0px 0px 20px purple' : '')};
+  transition: all 0.6s;
   display: flex;
   flex-direction: column;
   background: white;
   border-radius: 8px;
-  &:hover {
+  /* &:hover {
     box-shadow: 0px 0px 5px lightblue;
-  }
+  } */
 `;
 const StStatusContainer = styled.div`
   background-color: inherit;
