@@ -4,7 +4,7 @@ import ArrowBack from "../components/asset/icons/ArrowBack";
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces, editProfileImg } from "../api/myPage";
-import MyWorkspace from "../components/workspaceConfig/MyWorkspace";
+import MyWorkspace from "../components/mypage/MyWorkspace";
 import useOutsideClick from "../hooks/useOutsideClick";
 import LeaveWorkspaceModal from "../components/workspaceConfig/LeaveWorkspaceModal";
 

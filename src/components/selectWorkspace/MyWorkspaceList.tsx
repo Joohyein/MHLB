@@ -8,7 +8,6 @@ interface workspaceListType {
 };
 
 function MyWorkspaceList({workspaceList}: {workspaceList: any}) {
-  console.log(workspaceList);
   return (
     <StContainer>
       {

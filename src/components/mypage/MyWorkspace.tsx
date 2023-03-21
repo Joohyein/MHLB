@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styled from "styled-components";
 
 function MyWorkspace({setLeaveModal, dataWorkspace, setWorkspaceId}:{setLeaveModal:(v: boolean) => void, dataWorkspace: [], setWorkspaceId:(v: number)=>void}) {
@@ -16,7 +15,7 @@ function MyWorkspace({setLeaveModal, dataWorkspace, setWorkspaceId}:{setLeaveMod
           return (
             <StWorkspaceData key={item.workspaceId}>
               <StWorkspaceDataBox>
-                <StWorkspaceImg src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'/>
+                <StWorkspaceImg src={item.workspaceImage}/>
                 <StContributionBox>
                 <h3>{item.workspaceTitle}에서의 나의 기여도</h3>
                 <StContribution>
