@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import Wrapper from '../components/common/Wrapper';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import axios from 'axios';
-// import userInfoMock from './userInfo.json';
+import userInfoMock from '../pages/userInfo.json';
+// import workspaceInfoMock from '../pages/workspaceInfo.json';
 
 const Workspace = () => {
   interface Userdata {
@@ -23,99 +24,52 @@ const Workspace = () => {
     workspaceTitle: string;
   }
 
-  // useEffect(() => {
-  //   axios.get('http://localhost:4000/workspaceList').then(({ data }) => {
-  //     setWorkspaceList(data);
-  //   });
+  useEffect(() => {
+    // axios.get('http://localhost:4000/workspaceList').then(({ data }) => {
+    //   setWorkspaceList(data);
+    // });
 
-  //   const temp = userInfoMock.map((item) => {
-  //     return {
-  //       ...item,
-  //       isHover: false,
-  //     };
-  //   });
-  //   setUserList(temp);
-  // }, []);
+    const temp = userInfoMock.map((item) => {
+      return {
+        ...item,
+        isHover: false,
+      };
+    });
+    setUserList(temp);
+
+    // const secondTemp = workspaceInfoMock.map((item) => {
+    //   return item;
+    // });
+  }, []);
+
   // const [isHover, setIsHover] = useState(false);
-  const [workspaceList, setWorkspaceList] = useState([]);
+  const [workspaceList, setWorkspaceList] = useState([
+    {
+      workspaceId: 1,
+      workspaceImage:
+        'https://www.volkswagen.co.kr/idhub/etc/clientlibs/vwa-ngw18/ngw18-frontend/clientlibs/statics/img/vw-logo-2x.png',
+      workspaceTitle: '폭스바겐',
+      workspaceDesc: 'description',
+    },
+    {
+      workspaceId: 2,
+      workspaceImage:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/BMW_logo_%28gray%29.svg/1200px-BMW_logo_%28gray%29.svg.png?20210211152514',
+      workspaceTitle: '비엠따블유',
+      workspaceDesc: 'description',
+    },
+    {
+      workspaceId: 3,
+      workspaceImage:
+        'https://pixlok.com/wp-content/uploads/2021/04/mercedes-benz-Logo-PNG-768x768.jpg',
+      workspaceTitle: '벤쯔',
+      workspaceDesc: 'description',
+    },
+  ]);
   const [userList, setUserList] = useState<Userdata[] | undefined>();
-  console.log(workspaceList[0]);
+
   const navigate = useNavigate();
   const [searchInputVal, setSearhInputVal] = useState('');
-  // const [userList, setUsers] = useState([
-  //   {
-  //     userId: 1,
-  //     userImage:
-  //       'https://i.discogs.com/Lv_olIaeY11SsEpuPq860kA8k5c4DyNHJWr4Q9gCXXs/rs:fit/g:sm/q:40/h:300/w:300/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTIwODIz/NC0xNDU5MTIzODcx/LTUzODUuanBlZw.jpeg',
-  //     userName: 'Pino Palladino',
-  //     userJob: 'Product Manager',
-  //     userEmail: 'email@example.com',
-  //     status: 'WIP',
-  //   },
-  //   {
-  //     userId: 2,
-  //     userImage:
-  //       'https://i.discogs.com/SNIt6JKnkqMg316sgu4eC9DgD58GK0s9uGEXX_h8-Lw/rs:fit/g:sm/q:40/h:300/w:300/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTM0MDU2/OC0xMjU3MzcwNzE0/LmpwZWc.jpeg',
-  //     userName: 'Robert Glasper',
-  //     userJob: 'CEO',
-  //     userEmail: 'email@example.com',
-  //     status: 'WIP',
-  //   },
-  //   {
-  //     userId: 3,
-  //     userImage: 'https://ninjatune.net/images/artists/thundercat-main.jpg',
-  //     userName: 'ThunderCat',
-  //     userJob: 'CTO',
-  //     userEmail: 'email@example.com',
-  //     status: 'WIP',
-  //   },
-  //   {
-  //     userId: 4,
-  //     userImage:
-  //       'https://i.discogs.com/m1hqHs3YjQSIT1jOVq7Co2gthabb1NdiB00vl6cX23Y/rs:fit/g:sm/q:90/h:400/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTI1NDQ3/OS0xNjQ1Njc2NDI1/LTMyNDcuanBlZw.jpeg',
-  //     userName: 'John Mayer',
-  //     userJob: 'CTO',
-  //     userEmail: 'email@example.com',
-  //     status: 'WIP',
-  //   },
-
-  //   {
-  //     userId: 6,
-  //     userImage:
-  //       'https://blz-contentstack-images.akamaized.net/v3/assets/bltf408a0557f4e4998/bltbeb5ffc091f7e13a/6125581fc203863c736d8629/253-472.png?width=2048&format=webply&dpr=2&disable=upscale&quality=80',
-  //     userName: 'Baal',
-  //     userJob: 'Lord of Destruction',
-  //     userEmail: 'email@example.com',
-  //     status: 'WIP',
-  //   },
-  //   {
-  //     userId: 7,
-  //     userImage:
-  //       'https://i.namu.wiki/i/Ak-lxq7mdjAp6VsFJZY5pMeg8ECQeORfkFvUrSA-AuNuFcHro7uljy3bF22BYUxdMoKpsIHJ7XOC_aGutmnbshvs9qjE9L1fQZ7VrhyDtOJbGZajKZZyqmLWArjhrPkKUJvN7g0jQW9XQzQVgseKUA.webp',
-  //     userName: 'Diablo',
-  //     userJob: 'Lord of Terror',
-  //     userEmail: 'email@example.com',
-  //     status: 'WIP',
-  //   },
-  //   {
-  //     userId: 8,
-  //     userImage:
-  //       'https://w7.pngwing.com/pngs/283/839/png-transparent-bank-of-montreal-mobile-phones-text-messaging-bmo-angle-smiley-grass.png',
-  //     userName: 'BMO',
-  //     userJob: 'Computer',
-  //     userEmail: 'email@example.com',
-  //     status: 'WIP',
-  //   },
-  //   {
-  //     userId: 9,
-  //     userImage:
-  //       'https://www.onthisday.com/images/people/homer-simpson-medium.jpg',
-  //     userName: 'Homer Simpson',
-  //     userJob: 'Nuclear Technician',
-  //     userEmail: 'email@example.com',
-  //     status: 'WIP',
-  //   },
-  // ]);
 
   const searchInputValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearhInputVal(e.target.value);
@@ -165,6 +119,7 @@ const Workspace = () => {
   // });
   // console.log(usersByStatus);
 
+  // 워크스페이스 드래그
   const handleDragEnd = (result: any) => {
     if (!result.destination) return;
     const items = Array.from(workspaceList);
@@ -172,6 +127,7 @@ const Workspace = () => {
     items.splice(result.destination.index, 0, reorderData);
     setWorkspaceList(items);
   };
+
   // 인박스 드래그이벤트
   // const statusBoxDragEnd = (result: any) => {
   //   if (!result.destination) return;
@@ -213,52 +169,25 @@ const Workspace = () => {
             >
               {workspaceList?.map((item: Workspace, index) => {
                 return (
-                  <StDiv>
-                    <div
-                      className="asdf"
-                      style={{
-                        display: 'none',
-                        position: 'absolute',
-                        top: '20px',
-                        left: '100px',
-                        background: 'white',
-                        width: '300px',
-                        height: '300px',
-                        border: '1px solid black',
-                      }}
-                    >
-                      {item.workspaceDesc}
-                    </div>
-                    <Draggable
-                      key={item.workspaceId}
-                      draggableId={`${item.workspaceId}`}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <StWorkspaceImgWrap
-                          {...provided.dragHandleProps}
-                          {...provided.draggableProps}
-                          ref={provided.innerRef}
-                        >
-                          {/* <div
-                          style={{
-                            position: 'absolute',
-                            right: '-220px',
-                            width: '200px',
-                            height: '120px',
-                            backgroundColor: 'white',
-                          }}
-                        >
-                          흠냐리
-                        </div> */}
+                  <Draggable
+                    key={item.workspaceId}
+                    draggableId={`${item.workspaceId}`}
+                    index={index}
+                  >
+                    {(provided) => (
+                      <StWorkspaceImgWrap
+                        {...provided.dragHandleProps}
+                        {...provided.draggableProps}
+                        ref={provided.innerRef}
+                      >
+                        <div className="asdf">{item.workspaceTitle}</div>
 
-                          <StWorkspaceImg
-                            src={item.workspaceImage}
-                          ></StWorkspaceImg>
-                        </StWorkspaceImgWrap>
-                      )}
-                    </Draggable>
-                  </StDiv>
+                        <StWorkspaceImg
+                          src={item.workspaceImage}
+                        ></StWorkspaceImg>
+                      </StWorkspaceImgWrap>
+                    )}
+                  </Draggable>
                 );
               })}
             </StWorkspaceListContainer>
@@ -287,7 +216,9 @@ const Workspace = () => {
           >
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div>
-                <StWorkspaceImg src=""></StWorkspaceImg>
+                <StWorkspaceImg
+                  src={workspaceList[0].workspaceImage}
+                ></StWorkspaceImg>
               </div>
               <div style={{ marginLeft: '16px' }}>
                 <div style={{ margin: '8px 0' }}>
@@ -323,21 +254,6 @@ const Workspace = () => {
               >
                 이메일 중복 조회
               </button>
-              <StDiv>
-                <div
-                  className="asdf"
-                  style={{
-                    display: 'none',
-                    width: '100px',
-                    height: '100px',
-                    background: 'red',
-                    position: 'absolute',
-                  }}
-                >
-                  gd
-                </div>
-                <div>test</div>
-              </StDiv>
             </div>
           </div>
 
@@ -392,7 +308,7 @@ const Workspace = () => {
                           style={{
                             width: '36px',
                             height: '36px',
-                            background: 'blue',
+
                             borderRadius: '50%',
                             overflow: 'hidden',
                           }}
@@ -471,7 +387,7 @@ const Workspace = () => {
                           style={{
                             width: '36px',
                             height: '36px',
-                            background: 'blue',
+
                             borderRadius: '50%',
                             overflow: 'hidden',
                           }}
@@ -545,7 +461,7 @@ const Workspace = () => {
                           style={{
                             width: '36px',
                             height: '36px',
-                            background: 'blue',
+
                             borderRadius: '50%',
                             overflow: 'hidden',
                           }}
@@ -621,7 +537,7 @@ const Workspace = () => {
                           style={{
                             width: '36px',
                             height: '36px',
-                            background: 'blue',
+
                             borderRadius: '50%',
                             overflow: 'hidden',
                           }}
@@ -696,7 +612,7 @@ const Workspace = () => {
                           style={{
                             width: '36px',
                             height: '36px',
-                            background: 'blue',
+
                             borderRadius: '50%',
                             overflow: 'hidden',
                           }}
@@ -766,22 +682,14 @@ const Workspace = () => {
                   >
                     {ooo?.map((item) => {
                       return (
-                        <div
-                          key={item.userId}
+                        <img
+                          src={item.userImage}
                           style={{
                             width: '36px',
                             height: '36px',
-                            background: 'blue',
                             borderRadius: '50%',
-                            overflow: 'hidden',
                           }}
-                        >
-                          <img
-                            src={item.userImage}
-                            width="100%"
-                            height="100%"
-                          ></img>
-                        </div>
+                        ></img>
                       );
                     })}
                   </div>
@@ -849,7 +757,7 @@ const Workspace = () => {
                           style={{
                             width: '36px',
                             height: '36px',
-                            background: 'blue',
+
                             borderRadius: '50%',
                             overflow: 'hidden',
                           }}
@@ -858,7 +766,6 @@ const Workspace = () => {
                             src={item.userImage}
                             width="100%"
                             height="100%"
-                            // height="auto"
                           ></img>
                         </div>
                       );
@@ -925,7 +832,7 @@ const Workspace = () => {
                   padding: '0px 8px',
                 }}
               >
-                People
+                People({userList?.length})
               </div>
               <div
                 style={{
@@ -983,7 +890,7 @@ const Workspace = () => {
             return (
               <StUserWrap>
                 <StUserInfoWrap
-                  onMouseEnter={() => {
+                  onMouseOver={() => {
                     const temp = userList?.map((user) => {
                       if (user.userId === item.userId) {
                         return {
@@ -995,7 +902,7 @@ const Workspace = () => {
                     });
                     setUserList(temp);
                   }}
-                  onMouseLeave={() => {
+                  onMouseOut={() => {
                     const temp = userList?.map((user) => {
                       // if (user.userId === item.userId) {
                       return {
@@ -1008,17 +915,7 @@ const Workspace = () => {
                     setUserList(temp);
                   }}
                 >
-                  <img
-                    src={item.userImage}
-                    width="100%"
-                    height="100%"
-                    style={{
-                      width: '48px',
-                      height: '48px',
-                      background: 'lightgray',
-                      borderRadius: '50%',
-                    }}
-                  ></img>
+                  <StUserImg src={item.userImage}></StUserImg>
                   <div style={{ marginLeft: '8px' }}>
                     <div
                       style={{
@@ -1048,6 +945,10 @@ const Workspace = () => {
                     >
                       {item.userEmail}
                     </div>
+                  </div>
+                  <div className="userInfo">
+                    <p>{item.userName}</p>
+                    <p>{item.userJob}</p>
                   </div>
                   <StStatusDot status={item.status}></StStatusDot>
                 </StUserInfoWrap>
@@ -1083,6 +984,17 @@ const Workspace = () => {
 // 워크스페이스 사진
 // 'https://www.volkswagen.co.kr/idhub/etc/clientlibs/vwa-ngw18/ngw18-frontend/clientlibs/statics/img/vw-logo-2x.png';
 export default Workspace;
+
+const StUserImg = styled.img`
+  width: 48px;
+  height: 48px;
+  background-color: lightgray;
+  border-radius: 50%;
+  /* width: '48px',
+                      height: '48px',
+                      background: 'lightgray',
+                      borderRadius: '50%', */
+`;
 const StUserInfoWrap = styled.div`
   display: flex;
   width: 100%;
@@ -1091,24 +1003,26 @@ const StUserInfoWrap = styled.div`
   border-radius: 8px;
   /* height: 100%; */
   /* padding: 24; */
+  .userInfo {
+    visibility: hidden;
+    position: absolute;
+    left: -320px;
+    top: 164px;
+    width: 300px;
+    height: 300px;
+    background-color: gray;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
   &:hover {
     background-color: #f2f2f2;
-  }
-`;
-const StDiv = styled.div`
-  position: relative;
-  /* .asdf {
-    display: block;
-    &:hover {
-      display: block;
+    .userInfo {
+      visibility: visible;
+      opacity: 1;
     }
-  } */
-
-  .asdf:hover {
-    background-color: red;
-    display: block;
   }
 `;
+
 const StUserWrap = styled.div`
   padding: 4px;
   background-color: white;
@@ -1225,8 +1139,10 @@ const StStatusBox = styled.div<{
     if (props.size === 'large') return '480px';
   }};
   overflow: hidden;
-  box-shadow: ${(props) => (props.isHover ? '0px 0px 20px purple' : '')};
-  transition: all 0.6s;
+  box-shadow: ${(props) =>
+    props.isHover ? '0px 0px 20px rgb(237, 112, 45)' : ''};
+
+  transition: all 0.5s;
   display: flex;
   flex-direction: column;
   background: white;
@@ -1249,6 +1165,25 @@ const StWorkspaceImgWrap = styled.div`
   border-radius: 50%;
   border: 1px solid;
   margin-top: 16px;
+  .asdf {
+    visibility: hidden;
+    position: absolute;
+    top: 20px;
+    left: 100px;
+    background-color: white;
+    width: 300px;
+    height: 300px;
+    border: 1px solid black;
+    opacity: 0;
+    transition: opacity 1s;
+  }
+  &:hover {
+    .asdf {
+      visibility: visible;
+
+      opacity: 1;
+    }
+  }
 `;
 const StWorkspaceListContainer = styled.div`
   height: 100%;
