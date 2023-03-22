@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces, editProfileImg } from "../api/myPage";
 import MyWorkspace from "../components/mypage/MyWorkspace";
 import useOutsideClick from "../hooks/useOutsideClick";
-import LeaveWorkspaceModal from "../components/workspaceConfig/LeaveWorkspaceModal";
+import LeaveWorkspaceModal from "../components/mypage/LeaveWorkspaceModal";
 
 const MyPage = () => {
   const { data : dataUser } = useQuery('user', getUserData);
