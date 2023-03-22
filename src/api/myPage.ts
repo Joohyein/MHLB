@@ -35,7 +35,7 @@ const editProfileImg = async (userImage: FormData) => {
 };
 
 const leaveWorkspace = async ({myWorkspaceId} : {myWorkspaceId: number}) => {
-  await instance.delete(`/api/mypage/${myWorkspaceId}`);
+  await instance.patch(`/api/mypage/${myWorkspaceId}`);
 };
 
 export { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces, editProfileImg, leaveWorkspace };
