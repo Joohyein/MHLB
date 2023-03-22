@@ -26,7 +26,6 @@ function MyWorkspace({setLeaveModal, dataWorkspace, setWorkspaceId}:{setLeaveMod
               </StWorkspaceDataBox>
               <StWithdrawBtn onClick={() => leaveModalOpenHandler(item.workspaceId)}>워크스페이스 탈퇴</StWithdrawBtn>
           </StWorkspaceData>
-
           )
         })
       }

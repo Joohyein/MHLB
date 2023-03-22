@@ -10,6 +10,7 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}:{modalRef:React.
   const [email, setEmail] = useState('');
   const [emailValidation, setEmailValidation] = useState(false);
   const [inviteCheck, setInviteCheck] = useState(false);
+  const [alreadyInvited, setAlreadyInvited] = useState(false);
 
   useEffect(() => {
     setEmailValidation(false);
@@ -35,11 +36,18 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}:{modalRef:React.
       setInviteCheck(true);
       console.log(response);
     })
-    .catch((error) => console.log("error: ", error))
+    .catch((error) => {
+      console.log("error: ", error.response.data.message)
+      if(error.response.data.statusCode === 400) setAlreadyInvited(true);
+    })
   };
 
   const onClickCancelHandler = (inviteId: number) => {
     mutation.mutate({workspaceId, inviteId})
+  };
+
+  const onKeyPressInvite = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') onClickInviteHandler();
   };
 
   interface DataType {
@@ -55,27 +63,25 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}:{modalRef:React.
               <Close size="24" fill="#363636" onClick={()=>setInviteModal(false)} cursor="pointer"/>
           </StTitle>
           <StInputContainer>
-              <StInputBox type="text" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
+              <StInputBox type="text" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} onKeyPress={onKeyPressInvite} />
               <StInviteBtn onClick={onClickInviteHandler} >초대 보내기</StInviteBtn>
               { emailValidation ? <StEmailCheck>이메일 형식이 맞지 않습니다.</StEmailCheck> : null }
               { inviteCheck ? <StInviteCheck>초대가 완료되었습니다.</StInviteCheck> : null }
+              { alreadyInvited ? <StAlreadyInvited>이미 초대된 이메일입니다.</StAlreadyInvited> : null }
           </StInputContainer>
 
           <StSub>초대 중인 사람</StSub>
 
           <StInviting>
               <StUser>
-                { 
-                  data?.map((item: DataType) => {
+                { data?.map((item: DataType) => {
                     return (
                       <StUserBox key={item.inviteId}>
                         <h5>{item.email}</h5>
                         <StCancelBtn onClick={() => onClickCancelHandler(item.inviteId)} >초대 취소</StCancelBtn>
                       </StUserBox>
                     )
-                  })
-                }
-                
+                })}
               </StUser>
           </StInviting>
       </StModalContainer>
@@ -156,6 +162,12 @@ const StInviteCheck = styled.h3`
   font-size: 12px;
   position: absolute;
   color: #01962e;
+  top: 38px;
+`;
+const StAlreadyInvited = styled.div`
+  font-size: 12px;
+  position: absolute;
+  color: #ffaa00;
   top: 38px;
 `;
 
