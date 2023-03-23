@@ -5,6 +5,9 @@ import Wrapper from '../components/common/Wrapper';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import axios from 'axios';
 import userInfoMock from '../pages/userInfo.json';
+import AddMemberModal from '../components/modal/AddMemberModal';
+import useOutsideClick from '../hooks/useOutsideClick';
+
 // import workspaceInfoMock from '../pages/workspaceInfo.json';
 
 const Workspace = () => {
@@ -23,6 +26,9 @@ const Workspace = () => {
     workspaceImage: string;
     workspaceTitle: string;
   }
+
+  const [inviteModal, setInviteModal] = useState(false);
+  const modalRef = useOutsideClick(() => setInviteModal(false));
 
   useEffect(() => {
     // axios.get('http://localhost:4000/workspaceList').then(({ data }) => {
@@ -49,23 +55,24 @@ const Workspace = () => {
       workspaceImage:
         'https://www.volkswagen.co.kr/idhub/etc/clientlibs/vwa-ngw18/ngw18-frontend/clientlibs/statics/img/vw-logo-2x.png',
       workspaceTitle: '폭스바겐',
-      workspaceDesc: 'description',
+      workspaceDesc: '정말 좋은차',
     },
     {
       workspaceId: 2,
       workspaceImage:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/BMW_logo_%28gray%29.svg/1200px-BMW_logo_%28gray%29.svg.png?20210211152514',
       workspaceTitle: '비엠따블유',
-      workspaceDesc: 'description',
+      workspaceDesc: '최고의 차',
     },
     {
       workspaceId: 3,
       workspaceImage:
         'https://pixlok.com/wp-content/uploads/2021/04/mercedes-benz-Logo-PNG-768x768.jpg',
       workspaceTitle: '벤쯔',
-      workspaceDesc: 'description',
+      workspaceDesc: '기가막힌 차',
     },
   ]);
+  // useEffect 로 workspaceList 순서 변경시마다 0번째 순서의 워크스페이스 정보 뿌려줘야하는데.
   const [userList, setUserList] = useState<Userdata[] | undefined>();
 
   const navigate = useNavigate();
@@ -136,6 +143,7 @@ const Workspace = () => {
   //   items.splice(result.destination.index, 0, reorderData);
   //   setUserList(items);
   // };
+  const [isButtonStatus, setIsButtonStatus] = useState(false);
 
   return (
     <Wrapper>
@@ -180,8 +188,6 @@ const Workspace = () => {
                         {...provided.draggableProps}
                         ref={provided.innerRef}
                       >
-                        <div className="asdf">{item.workspaceTitle}</div>
-
                         <StWorkspaceImg
                           src={item.workspaceImage}
                         ></StWorkspaceImg>
@@ -222,7 +228,7 @@ const Workspace = () => {
               </div>
               <div style={{ marginLeft: '16px' }}>
                 <div style={{ margin: '8px 0' }}>
-                  <h3>워크스페이스 이름</h3>
+                  <h3>{workspaceList[0].workspaceTitle}</h3>
                 </div>
                 <div
                   style={{
@@ -231,14 +237,17 @@ const Workspace = () => {
                     color: 'gray',
                   }}
                 >
-                  이곳은 설명이 들어갑니다.
+                  {workspaceList[0].workspaceDesc}
                 </div>
               </div>
             </div>
 
             <div>
               <button
-                onClick={() => {}}
+                onClick={() => {
+                  setInviteModal(true);
+                  document.body.style.overflow = 'hidden';
+                }}
                 style={{
                   height: '36px',
                   width: '104px',
@@ -252,7 +261,7 @@ const Workspace = () => {
                   cursor: 'pointer',
                 }}
               >
-                이메일 중복 조회
+                멤버 초대
               </button>
             </div>
           </div>
@@ -808,45 +817,36 @@ const Workspace = () => {
           style={{
             background: 'white',
             padding: ' 24px',
-            // position: 'sticky',
             position: 'fixed',
             top: '62px',
-            // right: '0px',
             width: '292px',
             boxShadow: '0px 0px 5px lightgray',
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex' }}>
-              <div
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <StButton
+                onClick={() => {
+                  setIsButtonStatus(false);
+                }}
                 style={{
-                  background: 'white',
-                  height: '40px',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                  fontSize: '1.1rem',
-                  fontWeight: '800',
-                  borderBottom: '2px solid',
-                  color: '#007AFF',
-                  padding: '0px 8px',
+                  color: `${!isButtonStatus ? '#007aff' : ''}`,
+                  borderBottom: `${!isButtonStatus ? '2px solid #007aff' : ''}`,
                 }}
               >
                 People({userList?.length})
-              </div>
-              <div
+              </StButton>
+              <StButton
+                onClick={() => {
+                  setIsButtonStatus(true);
+                }}
                 style={{
-                  height: '40px',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                  fontSize: '1.1rem',
-                  fontWeight: '800',
-                  padding: '0px 8px',
+                  color: `${isButtonStatus ? '#007aff' : ''}`,
+                  borderBottom: `${isButtonStatus ? '2px solid #007aff' : ''}`,
                 }}
               >
                 Inbox(2)
-              </div>
+              </StButton>
             </div>
             <div
               style={{
@@ -881,7 +881,6 @@ const Workspace = () => {
         <div
           style={{
             marginTop: '163px',
-            // background: 'red',
             height: '507px',
             overflow: 'auto',
           }}
@@ -946,10 +945,7 @@ const Workspace = () => {
                       {item.userEmail}
                     </div>
                   </div>
-                  <div className="userInfo">
-                    <p>{item.userName}</p>
-                    <p>{item.userJob}</p>
-                  </div>
+                  <div className="userInfo"></div>
                   <StStatusDot status={item.status}></StStatusDot>
                 </StUserInfoWrap>
               </StUserWrap>
@@ -976,14 +972,38 @@ const Workspace = () => {
           </div>
         </div>
       </StMessageBox>
+      {inviteModal ? (
+        <AddMemberModal
+          modalRef={modalRef}
+          setInviteModal={(v: boolean) => setInviteModal(v)}
+        />
+      ) : null}
     </Wrapper>
   );
 };
-// 인간사진
-// 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg'
-// 워크스페이스 사진
-// 'https://www.volkswagen.co.kr/idhub/etc/clientlibs/vwa-ngw18/ngw18-frontend/clientlibs/statics/img/vw-logo-2x.png';
+
 export default Workspace;
+
+const StButton = styled.div`
+  box-sizing: border-box;
+  height: 40px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  /* padding: 0px 8px; */
+  /* border-radius: 8px; */
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
+  /* &:active {
+    border-bottom: 2px solid;
+    color: #007aff;
+  } */
+`;
 
 const StUserImg = styled.img`
   width: 48px;
@@ -996,29 +1016,31 @@ const StUserImg = styled.img`
                       borderRadius: '50%', */
 `;
 const StUserInfoWrap = styled.div`
+  position: relative;
   display: flex;
   width: 100%;
   padding: 12px;
   align-items: center;
   border-radius: 8px;
-  /* height: 100%; */
-  /* padding: 24; */
+  cursor: pointer;
+
   .userInfo {
     visibility: hidden;
     position: absolute;
-    left: -320px;
-    top: 164px;
-    width: 300px;
-    height: 300px;
-    background-color: gray;
-    opacity: 0;
-    transition: opacity 0.5s;
+
+    right: 44px;
+    width: 34px;
+    border-radius: 50%;
+    height: 34px;
+    background-color: white;
+    z-index: 1;
+    box-shadow: 0 0 8px lightgray;
   }
   &:hover {
     background-color: #f2f2f2;
     .userInfo {
       visibility: visible;
-      opacity: 1;
+      /* opacity: 1; */
     }
   }
 `;
@@ -1029,17 +1051,6 @@ const StUserWrap = styled.div`
   border-bottom: 1px solid #f1f1f1;
   display: flex;
   align-items: center;
-  /* margin-bottom: 10px; */
-
-  /* &:hover {
-    background-color: #f2f2f2;
-  } */
-  /* style={{
-                  padding: '18px 14px',
-                  backgroundColor: 'white',
-                  borderBottom: '1px solid #F1F1F1',
-                  display: 'flex',
-                  alignItems: 'center', */
 `;
 
 const StStatusDot = styled.div`
@@ -1079,24 +1090,17 @@ const StGraphBox = styled.div`
   }
 `;
 const StAppMainWrap = styled.div`
-  /* height: 100%; */
   height: 540px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   background: #f6f6f6;
-  /* position: fixed; */
   position: absolute;
-  /* overflow: hidden; */
-  /* position: relative; */
   left: 100px;
   top: 62px;
   right: 340px;
-
   padding: 48px 24px 24px;
   min-width: 514px;
-  /* min-width: 800px; */
-
   @media (max-width: 920px) {
     right: 0px;
   }
@@ -1108,11 +1112,8 @@ const StAppMainWrap = styled.div`
 
 const StMessageBox = styled.div`
   width: 340px;
-  /* height: 100%; */
-  /* overflow: scroll; */
-  position: fixed;
 
-  /* padding-bottom: 290px; */
+  position: fixed;
 
   right: 0px;
   top: 62px;
@@ -1165,25 +1166,6 @@ const StWorkspaceImgWrap = styled.div`
   border-radius: 50%;
   border: 1px solid;
   margin-top: 16px;
-  .asdf {
-    visibility: hidden;
-    position: absolute;
-    top: 20px;
-    left: 100px;
-    background-color: white;
-    width: 300px;
-    height: 300px;
-    border: 1px solid black;
-    opacity: 0;
-    transition: opacity 1s;
-  }
-  &:hover {
-    .asdf {
-      visibility: visible;
-
-      opacity: 1;
-    }
-  }
 `;
 const StWorkspaceListContainer = styled.div`
   height: 100%;
@@ -1220,4 +1202,8 @@ const StWorkspaceImg = styled.img`
   height: 3.4rem;
   border-radius: 50%;
   background-color: white;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
 `;

@@ -1,17 +1,30 @@
-import styled from "styled-components";
-import { useEffect, useRef, useState } from "react";
-import Wrapper from "../components/common/Wrapper";
-import ArrowBack from "../components/asset/icons/ArrowBack";
-import AddMemberModal from "../components/modal/AddMemberModal";
-import useOutsideClick from "../hooks/useOutsideClick";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { editProfileImg, editUserRole, editWorkspaceDesc, editWorkspaceTitle, getWorkspaceInfo, getWorkspaceMember } from "../api/workspaceConfig";
-import RemoveCheckBtn from "../components/workspaceConfig/RemoveCheckBtn";
-import DeleteWorkspaceModal from "../components/workspaceConfig/DeleteWorkspaceModal";
+import styled from 'styled-components';
+import { useEffect, useRef, useState } from 'react';
+import Wrapper from '../components/common/Wrapper';
+import ArrowBack from '../components/asset/icons/ArrowBack';
+import AddMemberModal from '../components/modal/AddMemberModal';
+import useOutsideClick from '../hooks/useOutsideClick';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import {
+  editProfileImg,
+  editUserRole,
+  editWorkspaceDesc,
+  editWorkspaceTitle,
+  getWorkspaceInfo,
+  getWorkspaceMember,
+} from '../api/workspaceConfig';
+import RemoveCheckBtn from '../components/workspaceConfig/RemoveCheckBtn';
+import DeleteWorkspaceModal from '../components/workspaceConfig/DeleteWorkspaceModal';
 
 const WorkspaceConfig = () => {
-  const { isLoading: isLoadingInfo, data : workspaceInfoData } = useQuery('workspaceInfo', getWorkspaceInfo);
-  const { isLoading: isLoadingMember, data : workspaceMember } = useQuery('workspaceMember', getWorkspaceMember);
+  const { isLoading: isLoadingInfo, data: workspaceInfoData } = useQuery(
+    'workspaceInfo',
+    getWorkspaceInfo
+  );
+  const { isLoading: isLoadingMember, data: workspaceMember } = useQuery(
+    'workspaceMember',
+    getWorkspaceMember
+  );
   // const imgInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null);
   const imgInputRef = useRef<any>(null);
 
@@ -25,7 +38,9 @@ const WorkspaceConfig = () => {
   const [imgFile, setImgFile] = useState<any>();
   const [image, setImage] = useState(workspaceInfoData?.workspaceImage);
   const [title, setTitle] = useState(workspaceInfoData?.workspaceTitle);
-  const [description, setDescription] = useState(workspaceInfoData?.workspaceDesc);
+  const [description, setDescription] = useState(
+    workspaceInfoData?.workspaceDesc
+  );
 
   const [search, setSearch] = useState('');
   const [member, setMember] = useState(['']);
@@ -38,7 +53,7 @@ const WorkspaceConfig = () => {
   }, [workspaceInfoData, isLoadingInfo]);
 
   useEffect(() => {
-    const arr = workspaceMember?.map((item:any) => item);
+    const arr = workspaceMember?.map((item: any) => item);
     setMemberCopy(arr);
   }, [workspaceMember, isLoadingMember]);
 
@@ -53,229 +68,302 @@ const WorkspaceConfig = () => {
     onSuccess: async () => {
       queryClient.invalidateQueries('workspaceInfo');
     },
-    onError: (error) =>{console.log("error : ", error)}
+    onError: (error) => {
+      console.log('error : ', error);
+    },
   });
-  
+
   const mutationTitle = useMutation(editWorkspaceTitle, {
     onSuccess: () => {
       queryClient.invalidateQueries('workspaceInfo');
     },
-    onError: (error) =>{console.log("error : ", error)}
+    onError: (error) => {
+      console.log('error : ', error);
+    },
   });
 
   const mutationDesc = useMutation(editWorkspaceDesc, {
     onSuccess: () => {
       queryClient.invalidateQueries('workspaceInfo');
     },
-    onError: (error) =>{console.log("error : ", error)}
+    onError: (error) => {
+      console.log('error : ', error);
+    },
   });
 
   const mutationRole = useMutation(editUserRole, {
     onSuccess: () => {
       queryClient.invalidateQueries('workspaceMember');
-    }
-  })
+    },
+  });
 
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(e.target.files) setImgFile(e.target.files[0]);
+    if (e.target.files) setImgFile(e.target.files[0]);
   };
 
-  useEffect(()=>{
-    if(!imgFile) return;
+  useEffect(() => {
+    if (!imgFile) return;
     const workspaceId = workspaceInfoData?.workspaceId;
     const workspaceImage = new FormData();
     workspaceImage.append('workspaceImage', imgFile);
-    mutationImg.mutate({workspaceImage, workspaceId});
+    mutationImg.mutate({ workspaceImage, workspaceId });
   }, [imgFile]);
 
-
-  const onClickEditTitleHandler = (workspaceTitle: string, workspaceId: number) => {
-    if(!workspaceTitle) {
+  const onClickEditTitleHandler = (
+    workspaceTitle: string,
+    workspaceId: number
+  ) => {
+    if (!workspaceTitle) {
       alert('워크스페이스 이름을 입력해주세요');
       return;
-    };
+    }
     setEditTitle(false);
-    mutationTitle.mutate({workspaceTitle, workspaceId});
+    mutationTitle.mutate({ workspaceTitle, workspaceId });
   };
 
-  const onClickEditDescHandler = (workspaceDesc: string, workspaceId: number) => {
-    if(!workspaceDesc) {
+  const onClickEditDescHandler = (
+    workspaceDesc: string,
+    workspaceId: number
+  ) => {
+    if (!workspaceDesc) {
       alert('워크스페이스 설명을 입력해주세요');
       return;
-    };
+    }
     setEditDesc(false);
-    mutationDesc.mutate({workspaceDesc, workspaceId});
+    mutationDesc.mutate({ workspaceDesc, workspaceId });
   };
 
   // onKeyPress
   const onKeyPressTitleHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if(e.key === 'Enter') onClickEditTitleHandler(title, workspaceInfoData?.workspaceId);
+    if (e.key === 'Enter')
+      onClickEditTitleHandler(title, workspaceInfoData?.workspaceId);
   };
   const onKeyPressDescHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if(e.key === 'Enter') onClickEditDescHandler(description, workspaceInfoData?.workspaceId);
+    if (e.key === 'Enter')
+      onClickEditDescHandler(description, workspaceInfoData?.workspaceId);
   };
 
-  // Search Member 
+  // Search Member
   interface UserDataType {
-    id: number, 
-    userName: string,
-    userEmail: string,
-    userImage: string
-  };
-  
+    id: number;
+    userName: string;
+    userEmail: string;
+    userImage: string;
+  }
+
   useEffect(() => {
-    setMember(memberCopy?.filter((item: UserDataType) => item.userName.toLowerCase().includes(search.toLowerCase())));
+    setMember(
+      memberCopy?.filter((item: UserDataType) =>
+        item.userName.toLowerCase().includes(search.toLowerCase())
+      )
+    );
   }, [search, memberCopy]);
 
   // checkbox - userRole change
   const onChangeCheckboxHandler = (userId: number, userRole: string) => {
-    if(userRole === "MANAGER") userRole = "MEMBER";
-    else userRole = "MANAGER";
+    if (userRole === 'MANAGER') userRole = 'MEMBER';
+    else userRole = 'MANAGER';
     const workspaceId = workspaceInfoData?.workspaceId;
-    mutationRole.mutate({userId, userRole, workspaceId})
+    mutationRole.mutate({ userId, userRole, workspaceId });
   };
 
+  return (
+    <Wrapper>
+      <StContainer>
+        <StManageTitle>
+          <ArrowBack size="16" fill="#363636" cursor="pointer" />
+          <h3>워크스페이스 관리</h3>
+        </StManageTitle>
 
-  return <Wrapper>
-    <StContainer>
-      <StManageTitle>
-        <ArrowBack size="16" fill="#363636" cursor="pointer"/>
-        <h3>워크스페이스 관리</h3>
-      </StManageTitle>
+        <StWorkspaceName>
+          <StSub>워크스페이스 프로필 이미지</StSub>
+          <StWorkspaceProfile>
+            <StImgBox src={image} />
+            <StProfileImg />
+            <StImgInput
+              type="file"
+              name="workspaceImage"
+              ref={imgInputRef}
+              onChange={onImgChange}
+              accept="image/png, image/jpg, image/jpeg, image/gif"
+            />
+            <StImgEditBtn onClick={onClickImgUpload}>Edit</StImgEditBtn>
+          </StWorkspaceProfile>
+        </StWorkspaceName>
 
-      <StWorkspaceName>
-        <StSub>워크스페이스 프로필 이미지</StSub>
-        <StWorkspaceProfile>
-          <StImgBox src={image}/>
-          <StProfileImg />
-          <StImgInput type="file" name="workspaceImage" ref={imgInputRef} onChange={onImgChange} accept='image/png, image/jpg, image/jpeg, image/gif'/>
-          <StImgEditBtn onClick={onClickImgUpload}>Edit</StImgEditBtn>
-        </StWorkspaceProfile>
-      </StWorkspaceName>
-
-      <StWorkspaceName>
-        <StSub>워크스페이스 이름</StSub>
-        <StEditBox>
-          {
-            editTitle
-              ?
+        <StWorkspaceName>
+          <StSub>워크스페이스 이름</StSub>
+          <StEditBox>
+            {editTitle ? (
               <>
-                <StEditInput 
+                <StEditInput
                   name="workspaceTitle"
                   value={title}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setTitle(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setTitle(e.target.value)
+                  }
                   onKeyPress={onKeyPressTitleHandler}
                 />
-                <h5 onClick={() => onClickEditTitleHandler(title, workspaceInfoData?.workspaceId)}>Done</h5>
+                <h5
+                  onClick={() =>
+                    onClickEditTitleHandler(
+                      title,
+                      workspaceInfoData?.workspaceId
+                    )
+                  }
+                >
+                  Done
+                </h5>
               </>
-              :
+            ) : (
               <>
                 <h3>{title}</h3>
-                <h5 onClick = {() => setEditTitle(true)}>Edit</h5>
+                <h5 onClick={() => setEditTitle(true)}>Edit</h5>
               </>
-          }
-        </StEditBox>
-      </StWorkspaceName>
+            )}
+          </StEditBox>
+        </StWorkspaceName>
 
-      <StWorkspaceName>
-        <StSub>워크스페이스 설명</StSub>
-        <StEditBox>
-          {
-            editDesc
-              ?
+        <StWorkspaceName>
+          <StSub>워크스페이스 설명</StSub>
+          <StEditBox>
+            {editDesc ? (
               <>
-                <StEditInput 
+                <StEditInput
                   name="workspaceDesc"
                   value={description}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setDescription(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setDescription(e.target.value)
+                  }
                   onKeyPress={onKeyPressDescHandler}
                 />
-                <h5 onClick={() => onClickEditDescHandler(description, workspaceInfoData?.workspaceId)}>Done</h5>
+                <h5
+                  onClick={() =>
+                    onClickEditDescHandler(
+                      description,
+                      workspaceInfoData?.workspaceId
+                    )
+                  }
+                >
+                  Done
+                </h5>
               </>
-              :
+            ) : (
               <>
                 <h3>{description}</h3>
-                <h5 onClick = {() => setEditDesc(true)}>Edit</h5>
+                <h5 onClick={() => setEditDesc(true)}>Edit</h5>
               </>
-          }
-        </StEditBox>
-      </StWorkspaceName>
-      <StSub>멤버 추가 및 삭제</StSub>
-      
-      <StSearchInviteBox>
-        <StSearchUserInput onChange={(e)=>setSearch(e.target.value)} placeholder="Search People"/>
-        <StAddMemBtn onClick={()=>{
-            setInviteModal(true)
-            document.body.style.overflow = "hidden";
-          }}>멤버 초대</StAddMemBtn>
-      </StSearchInviteBox>
-      <StSearchUserData>
-        {
-          workspaceInfoData?.userRole === "ADMIN"
-            ?
-            member?.map((item:any) => {
-              return <StUserData key={String(item.userId)}>
-                <StUserProfileImg src={item.userImage}/>
-                <StUserNameEmail>
-                  <h3>{item.userName}</h3>
-                  <h5>{item.userEmail}</h5>
-                </StUserNameEmail>
-                <StUserJob>
-                  <h3>{item.userJob}</h3>
-                </StUserJob>
-                <StUserRole>
-                  { item.userRole === "ADMIN" ? null : <StUserRoleCheckbox type="checkbox" onChange={() => onChangeCheckboxHandler(item.userId, item.userRole)} /> }
-                  { item.userRole }
-                </StUserRole>
-                <RemoveCheckBtn userRole={item.userRole} userId={item.userId} workspaceId={workspaceInfoData?.workspaceId} />
-              </StUserData>
-            })
-            :
-            member?.map((item:any) => {
-              return <StUserData key={String(item.userId)}>
-                <StUserProfileImg src={item.userImage}/>
-                <StUserNameEmail>
-                  <h3>{item.userName}</h3>
-                  <h5>{item.userEmail}</h5>
-                </StUserNameEmail>
-                <StUserJob>
-                  <h3>{item.userJob}</h3>
-                </StUserJob>
-                <StUserRole>
-                  {item.userRole}
-                </StUserRole>
-                <RemoveCheckBtn userRole={item.userRole} userId={item.userId} workspaceId={workspaceInfoData?.workspaceId}/>
-              </StUserData>
-            })
-        }
-      </StSearchUserData>
-      {
-        workspaceInfoData?.userRole === "ADMIN" 
-          ?
+            )}
+          </StEditBox>
+        </StWorkspaceName>
+        <StSub>멤버 추가 및 삭제</StSub>
+
+        <StSearchInviteBox>
+          <StSearchUserInput
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search People"
+          />
+          <StAddMemBtn
+            onClick={() => {
+              setInviteModal(true);
+              document.body.style.overflow = 'hidden';
+            }}
+          >
+            멤버 초대
+          </StAddMemBtn>
+        </StSearchInviteBox>
+        <StSearchUserData>
+          {workspaceInfoData?.userRole === 'ADMIN'
+            ? member?.map((item: any) => {
+                return (
+                  <StUserData key={String(item.userId)}>
+                    <StUserProfileImg src={item.userImage} />
+                    <StUserNameEmail>
+                      <h3>{item.userName}</h3>
+                      <h5>{item.userEmail}</h5>
+                    </StUserNameEmail>
+                    <StUserJob>
+                      <h3>{item.userJob}</h3>
+                    </StUserJob>
+                    <StUserRole>
+                      {item.userRole === 'ADMIN' ? null : (
+                        <StUserRoleCheckbox
+                          type="checkbox"
+                          onChange={() =>
+                            onChangeCheckboxHandler(item.userId, item.userRole)
+                          }
+                        />
+                      )}
+                      {item.userRole}
+                    </StUserRole>
+                    <RemoveCheckBtn
+                      userRole={item.userRole}
+                      userId={item.userId}
+                      workspaceId={workspaceInfoData?.workspaceId}
+                    />
+                  </StUserData>
+                );
+              })
+            : member?.map((item: any) => {
+                return (
+                  <StUserData key={String(item.userId)}>
+                    <StUserProfileImg src={item.userImage} />
+                    <StUserNameEmail>
+                      <h3>{item.userName}</h3>
+                      <h5>{item.userEmail}</h5>
+                    </StUserNameEmail>
+                    <StUserJob>
+                      <h3>{item.userJob}</h3>
+                    </StUserJob>
+                    <StUserRole>{item.userRole}</StUserRole>
+                    <RemoveCheckBtn
+                      userRole={item.userRole}
+                      userId={item.userId}
+                      workspaceId={workspaceInfoData?.workspaceId}
+                    />
+                  </StUserData>
+                );
+              })}
+        </StSearchUserData>
+        {workspaceInfoData?.userRole === 'ADMIN' ? (
           <StDangerZoneContainer>
             <StDangerZoneTitle>Danger Zone</StDangerZoneTitle>
             <StDangerZoneBox>
               <h3>현재 워크스페이스 삭제</h3>
-              <StWorkspaceDeleteBtn onClick={ () => {
-                setWorkspaceDeleteModal(true)
-                document.body.style.overflow = "hidden";
-              }}>Delete</StWorkspaceDeleteBtn>
+              <StWorkspaceDeleteBtn
+                onClick={() => {
+                  setWorkspaceDeleteModal(true);
+                  document.body.style.overflow = 'hidden';
+                }}
+              >
+                Delete
+              </StWorkspaceDeleteBtn>
             </StDangerZoneBox>
           </StDangerZoneContainer>
-          :
-          null
-      }
-    </StContainer>
-    { inviteModal ? <AddMemberModal modalRef={modalRef} setInviteModal={(v:boolean) => setInviteModal(v)} /> : null }
-    { workspaceDeleteModal ? <DeleteWorkspaceModal deleteModalRef={deleteModalRef} workspaceInfoData={workspaceInfoData} setWorkspaceDeleteModal={(v:boolean) => setWorkspaceDeleteModal(v)} /> : null }
-  </Wrapper>
+        ) : null}
+      </StContainer>
+      {inviteModal ? (
+        <AddMemberModal
+          modalRef={modalRef}
+          setInviteModal={(v: boolean) => setInviteModal(v)}
+        />
+      ) : null}
+      {workspaceDeleteModal ? (
+        <DeleteWorkspaceModal
+          deleteModalRef={deleteModalRef}
+          workspaceInfoData={workspaceInfoData}
+          setWorkspaceDeleteModal={(v: boolean) => setWorkspaceDeleteModal(v)}
+        />
+      ) : null}
+    </Wrapper>
+  );
 };
 
 export default WorkspaceConfig;
 
 const StContainer = styled.div`
   margin: 24px;
-  width:90%;
+  width: 90%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -330,14 +418,12 @@ const StWorkspaceName = styled.div`
   }
   h5 {
     font-size: 12px;
-    color: #007AFF;
+    color: #007aff;
     font-weight: 400;
     cursor: pointer;
   }
 `;
-const StSub = styled.div`
-  
-`;
+const StSub = styled.div``;
 const StEditBox = styled.div`
   display: flex;
   gap: 8px;
@@ -346,13 +432,11 @@ const StEditInput = styled.input`
   border: none;
   border-bottom: 1px solid gray;
   &:focus {
-    outline : none;
+    outline: none;
   }
 `;
 
-const StAddMemBtn = styled.button`
-
-`;
+const StAddMemBtn = styled.button``;
 
 const StSearchInviteBox = styled.div`
   display: flex;
@@ -388,7 +472,7 @@ const StUserNameEmail = styled.div`
   }
   h5 {
     font-size: 12px;
-    color: #B7B7B7;
+    color: #b7b7b7;
     font-weight: 400;
   }
 `;
@@ -402,15 +486,14 @@ const StUserJob = styled.div`
   }
   h5 {
     font-size: 12px;
-    color: #1B86FF;
+    color: #1b86ff;
   }
 `;
 const StUserRole = styled.div`
   font-size: 12px;
   color: #707070;
 `;
-const StUserRoleCheckbox = styled.input`
-`;
+const StUserRoleCheckbox = styled.input``;
 
 const StDangerZoneContainer = styled.div`
   display: flex;
@@ -423,9 +506,5 @@ const StDangerZoneBox = styled.div`
   align-items: center;
 `;
 
-const StDangerZoneTitle = styled.h3`
-  
-`;
-const StWorkspaceDeleteBtn = styled.button`
-  
-`;
+const StDangerZoneTitle = styled.h3``;
+const StWorkspaceDeleteBtn = styled.button``;

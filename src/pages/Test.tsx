@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import jwtDecode from 'jwt-decode';
+import React, { useEffect, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { Cookies, CookiesProvider } from 'react-cookie';
+import { unstable_renderSubtreeIntoContainer } from 'react-dom';
+import { setCookie, getCookie } from '../cookie/cookies';
 // import uuid from 'uuid/v4';
 
 const itemsFromBackend = [
@@ -71,7 +76,7 @@ const itemsFromBackend = [
       'https://www.onthisday.com/images/people/homer-simpson-medium.jpg',
     userName: 'Homer Simpson',
     userJob: 'Nuclear Technician',
-    userEmail: 'email@example.com',
+    userEmail: 'byungmookim89@gmail.com',
     status: 'IC',
   },
 ];
@@ -79,95 +84,151 @@ const itemsFromBackend = [
 const columnsFromBackend = [
   {
     name: '식사',
+    status: 'OTL',
     items: [],
   },
 
   {
     name: '근무',
+    status: 'WIP',
     items: [],
   },
   {
     name: '회의',
+    status: 'IC',
     items: [],
   },
   {
     name: '휴가',
+    status: 'OOO',
     items: [],
   },
   {
     name: '출장',
+    status: 'OOT',
     items: [],
   },
   {
     name: '자리비움',
+    status: 'BRB',
     items: [],
   },
   {
     name: '업무 종료',
-    items: itemsFromBackend,
+    status: 'COB',
+    items: [],
   },
-];
+].map((col) => {
+  return {
+    ...col,
+    items: itemsFromBackend.filter((index) => {
+      return index.status === col.status;
+    }),
+  };
+});
 
-const onDragEnd = (result: any, columns: any, setColumns: any) => {
-  if (!result.destination) return;
-  const { source, destination } = result;
-
-  if (source.droppableId !== destination.droppableId) {
-    const sourceColumn = columns[source.droppableId];
-    const destColumn = columns[destination.droppableId];
-    const sourceItems = [...sourceColumn.items];
-    const destItems = [...destColumn.items];
-    const [removed] = sourceItems.splice(source.index, 1);
-    destItems.splice(destination.index, 0, removed);
-    setColumns({
-      ...columns,
-      [source.droppableId]: {
-        ...sourceColumn,
-        items: sourceItems,
-      },
-      [destination.droppableId]: {
-        ...destColumn,
-        items: destItems,
-      },
-    });
-  } else {
-    const column = columns[source.droppableId];
-    const copiedItems = [...column.items];
-    const [removed] = copiedItems.splice(source.index, 1);
-    copiedItems.splice(destination.index, 0, removed);
-    setColumns({
-      ...columns,
-      [source.droppableId]: {
-        ...column,
-        items: copiedItems,
-      },
-    });
-  }
-};
+// 5. 식사중 : OTL (out to lunch ), 노랑
+// 1. 근무 : WIP (Work In Progress), 녹색
+// 6. 회의 : IC (in conference), 노랑
+// 4. 휴가중 : OOO (out of office), 회색
+// 2. 자리비움 : BRB      (Be Right Back. ), 노랑
+// 3. 업무종료 : COB (close of business), 회색
+// 7. 출장중 : OOT (out of town), 빨강
 
 function App() {
+  useEffect(() => {
+    const token = getCookie('authorization');
+
+    if (!token) return;
+    setMyEmail(JSON.parse(window.atob(token.split(' ')[1].split('.')[1])).sub);
+  }, []);
   const [columns, setColumns] = useState(columnsFromBackend);
-  console.log(columns);
+  const [myEmail, setMyEmail] = useState('');
+
+  const onDragEnd = async (result: any) => {
+    if (!result.destination) return;
+    const { source, destination } = result;
+
+    if (source.droppableId !== destination.droppableId) {
+      const param = {
+        // userId: result.draggableId,
+        status: columns[parseInt(result.destination.droppableId)].status,
+      };
+
+      const res = await axios.post(
+        `${process.env.REACT_APP_BE_SERVER}/api/status`,
+        param,
+        {
+          headers: {
+            Authorization: `${getCookie('authorization')}`,
+          },
+        }
+      );
+      if (res.data.statusCode !== 200) {
+        console.error(res?.data?.message || 'API호출 실패');
+        // 실패했을시 재조회 해서 실패하기 이전상태로 돌아가야함
+      }
+
+      const sourceColumn = columns[source.droppableId];
+      const destColumn = columns[destination.droppableId];
+      const sourceItems = [...sourceColumn.items];
+      const destItems = [...destColumn.items];
+      const [removed] = sourceItems.splice(source.index, 1);
+      destItems.splice(destination.index, 0, removed);
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...sourceColumn,
+          items: sourceItems,
+        },
+        [destination.droppableId]: {
+          ...destColumn,
+          items: destItems,
+        },
+      });
+    } else {
+      const column = columns[source.droppableId];
+      const copiedItems = [...column.items];
+      const [removed] = copiedItems.splice(source.index, 1);
+      copiedItems.splice(destination.index, 0, removed);
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...column,
+          items: copiedItems,
+        },
+      });
+    }
+  };
+
   return (
     <>
+      {/* <button
+        onClick={() => {
+          console.log(
+            JSON.parse(
+              window.atob(
+                getCookie('authorization').split(' ')[1].split('.')[1]
+              )
+            ).sub
+          );
+        }}
+      >
+        test
+      </button> */}
       <div
         style={{
-          // width: '40vw',
           backgroundColor: 'pink',
           margin: '72px 62px 0px 48px',
           display: 'flex',
           justifyContent: 'space-between',
         }}
       >
-        <DragDropContext
-          onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-        >
+        <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
           {Object.entries(columns).map(([columnId, column], index) => {
             return (
               <div
                 style={{
-                  background: 'red',
-                  // width: '25%',
                   gap: '8px',
                 }}
                 key={columnId}
@@ -181,19 +242,16 @@ function App() {
                           {...provided.droppableProps}
                           ref={provided.innerRef}
                           style={{
-                            // display: 'flex',
                             flexWrap: 'wrap',
                             border: '1px solid black',
-                            // background: snapshot.isDraggingOver
-                            //   ? 'lightblue'
-                            //   : 'white',
-                            // padding: 4,
+
                             minHeight: '80px',
                           }}
                         >
                           {column.items.map((item, index) => {
                             return (
                               <Draggable
+                                isDragDisabled={item.userEmail !== myEmail}
                                 key={item.userId}
                                 draggableId={`${item.userId}`}
                                 index={index}
@@ -224,25 +282,6 @@ function App() {
                                         // height="100%"
                                       ></img>
                                     </div>
-                                    // <div
-                                    //   ref={provided.innerRef}
-                                    //   {...provided.draggableProps}
-                                    //   {...provided.dragHandleProps}
-                                    //   // key={item.userId}
-                                    //   style={{
-                                    //     width: '36px',
-                                    //     height: '36px',
-                                    //     background: 'blue',
-                                    //     borderRadius: '50%',
-                                    //     overflow: 'hidden',
-                                    //   }}
-                                    // >
-                                    //   <img
-                                    //     src={item.userImage}
-                                    //     width="100%"
-                                    //     height="100%"
-                                    //   ></img>
-                                    // </div>
                                   );
                                 }}
                               </Draggable>
@@ -258,6 +297,13 @@ function App() {
             );
           })}
         </DragDropContext>
+      </div>
+      {/* 채팅기능 */}
+      <div style={{ display: 'flex' }}>
+        <div style={{ margin: '100px auto' }}>
+          <input placeholder="메시지입력.."></input>
+          <button>전송</button>
+        </div>
       </div>
     </>
   );
