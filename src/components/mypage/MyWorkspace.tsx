@@ -15,9 +15,9 @@ interface DataWorkspaceType {
 
 function MyWorkspace({setLeaveModal, dataWorkspace, setWorkspaceId}:{setLeaveModal:(v: boolean) => void, dataWorkspace: DataWorkspaceType[], setWorkspaceId:(v: number)=>void}) {
   const leaveModalOpenHandler = (workspaceId: number) => {
+    document.body.style.overflow = "hidden";
     setLeaveModal(true);
     setWorkspaceId(workspaceId);
-    document.body.style.overflow = "hidden";
   };
 
   return (

@@ -77,7 +77,14 @@ const WorkspaceConfig = () => {
   })
 
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(e.target.files) setImgFile(e.target.files[0]);
+    if(e.target.files) {
+      if(e.target.files[0].size >= 1024 ** 2 * 5){
+        alert(`5MB 이하 파일만 등록할 수 있습니다. 
+현재 파일 용량: ${Math.round(e.target.files[0].size/1024/1024)}MB` );
+        return;
+      }
+      else setImgFile(e.target.files[0]);
+    }
   };
 
   useEffect(()=>{

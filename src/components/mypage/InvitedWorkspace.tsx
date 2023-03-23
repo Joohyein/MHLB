@@ -1,4 +1,6 @@
+import { useMutation, useQueryClient } from "react-query";
 import styled from "styled-components";
+import { acceptInvite, rejectInvite } from "../../api/myPage";
 
 interface InvitedWorkspaceType {
     workspaceId: number,
@@ -8,6 +10,31 @@ interface InvitedWorkspaceType {
 };
 
 function InvitedWorkspace({invitedWorkspaceData}:{invitedWorkspaceData:InvitedWorkspaceType[]}) {
+
+  const queryClient = useQueryClient();
+  const mutationAccept = useMutation(acceptInvite, {
+    onSuccess: (response) => {
+      queryClient.invalidateQueries('workspace');
+      console.log(response);
+    },
+    onError: (error) => console.log(error)
+  });
+  const mutationReject = useMutation(rejectInvite, {
+    onSuccess: (response) => {
+      queryClient.invalidateQueries('workspace');
+      console.log(response);
+    },
+    onError: (error) => console.log(error)
+  });
+
+
+  const onClickAcceptHandler = (workspaceId: number) => {
+    mutationAccept.mutate(workspaceId);
+  };
+
+  const onClickRejectHandler = (workspaceId: number) => {
+    mutationReject.mutate(workspaceId);
+  };
 
   return (
     <StWorkspaceBox>
@@ -23,8 +50,8 @@ function InvitedWorkspace({invitedWorkspaceData}:{invitedWorkspaceData:InvitedWo
               </StNameSubBox>
             </StWorkspaceDataBox>
             <StBtnBox>
-              <StAcceptBtn>거절</StAcceptBtn>
-              <StRejectBtn>수락</StRejectBtn>
+              <StAcceptBtn onClick={() => onClickAcceptHandler(item.workspaceId)}>거절</StAcceptBtn>
+              <StRejectBtn onClick={() => onClickRejectHandler(item.workspaceId)}>수락</StRejectBtn>
             </StBtnBox>
         </StWorkspaceData>
         )
