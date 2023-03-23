@@ -1,7 +1,19 @@
 import styled from "styled-components";
 
-function MyWorkspace({setLeaveModal, dataWorkspace, setWorkspaceId}:{setLeaveModal:(v: boolean) => void, dataWorkspace: [], setWorkspaceId:(v: number)=>void}) {
+interface WorkspaceDataType {
+  workspaceId: number,
+  workspaceTitle: string,
+  workspaceImage: string,
+  workspaceDesc: string
+};
+interface DataWorkspaceType {
+  workspaceId: number,
+  workspaceTitle: string,
+  workspaceImage: string
+  workspaceDesc:string,
+};
 
+function MyWorkspace({setLeaveModal, dataWorkspace, setWorkspaceId}:{setLeaveModal:(v: boolean) => void, dataWorkspace: DataWorkspaceType[], setWorkspaceId:(v: number)=>void}) {
   const leaveModalOpenHandler = (workspaceId: number) => {
     setLeaveModal(true);
     setWorkspaceId(workspaceId);
@@ -11,21 +23,18 @@ function MyWorkspace({setLeaveModal, dataWorkspace, setWorkspaceId}:{setLeaveMod
   return (
     <StWorkspaceBox>
       {
-        dataWorkspace?.map((item:any) => {
+        dataWorkspace?.map((item: WorkspaceDataType) => {
           return (
             <StWorkspaceData key={item.workspaceId}>
               <StWorkspaceDataBox>
                 <StWorkspaceImg src={item.workspaceImage}/>
-                <StContributionBox>
-                <h3>{item.workspaceTitle}에서의 나의 기여도</h3>
-                <StContribution>
-                    <StDone></StDone>
-                    <StRemain></StRemain>
-                </StContribution>
-                </StContributionBox>
+                <StNameSubBox>
+                  <StWorkspaceName>{item.workspaceTitle}</StWorkspaceName>
+                  <StWorkspaceDesc>{item.workspaceDesc}</StWorkspaceDesc>
+                </StNameSubBox>
               </StWorkspaceDataBox>
-              <StWithdrawBtn onClick={() => leaveModalOpenHandler(item.workspaceId)}>워크스페이스 탈퇴</StWithdrawBtn>
-          </StWorkspaceData>
+              <StWithdrawBtn onClick={() => leaveModalOpenHandler(item.workspaceId)}>탈퇴</StWithdrawBtn>
+            </StWorkspaceData>
           )
         })
       }
@@ -38,15 +47,19 @@ export default MyWorkspace;
 const StWorkspaceBox = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 32px;
 `;
 const StWorkspaceData = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 12px;
+  padding: 24px 0 24px 0;
+  border-bottom: 1px solid #F5F5F5;
 `;
+
 const StWorkspaceDataBox = styled.div`
   display: flex;
+  align-items: center;
   gap: 24px;
 `;
 const StWorkspaceImg = styled.img`
@@ -54,31 +67,27 @@ const StWorkspaceImg = styled.img`
   height: 56px;
   border-radius: 50%;
 `;
-const StContributionBox = styled.div`
+
+const StNameSubBox = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  h3 {
+  gap: 6px;
+`;
+const StWorkspaceName = styled.h3`
   font-size: 16px;
-  font-weight: 400;
-  }
+  font-weight: 800;
+`;
+const StWorkspaceDesc = styled.h3`
+  font-size: 14px;
+  font-weight: 500;
+  color: #808080;
 `;
 
-const StContribution = styled.div`
-  width: 512px;
-  height: 12px;
-  display: flex;
-`;
-const StDone = styled.div`
-  width: 70%;
-  height: 100%;
-  background-color: #0F82FF;
-`;
-const StRemain = styled.div`
-  width: 30%;
-  height: 100%;
-  background-color: #D9D9D9;
-`;
 const StWithdrawBtn = styled.button`
-  
+  width: 52px;
+  height: 32px;
+  border: none;
+  color: #FFFFFF;
+  background-color: #FF3B31;
+  border-radius: 4px;
 `;

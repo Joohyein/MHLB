@@ -7,6 +7,7 @@ import { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces, ed
 import MyWorkspace from "../components/mypage/MyWorkspace";
 import useOutsideClick from "../hooks/useOutsideClick";
 import LeaveWorkspaceModal from "../components/mypage/LeaveWorkspaceModal";
+import InvitedWorkspace from "../components/mypage/InvitedWorkspace";
 
 const MyPage = () => {
   const { data : dataUser } = useQuery('user', getUserData);
@@ -95,7 +96,7 @@ const MyPage = () => {
     };
     setEditDesc(false);
     mutationDesc.mutate({userDesc});
-  }
+  };
 
   useEffect(()=>{
     if(!imgFile) return;
@@ -110,10 +111,10 @@ const MyPage = () => {
   };
   const onKeyPressJobHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === 'Enter') onClickEditJobHandler(job);
-  }
+  };
   const onKeyPressDescHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === 'Enter') onClickEditDescHandler(desc);
-  }
+  };
 
   return (
     <Wrapper>
@@ -124,7 +125,7 @@ const MyPage = () => {
           <StSub>프로필 이미지</StSub>
           <StImgInput type="file" name="userImg" ref={imgInputRef} onChange={onImgchange} accept='image/png, image/jpg, image/jpeg, image/gif'/>
           <StImg src={image} />
-          <StEditBtn onClick={onClickImgUpload}>Edit</StEditBtn>
+          <StEditBtn onClick={onClickImgUpload}>이미지 변경</StEditBtn>
         </StProfileImg>
 
         <StEditContainer>
@@ -134,18 +135,13 @@ const MyPage = () => {
               editName
                 ?
                 <>
-                  <StEditInput 
-                    name="userName"
-                    value={name}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setName(e.target.value)}
-                    onKeyPress={onKeyPressNameHandler}
-                  />
-                  <h5 onClick={() => onClickEditNameHandler(name)}>Done</h5>
+                  <StEditInput name="userName" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setName(e.target.value)} onKeyPress={onKeyPressNameHandler} />
+                  <h5 onClick={() => onClickEditNameHandler(name)}>완료</h5>
                 </>
                 :
                 <>
                   <h3>{name}</h3>
-                  <h5 onClick = {() => setEditName(true)}>Edit</h5>
+                  <h5 onClick = {() => setEditName(true)}>편집</h5>
                 </>
             }
           </StEditBox>
@@ -158,18 +154,13 @@ const MyPage = () => {
               editJob
                 ?
                 <>
-                  <StEditInput 
-                    name = "userJob"
-                    value = {job}
-                    onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value)}
-                    onKeyPress = {onKeyPressJobHandler}
-                  />
-                  <h5 onClick = {() => onClickEditJobHandler(job)}>Done</h5>
+                  <StEditInput name = "userJob" value = {job} onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value)} onKeyPress = {onKeyPressJobHandler} />
+                  <h5 onClick = {() => onClickEditJobHandler(job)}>완료</h5>
                 </>
                 :
                 <>
                   <h3>{job}</h3>
-                  <h5 onClick = {() => setEditJob(true)}>Edit</h5>
+                  <h5 onClick = {() => setEditJob(true)}>편집</h5>
                 </>
             }
           </StEditBox>
@@ -182,18 +173,13 @@ const MyPage = () => {
               editDesc
                 ?
                 <>
-                  <StEditInput 
-                    name = "userDesc"
-                    value = {desc}
-                    onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setDesc(e.target.value)}
-                    onKeyPress = {onKeyPressDescHandler}
-                  />
-                  <h5 onClick = {() => onClickEditDescHandler(desc)}>Done</h5>
+                  <StEditInput name = "userDesc" value = {desc} onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setDesc(e.target.value)} onKeyPress = {onKeyPressDescHandler} />
+                  <h5 onClick = {() => onClickEditDescHandler(desc)}>완료</h5>
                 </>
                 :
                 <>
                   <h3>{desc}</h3>
-                  <h5 onClick = {() => setEditDesc(true)}>Edit</h5>
+                  <h5 onClick = {() => setEditDesc(true)}>편집</h5>
                 </>
             }
           </StEditBox>
@@ -201,41 +187,11 @@ const MyPage = () => {
 
         <StMyWorkspaceContainer>
           <StSub>내 워크스페이스</StSub>
-
-          <StInvited>
-            <StInvitedWorkspaceData>
-              <StWorkspaceImg src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'/>
-              <StWorkspaceNameSub>
-                <h3>테슬라</h3>
-                <h5>워크스페이스에 대한 설명이 이곳에 들어갑니다~~~</h5>
-              </StWorkspaceNameSub>
-            </StInvitedWorkspaceData>
-            <StBtnBox>
-              <StAcceptBtn>수락</StAcceptBtn>
-              <StRejectBtn>거절</StRejectBtn>
-            </StBtnBox>
-          </StInvited>
-
-          <MyWorkspace 
-            setLeaveModal={(v: boolean) => setLeaveModal(v)} 
-            dataWorkspace={dataWorkspace} 
-            setWorkspaceId={(v:number) => setWorkspaceId(v)}
-          />
-
+          { dataWorkspace?.inviteList.length ? <InvitedWorkspace invitedWorkspaceData={dataWorkspace?.inviteList} /> : null }
+          <MyWorkspace setLeaveModal={(v: boolean) => setLeaveModal(v)} dataWorkspace={dataWorkspace?.workspaceList} setWorkspaceId={(v:number) => setWorkspaceId(v)} />
         </StMyWorkspaceContainer>
       </StContainer>
-      {
-          leaveModal
-          ?
-          <LeaveWorkspaceModal 
-              modalRef={modalRef}
-              setLeaveModal={(v: boolean) => setLeaveModal(v)}
-              dataWorkspace = {dataWorkspace}
-              myWorkspaceId = {workspaceId}
-          />
-          :
-          null
-      }
+      { leaveModal ? <LeaveWorkspaceModal modalRef={modalRef} setLeaveModal={(v: boolean) => setLeaveModal(v)} dataWorkspace = {dataWorkspace?.workspaceList} myWorkspaceId = {workspaceId} /> : null}
     </Wrapper>
   )
 };
@@ -246,7 +202,7 @@ const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 56px;
-  width: 80%;
+  width: 68%;
   height: 100%;
   margin: 32px;
 `;
@@ -268,18 +224,16 @@ const StProfileImg  = styled.div`
   position: relative;
 `;
 const StImg = styled.img`
-  width: 128px;
-  height: 128px;
+  width: 212px;
+  height: 212px;
   border-radius: 50%;
 `;
 const StEditBtn = styled.div`
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: gray;
+  font-size: 14px;
   position: absolute;
-  bottom: 0;
-  left: 96px;
+  top: 4px;
+  left: 112px;
+  color: #007AFF;
   cursor: pointer;
 `;
 
@@ -317,44 +271,3 @@ const StMyWorkspaceContainer = styled.div`
   flex-direction: column;
   gap: 36px;
 `;
-const StWorkspaceImg = styled.img`
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-`;
-const StInvited = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-`;
-const StInvitedWorkspaceData = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 24px;
-`;
-const StWorkspaceNameSub = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  h3 {
-    font-size: 16px;
-    font-weight: 400;
-  }
-  h5 {
-    font-size: 14px;
-    font-weight: 400;
-    color: gray;
-  }
-`;
-const StBtnBox = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-const StAcceptBtn = styled.button`
-  
-`;
-const StRejectBtn = styled.button`
-  
-`;
-

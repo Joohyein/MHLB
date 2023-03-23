@@ -14,7 +14,6 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspac
   const myworkspace = dataWorkspace.filter(({workspaceId}) => workspaceId === myWorkspaceId)[0];
   const [inputTitle, setInputTitle] = useState('');
   const [withDrawBtn, setWithdrawBtn] = useState(false);
-  console.log("myworkspaceid: ", myWorkspaceId)
   const queryClient = useQueryClient();
 
   const mutation = useMutation(leaveWorkspace, {
