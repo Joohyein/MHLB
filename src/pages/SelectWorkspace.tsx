@@ -6,6 +6,7 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import { useQuery } from "react-query";
 import { getWorkspaceList } from "../api/selectWorkspace";
 import MyWorkspaceList from "../components/selectWorkspace/MyWorkspaceList";
+import NavBarWorkspace from "../components/common/NavBarWorkspace";
 
 const SelectWorkspace = () => {
   const { data } = useQuery('workspaceList', getWorkspaceList);
@@ -13,19 +14,22 @@ const SelectWorkspace = () => {
   const [createModal, setCreateModal] = useState(false);
   const modalRef = useOutsideClick(() => setCreateModal(false));
 
-  return <Wrapper>
-    <StContainer>
-      <StTopBox>
-        <StTitle>나의 워크스페이스</StTitle>
-        <StCreateWorkspaceBtn onClick={() => {
-          setCreateModal(true)
-          document.body.style.overflow = "hidden";
-        }}>워크스페이스 생성</StCreateWorkspaceBtn>
-      </StTopBox>
-      <MyWorkspaceList workspaceList={ data } />
-    </StContainer>
-    { createModal ? <CreateWorkspaceModal modalRef={modalRef} setCreateModal={(v: boolean) => setCreateModal(v)} /> : null }
-  </Wrapper>
+  return (
+    <Wrapper>
+      <NavBarWorkspace />
+      <StContainer>
+        <StTopBox>
+          <StTitle>나의 워크스페이스</StTitle>
+          <StCreateWorkspaceBtn onClick={() => {
+            setCreateModal(true)
+            document.body.style.overflow = "hidden";
+          }}>워크스페이스 생성</StCreateWorkspaceBtn>
+        </StTopBox>
+        <MyWorkspaceList workspaceList={ data } />
+      </StContainer>
+      { createModal ? <CreateWorkspaceModal modalRef={modalRef} setCreateModal={(v: boolean) => setCreateModal(v)} /> : null }
+    </Wrapper>
+  )
 }
 export default SelectWorkspace;
 

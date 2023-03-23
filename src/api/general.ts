@@ -10,4 +10,9 @@ const validateEmailCheck = async ({ email }: { email: string }) => {
   return response;
 };
 
-export { validateEmailCheck, duplicateEmailCheck };
+const navBarProfileImage = async () => {
+  const response = await instance.get('/api/mypage/image');
+  return response;
+}
+
+export { validateEmailCheck, duplicateEmailCheck, navBarProfileImage };
