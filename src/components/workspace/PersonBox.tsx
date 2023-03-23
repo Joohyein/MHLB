@@ -8,6 +8,7 @@ interface MemberDataType {
   userJob: string,
   userEmail: string,
   status: string,
+  color: number,
   description: string
 };
 // member array type지정하기
@@ -27,8 +28,8 @@ function PersonBox({member}: {member: any}) {
                   <StJob>{item.userJob}</StJob>
                 </StNameRoleBox>
               </StDivideBox>
-              <StStatus></StStatus>
-             {isHovering ? <StHovering>{item.status}</StHovering> : null}
+              {item.color === 0 ? <StStatusGreen></StStatusGreen> : item.color === 1 ? <StStatusYellow></StStatusYellow> : item.color === 2 ? <StStatusRed></StStatusRed> : item.color === 3 ? <StStatusGray></StStatusGray> : null}
+              {isHovering ? <StHovering>{item.status}</StHovering> : null}
             </StPersonBox>
           )
         })
@@ -75,10 +76,28 @@ const StJob = styled.h3`
   font-weight: 400;
   color: #A7A7A7;
 `;
-const StStatus = styled.div`
+const StStatusGreen = styled.div`
   width: 8px;
   height: 8px;
   background-color: #34C759;
+  border-radius: 50%;
+`;
+const StStatusYellow = styled.div`
+  width: 8px;
+  height: 8px;
+  background-color: #FFCC01;
+  border-radius: 50%;
+`;
+const StStatusRed = styled.div`
+  width: 8px;
+  height: 8px;
+  background-color: #FF3B31;
+  border-radius: 50%;
+`;
+const StStatusGray = styled.div`
+  width: 8px;
+  height: 8px;
+  background-color: #7F7F7F;
   border-radius: 50%;
 `;
 

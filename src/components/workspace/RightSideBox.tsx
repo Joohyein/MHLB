@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getPeopleList } from "../../api/rightSide";
 import { getCookie } from "../../cookie/cookies";
 import PersonBox from "./PersonBox";
 import { EventSourcePolyfill } from "event-source-polyfill";
 
-const workspaceId = 2;
+const workspaceId = 1;
 
 interface MemberDataType {
   description: string,
@@ -32,7 +32,7 @@ function RightSideBox() {
   const EventSource = EventSourcePolyfill;
 
   useEffect(() => {
-    const eventSource = new EventSource(`http://183.96.48.66:8080/api/status/2/connect`,
+    const eventSource = new EventSource(`http://183.96.48.66:8080/api/status/1/connect`,
       {
         headers: { Authorization: getCookie("authorization")},
         withCredentials: true
@@ -50,11 +50,6 @@ function RightSideBox() {
       setStatusArr(e);
     });
   }, []);
-  // const statusArr = {
-  //   userId: 2,
-  //   status: "회의"
-  // }
-  // console.log("status array: ",statusArr);
 
   // status 바꼈을 때 다시 정렬 - peopleArr 다시 정렬
   useEffect(() => {
