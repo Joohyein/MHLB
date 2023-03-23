@@ -909,8 +909,6 @@ const Workspace = () => {
 // 'https://www.volkswagen.co.kr/idhub/etc/clientlibs/vwa-ngw18/ngw18-frontend/clientlibs/statics/img/vw-logo-2x.png';
 export default Workspace;
 
-
-
 const StUserInfoWrap = styled.div`
   display: flex;
   width: 100%;
