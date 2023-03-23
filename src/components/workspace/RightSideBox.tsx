@@ -38,7 +38,7 @@ function RightSideBox() {
         withCredentials: true
       }
     );
-    console.log("eventsource: ", eventSource);
+    // console.log("eventsource: ", eventSource);
 
     eventSource.addEventListener('connect', (e: any) => {
       const { data : receiveData } = e;
@@ -54,13 +54,12 @@ function RightSideBox() {
   // status 바꼈을 때 다시 정렬 - peopleArr 다시 정렬
   useEffect(() => {
     // console.log(peopleArr);
-    if(peopleArr && statusArr){
-      for(let i = 0; i < peopleArr.length; i++){
+    if(peopleArr && statusArr) {
+      for(let i = 0; i < peopleArr.length; i++) {
         if(peopleArr[i].userId === statusArr.userId) {
           peopleArr[i].status = statusArr.status;
           peopleArr[i].color = statusArr.color;
         }
-        console.log("people array : ", peopleArr);
       }
     }
   }, [peopleArr, statusArr]);
