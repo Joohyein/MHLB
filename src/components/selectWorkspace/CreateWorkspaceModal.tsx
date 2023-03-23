@@ -14,8 +14,15 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
   const [desc, setDesc] = useState('');
 
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(e.target.files) setImgFile(e.target.files[0]);
-    else setImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
+    if(e.target.files) {
+      if(e.target.files[0].size >= 1024 ** 2 * 5){
+        alert(`5MB 이하 파일만 등록할 수 있습니다. 
+현재 파일 용량: ${Math.round(e.target.files[0].size/1024/1024)}MB` );
+        return;
+      }
+      else setImgFile(e.target.files[0]);
+    }
+    
     // 업로드한 이미지 표시
     const fileReader = new FileReader();
     if(e.target.files) fileReader.readAsDataURL(e.target.files[0]);

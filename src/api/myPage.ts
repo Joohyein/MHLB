@@ -38,4 +38,12 @@ const leaveWorkspace = async ({myWorkspaceId} : {myWorkspaceId: number}) => {
   await instance.patch(`/api/mypage/${myWorkspaceId}`);
 };
 
-export { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces, editProfileImg, leaveWorkspace };
+const acceptInvite = async (workspaceId: number) => {
+  await instance.post(`/api/mypage/${workspaceId}/invite`);
+};
+
+const rejectInvite = async (workspaceId: number) => {
+  await instance.delete(`/api/mypage/${workspaceId}/reject`);
+};
+
+export { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces, editProfileImg, leaveWorkspace, acceptInvite, rejectInvite };
