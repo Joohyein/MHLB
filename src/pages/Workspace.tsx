@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Wrapper from '../components/common/Wrapper';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import axios from 'axios';
+import RightSideBox from '../components/workspace/RightSideBox';
 // import userInfoMock from './userInfo.json';
 
 const Workspace = () => {
@@ -39,7 +40,7 @@ const Workspace = () => {
   // const [isHover, setIsHover] = useState(false);
   const [workspaceList, setWorkspaceList] = useState([]);
   const [userList, setUserList] = useState<Userdata[] | undefined>();
-  console.log(workspaceList[0]);
+  // console.log(workspaceList[0]);
   const navigate = useNavigate();
   const [searchInputVal, setSearhInputVal] = useState('');
   // const [userList, setUsers] = useState([
@@ -897,183 +898,7 @@ const Workspace = () => {
       </div>
       {/* 우측 박스 */}
       <StMessageBox>
-        <div
-          style={{
-            background: 'white',
-            padding: ' 24px',
-            // position: 'sticky',
-            position: 'fixed',
-            top: '62px',
-            // right: '0px',
-            width: '292px',
-            boxShadow: '0px 0px 5px lightgray',
-          }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex' }}>
-              <div
-                style={{
-                  background: 'white',
-                  height: '40px',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                  fontSize: '1.1rem',
-                  fontWeight: '800',
-                  borderBottom: '2px solid',
-                  color: '#007AFF',
-                  padding: '0px 8px',
-                }}
-              >
-                People
-              </div>
-              <div
-                style={{
-                  height: '40px',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                  fontSize: '1.1rem',
-                  fontWeight: '800',
-                  padding: '0px 8px',
-                }}
-              >
-                Inbox(2)
-              </div>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                height: '48px',
-
-                marginTop: '24px',
-                borderRadius: '24px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 0 5px 0 lightgray',
-              }}
-            >
-              <input
-                onChange={searchInputValueHandler}
-                value={searchInputVal}
-                placeholder="Search People"
-                style={{
-                  width: '70%',
-                  fontSize: '1rem',
-                  border: 'none',
-                  outline: 'none',
-                }}
-              ></input>
-              <div>🔍</div>
-            </div>
-          </div>
-        </div>
-        {/* 메세지 리스트 */}
-
-        <div
-          style={{
-            marginTop: '163px',
-            // background: 'red',
-            height: '507px',
-            overflow: 'auto',
-          }}
-        >
-          {searchPeopleList?.map((item, index) => {
-            return (
-              <StUserWrap>
-                <StUserInfoWrap
-                  onMouseEnter={() => {
-                    const temp = userList?.map((user) => {
-                      if (user.userId === item.userId) {
-                        return {
-                          ...user,
-                          isHover: true,
-                        };
-                      }
-                      return user;
-                    });
-                    setUserList(temp);
-                  }}
-                  onMouseLeave={() => {
-                    const temp = userList?.map((user) => {
-                      // if (user.userId === item.userId) {
-                      return {
-                        ...user,
-                        isHover: false,
-                      };
-                      // }
-                      // return user;
-                    });
-                    setUserList(temp);
-                  }}
-                >
-                  <img
-                    src={item.userImage}
-                    width="100%"
-                    height="100%"
-                    style={{
-                      width: '48px',
-                      height: '48px',
-                      background: 'lightgray',
-                      borderRadius: '50%',
-                    }}
-                  ></img>
-                  <div style={{ marginLeft: '8px' }}>
-                    <div
-                      style={{
-                        fontSize: '1rem',
-                        fontWeight: 'bold',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {item.userName}
-                      <span
-                        style={{
-                          fontSize: '.8rem',
-                          marginLeft: '8px',
-                          color: '#7F7F7F',
-                        }}
-                      >
-                        {item.userJob}
-                      </span>
-                    </div>
-
-                    <div
-                      style={{
-                        fontSize: '.8rem',
-                        color: '#7F7F7F',
-                        margin: '8px 0px 0px 4px',
-                      }}
-                    >
-                      {item.userEmail}
-                    </div>
-                  </div>
-                  <StStatusDot status={item.status}></StStatusDot>
-                </StUserInfoWrap>
-              </StUserWrap>
-            );
-          })}
-        </div>
-
-        <div
-          style={{
-            width: '340px',
-            height: '64px',
-            position: 'fixed',
-            bottom: '0',
-            boxShadow: '0px 0px 5px lightgray',
-            cursor: 'pointer',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            background: 'white',
-          }}
-        >
-          <div>
-            <h3>관리자 페이지로 이동</h3>
-          </div>
-        </div>
+        <RightSideBox />
       </StMessageBox>
     </Wrapper>
   );
@@ -1083,6 +908,9 @@ const Workspace = () => {
 // 워크스페이스 사진
 // 'https://www.volkswagen.co.kr/idhub/etc/clientlibs/vwa-ngw18/ngw18-frontend/clientlibs/statics/img/vw-logo-2x.png';
 export default Workspace;
+
+
+
 const StUserInfoWrap = styled.div`
   display: flex;
   width: 100%;
