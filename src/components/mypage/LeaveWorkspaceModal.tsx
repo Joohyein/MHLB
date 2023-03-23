@@ -14,7 +14,6 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspac
   const myworkspace = dataWorkspace.filter(({workspaceId}) => workspaceId === myWorkspaceId)[0];
   const [inputTitle, setInputTitle] = useState('');
   const [withDrawBtn, setWithdrawBtn] = useState(false);
-  console.log("myworkspaceid: ", myWorkspaceId)
   const queryClient = useQueryClient();
 
   const mutation = useMutation(leaveWorkspace, {
@@ -46,17 +45,17 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspac
         </StTitle>
 
         <StWorkspaceDataBox>
-          <StWorkspaceProfile src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'/>
+          <StWorkspaceProfile src={myworkspace.workspaceImage}/>
           <StWorkspaceData>
             <h3>{myworkspace.workspaceTitle}</h3>
-            <h5>워크스페이스에 대한 설명이 이곳에 들어갑니다.</h5>
+            <h5>{myworkspace.workspaceDesc}</h5>
           </StWorkspaceData>
         </StWorkspaceDataBox>
 
         <StWarnningText>
           <h3>워크스페이스에서 탈퇴하면 모든 기록이 삭제됩니다. 기록은 복구할 수 없고,</h3>
           <h3>관리자에게 다시 초대를 받지 않는 이상 재참여가 불가능합니다.</h3>
-          <h5>이에 동의하고 탈퇴를 원하시면 "{myworkspace.workspaceTitle}"을 똑같이 입력해주세요.</h5>
+          <h3>이에 동의하고 탈퇴를 원하시면 <strong>"{myworkspace.workspaceTitle}"</strong> 을 똑같이 입력해주세요.</h3>
         </StWarnningText>
 
         <StInputBox>
@@ -64,9 +63,9 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspac
           {
             withDrawBtn
               ?
-              <StLeaveBtnTrue onClick={onClickLeaveWorkspaceHandler}>워크스페이스 탈퇴</StLeaveBtnTrue>
+              <StLeaveBtnTrue onClick={onClickLeaveWorkspaceHandler}>워크스페이스 영구적으로 삭제하기</StLeaveBtnTrue>
               :
-              <StLeaveBtn>워크스페이스 탈퇴</StLeaveBtn>
+              <StLeaveBtn>워크스페이스 영구적으로 삭제하기</StLeaveBtn>
           }
         </StInputBox>
       </StModalContainer>
@@ -83,7 +82,7 @@ const StWrap = styled.div`
   background-color: rgba(0,0,0,0.3);
 `;
 const StModalContainer = styled.div`
-  width: 512px;
+  width: 368px;
   z-index: 999;
   position: fixed;
   display: flex;
@@ -94,9 +93,8 @@ const StModalContainer = styled.div`
   transform: translate(-50%, -50%);
 
   background-color: white;
-  border: 3px solid lightgray;
-  padding: 24px;
-  box-sizing: border-box;
+  border-radius: 6px;
+  padding: 52px;
 `;
 
 const StTitle = styled.div`
@@ -104,14 +102,15 @@ const StTitle = styled.div`
   justify-content: space-between;
   align-items: center;
   h3 {
-    font-weight: 400;
+    font-size: 24px;
+    font-weight: 700;
 
   }
 `;
 const StWorkspaceDataBox = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 `;
 const StWorkspaceProfile = styled.img`
   width: 56px;
@@ -121,13 +120,14 @@ const StWorkspaceProfile = styled.img`
 const StWorkspaceData = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   h3 {
     font-size: 16px;
   }
   h5 {
     font-size: 12px;
     font-weight: 400;
+    color: #676767;
   }
 `;
 
@@ -138,33 +138,43 @@ const StWarnningText = styled.div`
   h3 {
     font-size: 12px;
     font-weight: 400;
+    color: #676767;
   }
-  h5 {
+  strong {
     font-size: 12px;
-    color: gray; 
-    font-weight: 400;
+    color: #000000; 
+    font-weight: 600;
   }
 `;
 
 const StInputBox = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 12px;
   width: 100%;
 `;
 const StInput = styled.input`
-  width: 70%;
-  height: 32px;
+  padding: 12px;
   border: none;
+  border-radius: 4px;
   background-color: lightgray;
+  &:focus{
+    outline: none;
+  }
 `;
 const StLeaveBtnTrue = styled.button`
-  width: 30%;
+  padding: 10px;
+  font-size: 14px;
   border: none;
-  color: #FE1F1D;
+  border-radius: 4px;
+  color: #FFFFFF;
+  background-color: #FF3B31;
   cursor: pointer;
 `;
 const StLeaveBtn = styled.button`
-  width: 30%;
+  padding: 10px;
+  font-size: 14px;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
 `;
