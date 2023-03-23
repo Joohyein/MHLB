@@ -32,7 +32,7 @@ function RightSideBox() {
   const EventSource = EventSourcePolyfill;
 
   useEffect(() => {
-    const eventSource = new EventSource(`http://183.96.48.66:8080/api/status/1/connect`,
+    const eventSource = new EventSource(`${process.env.REACT_APP_BE_SERVER}/api/status/${workspaceId}/connect`,
       {
         headers: { Authorization: getCookie("authorization")},
         withCredentials: true
@@ -51,7 +51,7 @@ function RightSideBox() {
     });
   }, []);
 
-  // status 바꼈을 때 다시 정렬 - peopleArr 다시 정렬
+  // status 바꼈을 때 다시 정렬 - peopleArr 다시 정렬 / status, color value 변경
   useEffect(() => {
     // console.log(peopleArr);
     if(peopleArr && statusArr) {
