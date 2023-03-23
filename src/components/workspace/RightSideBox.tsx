@@ -6,36 +6,69 @@ import { getCookie } from "../../cookie/cookies";
 import PersonBox from "./PersonBox";
 import { EventSourcePolyfill } from "event-source-polyfill";
 
-const workspaceId = 1;
+const workspaceId = 2;
+
+interface MemberDataType {
+  description: string,
+  status: string,
+  color: number,
+  userEmail: string,
+  userId: number,
+  userImage: string,
+  userJob: string,
+  userName: string
+};
 
 function RightSideBox() {
-  const { data : peopleListData } = useQuery('peopleList', async () => getPeopleList(workspaceId));
+  const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', async () => getPeopleList(workspaceId));
 
-  const EventSource = EventSourcePolyfill;
-  const queryClient = useQueryClient();
+  const [statusArr, setStatusArr] = useState<any>();
+  const [peopleArr, setPeopleArr] = useState<any>([]);
 
   useEffect(() => {
-    const eventSource = new EventSource(`http://183.96.48.66:8080/api/status/1/connect`,
+    if(peopleListData) setPeopleArr(peopleListData);
+  }, [peopleListData, isLoadingPeopleData]);
+
+  const EventSource = EventSourcePolyfill;
+
+  useEffect(() => {
+    const eventSource = new EventSource(`http://183.96.48.66:8080/api/status/2/connect`,
       {
         headers: { Authorization: getCookie("authorization")},
         withCredentials: true
       }
     );
     console.log("eventsource: ", eventSource);
-    eventSource.addEventListener('message', (e:any) => {
-      console.log("e: ", e);
-      queryClient.invalidateQueries('peopleList');
-    });
+
     eventSource.addEventListener('connect', (e: any) => {
       const { data : receiveData } = e;
-      console.log('connect: ', receiveData);
+      // console.log('connect: ', receiveData);
     });
-    eventSource.onerror = (e: any) => {
-      console.log("result", e.data);
-    };
-
-
+    eventSource.addEventListener('status changed', (e: any) => {
+      const { data : statusChangedData } = e;
+      // console.log("status changed data : ", statusChangedData);
+      setStatusArr(e);
+    });
   }, []);
+  // const statusArr = {
+  //   userId: 2,
+  //   status: "회의"
+  // }
+  // console.log("status array: ",statusArr);
+
+  // status 바꼈을 때 다시 정렬 - peopleArr 다시 정렬
+  useEffect(() => {
+    // console.log(peopleArr);
+    if(peopleArr && statusArr){
+      for(let i = 0; i < peopleArr.length; i++){
+        if(peopleArr[i].userId === statusArr.userId) {
+          peopleArr[i].status = statusArr.status;
+          peopleArr[i].color = statusArr.color;
+        }
+        console.log("people array : ", peopleArr);
+      }
+    }
+  }, [peopleArr, statusArr]);
 
   const [toggle, setToggle] = useState(false);
   const [memberClick, setMemberClick] = useState(true);
@@ -45,11 +78,11 @@ function RightSideBox() {
   const [member, setMember] = useState<any>();
   const [memberCopy, setMemberCopy] = useState([]);
 
-  // dependency array에 peopleListData 넣기
+  // 바뀐 status을 배열에 적용
   useEffect(() => {
-    const arr = peopleListData?.map((item:any) => item);
+    const arr = peopleArr?.map((item:MemberDataType) => item);
     setMemberCopy(arr);
-  }, [peopleListData]);
+  }, [peopleArr]);
 
   const onClickMemberHandler = () => {
     setToggle(false);
@@ -62,19 +95,19 @@ function RightSideBox() {
     setInboxClick(true);
   };
 
-  interface MemberDataType {
-    description: string,
-    status: string,
-    userEmail: string,
-    userId: number,
-    userImage: string,
-    userJob: string,
-    userName: string
-  };
-
   useEffect(() => {
     setMember(memberCopy?.filter((item: MemberDataType)=>item.userName.toLowerCase().includes(search.toLowerCase())));
   }, [search, memberCopy]);
+
+  useEffect(() => {
+    setMember(member?.sort((a:MemberDataType, b:MemberDataType) => {
+      if(a.userName > b.userName) return 1;
+      if(a.userName < b.userName) return -1;
+    }).sort((a: MemberDataType, b: MemberDataType) => {
+      if(a.color > b.color) return 1;
+      if(a.color < b.color) return -1;
+    }));
+  }, [member]);
 
   return (
     <StContainer>
