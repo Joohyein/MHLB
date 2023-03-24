@@ -5,6 +5,8 @@ import { getPeopleList } from "../../api/rightSide";
 import { getCookie } from "../../cookie/cookies";
 import PersonBox from "./PersonBox";
 import { EventSourcePolyfill } from "event-source-polyfill";
+import MessageBox from "./MessageBox";
+import Chat from "./Chat";
 
 const workspaceId = 1;
 
@@ -22,8 +24,19 @@ interface MemberDataType {
 function RightSideBox() {
   const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', async () => getPeopleList(workspaceId));
 
+  const [toggle, setToggle] = useState(false);
+  const [search, setSearch] = useState('');
+  const [member, setMember] = useState<any>();
+  const [memberCopy, setMemberCopy] = useState([]);
+  const [memberClick, setMemberClick] = useState(true);
+  const [inboxClick, setInboxClick] = useState(false);
+
   const [statusArr, setStatusArr] = useState<any>();
   const [peopleArr, setPeopleArr] = useState<any>([]);
+
+  const [isChat, setIsChat] = useState(false); // 사람 클릭시, 채팅방 클릭시 채팅방으로 이동
+  const [userId, setUserId] = useState<number>(); // 채팅방 id <Chat /> 에 넘겨주기
+  const [uuid, setuuid] = useState(false);
 
   useEffect(() => {
     if(peopleListData) setPeopleArr(peopleListData);
@@ -38,7 +51,6 @@ function RightSideBox() {
         withCredentials: true
       }
     );
-    // console.log("eventsource: ", eventSource);
 
     eventSource.addEventListener('connect', (e: any) => {
       const { data : receiveData } = e;
@@ -64,30 +76,23 @@ function RightSideBox() {
     }
   }, [peopleArr, statusArr]);
 
-  const [toggle, setToggle] = useState(false);
-  const [memberClick, setMemberClick] = useState(true);
-  const [inboxClick, setInboxClick] = useState(false);
-
-  const [search, setSearch] = useState('');
-  const [member, setMember] = useState<any>();
-  const [memberCopy, setMemberCopy] = useState([]);
-
-  // 바뀐 status을 배열에 적용
-  useEffect(() => {
-    const arr = peopleArr?.map((item:MemberDataType) => item);
-    setMemberCopy(arr);
-  }, [peopleArr]);
-
   const onClickMemberHandler = () => {
     setToggle(false);
     setMemberClick(true);
     setInboxClick(false);
+    setIsChat(false);
   };
   const onClickInboxHandler = () => {
     setToggle(true);
     setMemberClick(false);
     setInboxClick(true);
+    setIsChat(false);
   };
+  // 바뀐 status을 배열에 적용
+  useEffect(() => {
+    const arr = peopleArr?.map((item:MemberDataType) => item);
+    setMemberCopy(arr);
+  }, [peopleArr]);
 
   useEffect(() => {
     setMember(memberCopy?.filter((item: MemberDataType)=>item.userName.toLowerCase().includes(search.toLowerCase())));
@@ -109,20 +114,24 @@ function RightSideBox() {
         { memberClick ? <StMemberTrue>멤버</StMemberTrue> : <StMember onClick={onClickMemberHandler} >멤버</StMember> }
         { inboxClick ? <StInboxTrue>인박스</StInboxTrue> : <StInbox onClick={onClickInboxHandler} >인박스</StInbox>}
       </StSelectBox>
-
-      <StInputBox>
-        <StInput value={search} name="search" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)} placeholder="Search People" />
-      </StInputBox>
       {
-        toggle 
+        isChat
           ?
-          <StMessageListBox>
-
-          </StMessageListBox>
+          <Chat userId={userId} uuid={uuid} />
           :
-          <StPeopleListBox>
-            <PersonBox member={member} />
-          </StPeopleListBox>
+          <>
+          {
+            toggle 
+              ?
+              <StMessageListBox>
+                <MessageBox setIsChat={(v:boolean)=>setIsChat(v)} />
+              </StMessageListBox>
+              :
+              <StPeopleListBox>
+                <PersonBox member={member} search={search} setSearch={(v)=>{setSearch(v)}} setIsChat={(v)=>setIsChat(v)} setUserId={(v)=>setUserId(v)} />
+              </StPeopleListBox>
+          }
+          </>
       }
     </StContainer>
   )
@@ -160,29 +169,10 @@ const StInbox = styled.h3`
   cursor: pointer;
 `;
 
-const StInputBox = styled.div`
-  padding: 0 24px 0 24px;
-`;
-const StInput = styled.input`
-  padding: 12px 16px;
-  width: 100%;
-  box-sizing: border-box;
-  border: none;
-  border-radius: 18px;
-  box-shadow: 0 0 5px 0 lightgray;
-  &:focus {
-    outline: none;
-  }
-  &::-webkit-input-placeholder {
-    color: #B1B1B1;
-    font-weight: 200;
-  }
-`;
-
 const StPeopleListBox = styled.div`
   
 `;
 
 const StMessageListBox = styled.div`
-  
+
 `;

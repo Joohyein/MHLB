@@ -12,15 +12,22 @@ interface MemberDataType {
   description: string
 };
 // member array type지정하기
-function PersonBox({member}: {member: any}) {
+function PersonBox({member, search, setSearch, setIsChat, setUserId}: {member: any, search: string, setSearch: (v: string) => void, setIsChat: (v:boolean)=>void, setUserId: (v:number)=>void}) {
   const [isHovering, setIsHovering] = useState(false);
+  const onClickPersonHandler = (userId:number) => {
+    setIsChat(true);
+    setUserId(userId);
+  };
 
   return (
     <StContainer>
+      <StInputBox>
+        <StInput value={search} name="search" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)} placeholder="이름으로 검색" />
+      </StInputBox>
       {
         member?.map((item: MemberDataType) => {
           return(
-            <StPersonBox key={item.userId} onMouseOver={() => setIsHovering(true)} onMouseOut={() => setIsHovering(false)} >
+            <StPersonBox key={item.userId} onClick={()=>onClickPersonHandler(item.userId)} onMouseOver={() => setIsHovering(true)} onMouseOut={() => setIsHovering(false)} >
               <StDivideBox>
                 <StProfileImg />
                 <StNameRoleBox>
@@ -41,9 +48,28 @@ function PersonBox({member}: {member: any}) {
 export default PersonBox;
 
 const StContainer = styled.div`
-  padding: 16px 18px 18px 16px;
+  padding: 0px 18px 18px 16px;
   box-sizing: border-box;
   border-bottom: 1px solid #eeeeee;
+`;
+
+const StInputBox = styled.div`
+  padding: 0px 24px 24px 24px;
+`;
+const StInput = styled.input`
+  padding: 12px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 0 5px 0 lightgray;
+  &:focus {
+    outline: none;
+  }
+  &::-webkit-input-placeholder {
+    color: #B1B1B1;
+    font-weight: 200;
+  }
 `;
 const StPersonBox = styled.div`
   position: relative;
