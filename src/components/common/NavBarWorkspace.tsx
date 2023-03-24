@@ -43,14 +43,16 @@ const NavBarWorkspace = () => {
             <StLogo onClick = {() => {navigate('/')}}>
                 Pin me
             </StLogo>
-            <StUserImage img = {userImg} onClick = {() => {onClickProfileImage()}} />
-            {openProfile
-                ? <StProfileDropdownDiv ref = {dropdownRef}>
-                    <StProfileDropdownContent onClick = {() => {onClickMyPage()}}>마이페이지</StProfileDropdownContent>
-                    <StHrTag />
-                    <StProfileDropdownContent onClick = {() => {onClickLogout()}}>로그아웃</StProfileDropdownContent>
-                </StProfileDropdownDiv>
-                : null}
+            <StRightsideDiv ref = {dropdownRef}>
+                <StUserImage img = {userImg} onClick = {() => {onClickProfileImage()}} />
+                {openProfile
+                    ? <StProfileDropdownDiv>
+                        <StProfileDropdownContent onClick = {() => {onClickMyPage()}}>마이페이지</StProfileDropdownContent>
+                        <StHrTag />
+                        <StProfileDropdownContent onClick = {() => {onClickLogout()}}>로그아웃</StProfileDropdownContent>
+                    </StProfileDropdownDiv>
+                    : null}
+            </StRightsideDiv>
         </StNavBar>
     )
 };
@@ -87,6 +89,10 @@ const StUserImage = styled.div`
     &:hover {
         cursor : pointer;
     }
+`
+
+const StRightsideDiv = styled.div`
+
 `
 
 const StProfileDropdownDiv = styled.div`
