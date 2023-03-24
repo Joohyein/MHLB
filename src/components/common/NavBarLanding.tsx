@@ -8,7 +8,7 @@ const NavBarLanding = () => {
     return (
         <StNavBar>
             <StLogo onClick = {() => {navigate('/')}}>
-                Logo
+                Pin me
             </StLogo>
             <StLinkDiv>
                 <StLinkButton statusProp = {false} onClick = {() => {navigate('/login')}}>로그인</StLinkButton>
@@ -32,9 +32,9 @@ const StNavBar = styled.div`
 
 const StLogo = styled.div`
     margin-left : 2rem;
-    font-size : 1.5rem;
+    font-size : 2rem;
     font-weight : 900;
-    color : #ed702d;
+    color : #007AFF;
 `
 
 const StLinkDiv = styled.div`
@@ -45,18 +45,18 @@ const StLinkDiv = styled.div`
 
 const StLinkButton = styled.button`
     border : none;
-    background-color : ${(props : {statusProp : boolean}) => props.statusProp ? '#ed702d' : 'transparent'};
-    color : ${(props : {statusProp : boolean}) => props.statusProp ? 'white' : '#ed702d'};
-    outline : ${(props : {statusProp : boolean}) => props.statusProp ? null : '1px solid #ed702d'};
+    background-color : ${(props : {statusProp : boolean}) => props.statusProp ? '#007AFF' : 'transparent'};
+    color : ${(props : {statusProp : boolean}) => props.statusProp ? 'white' : '#007AFF'};
+    outline : ${(props : {statusProp : boolean}) => props.statusProp ? null : '1px solid #007AFF'};
     outline-offset : -1px;
     border-radius : 0.25rem;
     padding : 0.5rem 1rem;
     font-size : 1rem;
-    font-weight : 700;
+    font-weight : 900;
     line-height : 1.5rem;
     transition : 200ms;
     &:hover {
-        background-color : ${(props : {statusProp : boolean}) => props.statusProp ? '#ff9f6b' : '#ffdecc'}
+        background-color : ${(props : {statusProp : boolean}) => props.statusProp ? '#4da2ff' : '#deeeff'}
     }
     &:active {
         scale : 1.05;
