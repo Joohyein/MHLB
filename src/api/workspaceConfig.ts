@@ -21,7 +21,7 @@ const editWorkspaceDesc = async ({workspaceDesc, workspaceId}:{workspaceDesc:str
 };
 
 const getWorkspaceMember = async ({workspaceId} : {workspaceId : string | undefined}) => {
-    const response = await instance.get(`/api/managing/1/people`);
+    const response = await instance.get(`/api/managing/${workspaceId}/people`);
     return response.data;
 };
 

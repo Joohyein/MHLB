@@ -5,8 +5,7 @@ import { getPeopleList } from "../../api/rightSide";
 import { getCookie } from "../../cookie/cookies";
 import PersonBox from "./PersonBox";
 import { EventSourcePolyfill } from "event-source-polyfill";
-
-const workspaceId = 1;
+import { useParams } from "react-router-dom";
 
 interface MemberDataType {
   description: string,
@@ -20,7 +19,10 @@ interface MemberDataType {
 };
 
 function RightSideBox() {
-  const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', async () => getPeopleList(workspaceId));
+
+  const params = useParams();
+
+  const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', async () => getPeopleList(Number(params.workspaceId)));
 
   const [statusArr, setStatusArr] = useState<any>();
   const [peopleArr, setPeopleArr] = useState<any>([]);
@@ -32,7 +34,7 @@ function RightSideBox() {
   const EventSource = EventSourcePolyfill;
 
   useEffect(() => {
-    const eventSource = new EventSource(`${process.env.REACT_APP_BE_SERVER}/api/status/${workspaceId}/connect`,
+    const eventSource = new EventSource(`${process.env.REACT_APP_BE_SERVER}/api/status/${params.workspaceId}/connect`,
       {
         headers: { Authorization: getCookie("authorization")},
         withCredentials: true

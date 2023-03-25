@@ -27,23 +27,27 @@ const getWorkspaces = async() => {
 };
 
 const editProfileImg = async (userImage: FormData) => {
-  await instance.post('/api/mypage/image', userImage, 
+  const response = await instance.post('/api/mypage/image', userImage, 
     {
       headers: {"Content-Type": "multipart/form-data"},
     }
   );
+  return response;
 };
 
 const leaveWorkspace = async ({myWorkspaceId} : {myWorkspaceId: number}) => {
-  await instance.patch(`/api/mypage/${myWorkspaceId}`);
+  const response = await instance.patch(`/api/mypage/${myWorkspaceId}`);
+  return response;
 };
 
 const acceptInvite = async (workspaceId: number) => {
-  await instance.post(`/api/mypage/${workspaceId}/invite`);
+  const response = await instance.post(`/api/mypage/${workspaceId}/invite`);
+  return response;
 };
 
 const rejectInvite = async (workspaceId: number) => {
-  await instance.delete(`/api/mypage/${workspaceId}/reject`);
+  const response = await instance.delete(`/api/mypage/${workspaceId}/reject`);
+  return response;
 };
 
 export { getUserData, editUserName, editUserJob, editUserDesc, getWorkspaces, editProfileImg, leaveWorkspace, acceptInvite, rejectInvite };
