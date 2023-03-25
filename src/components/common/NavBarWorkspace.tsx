@@ -9,7 +9,8 @@ const NavBarWorkspace = () => {
 
     const navigate = useNavigate();
     const logout = useLogout();
-    const dropdownRef = useOutsideClick(() => {setOpenProfile(false)})
+
+    const dropdownRef = useOutsideClick(() => {setOpenProfile(false)});
 
     const [userImg, setUserImg] = useState('');
 

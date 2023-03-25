@@ -25,17 +25,19 @@ const LeftSideBar = () => {
         })
     }, [])
 
+    useEffect(() => {
+        const orderList = ({ orders : [...workspaceList.map((val : WorkspaceListIconType, idx : number) => {
+            return {workspaceId : Number(val.workspaceId), ordernum : Number(idx)};
+        })]})
+        reorderWorkspaceList({...orderList})
+    }, [workspaceList])
+
     const handleOnDragEnd = (result : any) => {
         if (!result.destination) return;
         const tempArr = [...workspaceList];
         const [removedArr] = tempArr.splice(result.source.index, 1);
         tempArr.splice(result.destination.index, 0, removedArr);
-        console.log(tempArr);
         setWorkspaceList(tempArr);
-        const orderList = ({ orders : [...workspaceList.map((val : WorkspaceListIconType, idx : number) => {
-            return {workspaceId : Number(val.workspaceId), ordernum : Number(idx)};
-        })]})
-        reorderWorkspaceList({...orderList})
     }
 
     return (

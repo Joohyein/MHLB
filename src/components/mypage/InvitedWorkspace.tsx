@@ -50,8 +50,8 @@ function InvitedWorkspace({invitedWorkspaceData}:{invitedWorkspaceData:InvitedWo
               </StNameSubBox>
             </StWorkspaceDataBox>
             <StBtnBox>
-              <StAcceptBtn onClick={() => onClickAcceptHandler(item.workspaceId)}>거절</StAcceptBtn>
-              <StRejectBtn onClick={() => onClickRejectHandler(item.workspaceId)}>수락</StRejectBtn>
+              <StAcceptBtn onClick={() => onClickRejectHandler(item.workspaceId)}>거절</StAcceptBtn>
+              <StRejectBtn onClick={() => onClickAcceptHandler(item.workspaceId)}>수락</StRejectBtn>
             </StBtnBox>
         </StWorkspaceData>
         )

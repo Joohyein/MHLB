@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import Close from "../asset/icons/Close";
 import OpenMenu from "../asset/icons/OpenMenu";
+import RightSideBox from "./RightSideBox";
 
 const RightSideBar = () => {
 
@@ -16,7 +17,8 @@ const RightSideBar = () => {
             <StOpener onClick = {() => {onMenuOpenToggleHandler()}}>
                 {menuOpen ? <Close size = {'36'} fill = {'#303030'} onClick = {() => {}} cursor = {'pointer'} /> : <OpenMenu size = {'36'} fill = {'#303030'}/>}
             </StOpener>
-            Right
+            {/* RightSideBox implement not yet */}
+            <RightSideBox />
         </StRightSideContainer>
     );
 };
