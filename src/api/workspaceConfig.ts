@@ -1,7 +1,7 @@
 import instance from "./instance/instance";
 
-const getWorkspaceInfo = async () => {
-    const response = await instance.get(`/api/managing?id=1`);
+const getWorkspaceInfo = async ({workspaceId} : {workspaceId : string | undefined}) => {
+    const response = await instance.get(`/api/managing?id=${workspaceId}`);
     return response.data;
 };
 
@@ -20,7 +20,7 @@ const editWorkspaceDesc = async ({workspaceDesc, workspaceId}:{workspaceDesc:str
     await instance.patch(`/api/managing/${workspaceId}/description`, {workspaceDesc});
 };
 
-const getWorkspaceMember = async () => {
+const getWorkspaceMember = async ({workspaceId} : {workspaceId : string | undefined}) => {
     const response = await instance.get(`/api/managing/1/people`);
     return response.data;
 };

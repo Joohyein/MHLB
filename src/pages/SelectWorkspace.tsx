@@ -37,6 +37,8 @@ const StContainer = styled.div`
   width: 80%;
   height: 100%;
   margin: 36px;
+  padding-top : 64px;
+  box-sizing : border-box;
 `;
 const StCreateWorkspaceBtn = styled.button`
   
