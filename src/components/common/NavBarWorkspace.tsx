@@ -21,7 +21,7 @@ const NavBarWorkspace = () => {
             setUserImg(res.data.userImage);
         })
         .catch((error) => {
-            console.log(error)
+            console.log(error);
         })
     }, [])
 
@@ -67,6 +67,8 @@ const StNavBar = styled.div`
     justify-content : space-between;
     align-items : center;
     box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.05);
+    position : absolute;
+    z-index : 5;
 `
 
 const StLogo = styled.div`

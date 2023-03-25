@@ -15,15 +15,19 @@ import {
 } from '../api/workspaceConfig';
 import RemoveCheckBtn from '../components/workspaceConfig/RemoveCheckBtn';
 import DeleteWorkspaceModal from '../components/workspaceConfig/DeleteWorkspaceModal';
+import { useParams } from 'react-router-dom';
 
 const WorkspaceConfig = () => {
+
+  const params = useParams();
+
   const { isLoading: isLoadingInfo, data: workspaceInfoData } = useQuery(
     'workspaceInfo',
-    getWorkspaceInfo
+    () => getWorkspaceInfo({workspaceId : params.workspaceId})
   );
   const { isLoading: isLoadingMember, data: workspaceMember } = useQuery(
     'workspaceMember',
-    getWorkspaceMember
+    () => getWorkspaceMember({workspaceId : params.workspaceId})
   );
   // const imgInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null);
   const imgInputRef = useRef<any>(null);
