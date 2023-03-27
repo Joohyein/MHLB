@@ -29,8 +29,6 @@ function RightSideBox() {
   const [search, setSearch] = useState('');
   const [member, setMember] = useState<any>();
   const [memberCopy, setMemberCopy] = useState([]);
-  const [memberClick, setMemberClick] = useState(true);
-  const [inboxClick, setInboxClick] = useState(false);
 
   const [statusArr, setStatusArr] = useState<any>();
   const [peopleArr, setPeopleArr] = useState<any>([]);
@@ -80,14 +78,10 @@ function RightSideBox() {
 
   const onClickMemberHandler = () => {
     setToggle(false);
-    setMemberClick(true);
-    setInboxClick(false);
     setIsChat(false);
   };
   const onClickInboxHandler = () => {
     setToggle(true);
-    setMemberClick(false);
-    setInboxClick(true);
     setIsChat(false);
   };
   // 바뀐 status을 배열에 적용
@@ -113,8 +107,8 @@ function RightSideBox() {
   return (
     <StContainer>
       <StSelectBox>
-        { memberClick ? <StMemberTrue>멤버</StMemberTrue> : <StMember onClick={onClickMemberHandler} >멤버</StMember> }
-        { inboxClick ? <StInboxTrue>인박스</StInboxTrue> : <StInbox onClick={onClickInboxHandler} >인박스</StInbox>}
+        { toggle ? <StMember onClick={onClickMemberHandler} >멤버</StMember> : <StMemberTrue>멤버</StMemberTrue> }
+        { toggle ? <StInboxTrue>인박스</StInboxTrue> : <StInbox onClick={onClickInboxHandler} >인박스</StInbox>}
       </StSelectBox>
       {
         isChat
@@ -139,6 +133,7 @@ function RightSideBox() {
                   setSearch={(v)=>{setSearch(v)}} 
                   setIsChat={(v)=>setIsChat(v)} 
                   setUserId={(v)=>setUserId(v)} 
+                  setToggle={(v)=>setToggle(v)}
                   setCheckPersonInbox={(v)=>setCheckPersonInbox(v)}
                 />
               </StPeopleListBox>

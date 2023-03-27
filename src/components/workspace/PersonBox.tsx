@@ -12,9 +12,10 @@ interface MemberDataType {
   description: string
 };
 // member array type지정하기
-function PersonBox({member, search, setSearch, setIsChat, setUserId, setCheckPersonInbox}: {member: any, search: string, setSearch: (v: string) => void, setIsChat: (v:boolean)=>void, setUserId: (v:number)=>void, setCheckPersonInbox:(v:boolean)=>void}) {
+function PersonBox({member, search, setSearch, setIsChat, setUserId, setToggle, setCheckPersonInbox}: {member: any, search: string, setSearch: (v: string) => void, setIsChat: (v:boolean)=>void, setUserId: (v:number)=>void, setToggle: (v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void}) {
   const [isHovering, setIsHovering] = useState(false);
   const onClickPersonHandler = (userId:number) => {
+    setToggle(true);
     setIsChat(true);
     setUserId(userId);
     setCheckPersonInbox(false);
