@@ -25,7 +25,6 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: Reac
   const { data } = useQuery('inviting', async () => getInviteMembers(workspaceId));
 
   const [inviteLoading, setInviteLoading] = useState(false);
-
   const [email, setEmail] = useState('');
   const [emailValidation, setEmailValidation] = useState(false);
   const [inviteCheck, setInviteCheck] = useState(false);
@@ -38,7 +37,13 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: Reac
   }, [email]);
 
   const queryClient = useQueryClient();
-  const mutation = useMutation(cancelInvite, {
+  const mutationInviting = useMutation(inviteMember, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('inviting');
+      setEmail('');
+    }
+  })
+  const mutationCancel = useMutation(cancelInvite, {
     onSuccess: (response) => {
       queryClient.invalidateQueries('inviting');
       console.log(response);
@@ -51,24 +56,16 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: Reac
       setEmailValidation(true);
       return;
     };
-    setInviteLoading(true);
-
-    inviteMember(workspaceId, email)
-    .then((response) => {
-      setInviteCheck(true);
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log('error: ', error.response.data.message);
-      if (error.response.data.statusCode === 400) setAlreadyInvited(true);
-    })
-    .finally(() => {
-      setInviteLoading(false);
-    })
+    mutationInviting.mutate({workspaceId, email});
   };
 
+  useEffect(() => {
+    if(mutationInviting.isLoading) setInviteLoading(true);
+    return () => {setInviteLoading(false)}
+  }, [mutationInviting.isLoading]);
+
   const onClickCancelHandler = (inviteId: number) => {
-    mutation.mutate({ workspaceId, inviteId });
+    mutationCancel.mutate({ workspaceId, inviteId });
   };
 
   const onKeyPressInvite = (e: React.KeyboardEvent<HTMLInputElement>) => {
