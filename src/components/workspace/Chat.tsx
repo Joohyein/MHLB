@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-function Chat({userId, uuid}:{userId:number|undefined, uuid:boolean}) {
+function Chat({userId, uuid, checkPersonInbox}:{userId:number|undefined, uuid:string, checkPersonInbox:boolean}) {
   const [messages, setMessages] = useState([]);
 
   // post요청으로 userId 보내고 uuid 받아서 웹소켓에서 구독(url)에 넣기
-
+  // 사람 목록에서 클릭했는지 채팅 목록에서 클릭했는지 구분하기 -> checkpersoninbox - false(messagebox), true(personbox)
+  // true이면 post요청 보내서 uuid 받기
+  // checkpersoninbox가 false이면 websocket연결하기
+  if(checkPersonInbox) {
+    // post 요청 
+  }
+  useEffect(()=>{
+    if(!checkPersonInbox){
+      // websocket 연결
+    }
+  }, [uuid]);
 
   return (
     <StContainer>

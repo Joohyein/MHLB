@@ -1,22 +1,19 @@
 import styled from "styled-components";
 import { useState } from "react";
 
-function MessageBox({setIsChat}:{setIsChat:(v:boolean)=>void}) {
+function MessageBox({setIsChat}:{setIsChat:(v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void}) {
   // 방을 클릭했을 때 userId, uuId 둘 다 넘겨줘? 그럼 <Chat />에 uuid, userid 둘 다 넘겨줘? 
+  // checkpersoninbox로 false 넘겨주기
 
-  const onClickUuid = () => {
-    setIsChat(true);
-  };
 
   return (
     <StContainer>
-      <button onClick={onClickUuid} >btn</button>
       <StInputBox>
         <StInput  name="search" placeholder="이름으로 검색" />
       </StInputBox>
     </StContainer>
   )
-}
+};
 
 export default MessageBox;
 

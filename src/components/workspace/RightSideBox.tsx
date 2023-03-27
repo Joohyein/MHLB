@@ -36,7 +36,8 @@ function RightSideBox() {
 
   const [isChat, setIsChat] = useState(false); // 사람 클릭시, 채팅방 클릭시 채팅방으로 이동
   const [userId, setUserId] = useState<number>(); // 채팅방 id <Chat /> 에 넘겨주기
-  const [uuid, setuuid] = useState(false);
+  const [uuid, setuuid] = useState('');
+  const [checkPersonInbox, setCheckPersonInbox] = useState(true);
 
   useEffect(() => {
     if(peopleListData) setPeopleArr(peopleListData);
@@ -117,18 +118,28 @@ function RightSideBox() {
       {
         isChat
           ?
-          <Chat userId={userId} uuid={uuid} />
+          <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} />
           :
           <>
           {
             toggle 
               ?
               <StMessageListBox>
-                <MessageBox setIsChat={(v:boolean)=>setIsChat(v)} />
+                <MessageBox 
+                  setIsChat={(v:boolean)=>setIsChat(v)} 
+                  setCheckPersonInbox={(v)=>setCheckPersonInbox(v)}
+                />
               </StMessageListBox>
               :
               <StPeopleListBox>
-                <PersonBox member={member} search={search} setSearch={(v)=>{setSearch(v)}} setIsChat={(v)=>setIsChat(v)} setUserId={(v)=>setUserId(v)} />
+                <PersonBox 
+                  member={member} 
+                  search={search} 
+                  setSearch={(v)=>{setSearch(v)}} 
+                  setIsChat={(v)=>setIsChat(v)} 
+                  setUserId={(v)=>setUserId(v)} 
+                  setCheckPersonInbox={(v)=>setCheckPersonInbox(v)}
+                />
               </StPeopleListBox>
           }
           </>
