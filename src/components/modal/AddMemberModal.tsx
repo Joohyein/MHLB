@@ -7,19 +7,24 @@ import {
   inviteMember,
 } from '../../api/invitation';
 import Close from '../asset/icons/Close';
+import Lottie from 'react-lottie';
+import animationData from '../../loadingData.json';
 
-function AddMemberModal({
-  modalRef,
-  workspaceId,
-  setInviteModal,
-}: {
-  modalRef: React.MutableRefObject<any>;
-  workspaceId: number;
-  setInviteModal: (v: boolean) => void;
-}) {
-  const { data } = useQuery('inviting', async () =>
-    getInviteMembers(workspaceId)
-  );
+const defaultOptions:any| Readonly<any> = { 
+  src:"https://assets10.lottiefiles.com/datafiles/nT4vnUFY9yay7QI/data.json",
+  background:"transparent",
+  animationData,
+  speed:"1",
+  loop:true,
+  controls:true,
+  autoplay:true,
+};
+
+
+function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: React.MutableRefObject<any>; workspaceId: number; setInviteModal: (v: boolean) => void;}) {
+  const { data } = useQuery('inviting', async () => getInviteMembers(workspaceId));
+
+  const [inviteLoading, setInviteLoading] = useState(false);
 
   const [email, setEmail] = useState('');
   const [emailValidation, setEmailValidation] = useState(false);
@@ -29,6 +34,7 @@ function AddMemberModal({
   useEffect(() => {
     setEmailValidation(false);
     setInviteCheck(false);
+    setAlreadyInvited(false);
   }, [email]);
 
   const queryClient = useQueryClient();
@@ -44,16 +50,21 @@ function AddMemberModal({
     if (!/[a-z0-9]+@[a-z]+\.[a-z]{2,3}|\.[a-z]{2,3}\.[a-z]{2,3}/g.test(email)) {
       setEmailValidation(true);
       return;
-    }
+    };
+    setInviteLoading(true);
+
     inviteMember(workspaceId, email)
-      .then((response) => {
-        setInviteCheck(true);
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log('error: ', error.response.data.message);
-        if (error.response.data.statusCode === 400) setAlreadyInvited(true);
-      });
+    .then((response) => {
+      setInviteCheck(true);
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log('error: ', error.response.data.message);
+      if (error.response.data.statusCode === 400) setAlreadyInvited(true);
+    })
+    .finally(() => {
+      setInviteLoading(false);
+    })
   };
 
   const onClickCancelHandler = (inviteId: number) => {
@@ -67,7 +78,7 @@ function AddMemberModal({
   interface DataType {
     inviteId: number;
     email: string;
-  }
+  };
 
   return (
     <StWrap>
@@ -90,16 +101,18 @@ function AddMemberModal({
             }
             onKeyPress={onKeyPressInvite}
           />
-          <StInviteBtn onClick={onClickInviteHandler}>초대 보내기</StInviteBtn>
-          {emailValidation ? (
-            <StEmailCheck>이메일 형식이 맞지 않습니다.</StEmailCheck>
-          ) : null}
-          {inviteCheck ? (
-            <StInviteCheck>초대가 완료되었습니다.</StInviteCheck>
-          ) : null}
-          {alreadyInvited ? (
-            <StAlreadyInvited>이미 초대된 이메일입니다.</StAlreadyInvited>
-          ) : null}
+          <StInviteBtn onClick={onClickInviteHandler}>
+            {inviteLoading ? 
+              <StInvitingMessage>
+                <Lottie options={defaultOptions} width={64} height={64} />
+              </StInvitingMessage> 
+              : "초대 보내기" 
+            }
+          </StInviteBtn>
+          {emailValidation && <StEmailCheck>이메일 형식이 맞지 않습니다.</StEmailCheck>}
+          {inviteCheck && <StInviteCheck>초대가 완료되었습니다.</StInviteCheck>}
+          {alreadyInvited && <StAlreadyInvited>이미 초대된 이메일입니다.</StAlreadyInvited>}
+          
         </StInputContainer>
 
         <StSub>초대 중인 사람</StSub>
@@ -110,11 +123,7 @@ function AddMemberModal({
               return (
                 <StUserBox key={item.inviteId}>
                   <h5>{item.email}</h5>
-                  <StCancelBtn
-                    onClick={() => onClickCancelHandler(item.inviteId)}
-                  >
-                    초대 취소
-                  </StCancelBtn>
+                  <StCancelBtn onClick={() => onClickCancelHandler(item.inviteId)}>초대 취소</StCancelBtn>
                 </StUserBox>
               );
             })}
@@ -186,6 +195,7 @@ const StInviteBtn = styled.button`
   width: 30%;
   border: none;
   cursor: pointer;
+  position: relative;
 `;
 const StEmailCheck = styled.h3`
   font-size: 12px;
@@ -199,11 +209,16 @@ const StInviteCheck = styled.h3`
   color: #01962e;
   top: 38px;
 `;
-const StAlreadyInvited = styled.div`
+const StAlreadyInvited = styled.h3`
   font-size: 12px;
   position: absolute;
   color: #ffaa00;
   top: 38px;
+`;
+const StInvitingMessage = styled.h3`
+  position: absolute;
+  top: -12px;
+  right: 32px;
 `;
 
 const StInviting = styled.div`
