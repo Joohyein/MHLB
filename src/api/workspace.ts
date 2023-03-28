@@ -15,4 +15,9 @@ const getMainWorkspaceInfo = async ({workspaceId} : {workspaceId : string}) => {
   return response;
 }
 
-export { getWorkspaceList, reorderWorkspaceList, getMainWorkspaceInfo };
+const requestChangeStatus = async ({status} : {status : string}) => {
+  const response = await instance.post('/api/status', {status});
+  return response;
+}
+
+export { getWorkspaceList, reorderWorkspaceList, getMainWorkspaceInfo, requestChangeStatus };
