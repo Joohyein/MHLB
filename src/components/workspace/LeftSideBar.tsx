@@ -73,11 +73,15 @@ const StLeftSideContainer = styled.div`
     justify-content : flex-start;
     align-items : center;
     flex-shrink : 0;
-    position : absolute;
+    position : fixed;
     padding-top : 64px;
     top : 0;
     left : 0;
     box-sizing : border-box;
+    z-index : 4;
+    @media screen and (max-width : 672px) {
+        display : none;
+    }
 `
 
 const StIcon = styled.div`

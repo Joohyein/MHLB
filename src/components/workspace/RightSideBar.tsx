@@ -35,7 +35,7 @@ const StRightSideContainer = styled.div`
     justify-content : space-between;
     align-items : center;
     flex-shrink : 0;
-    position : absolute;
+    position : fixed;
     padding-top : 64px;
     top : 0;
     right : ${(props : {open : boolean}) => props.open ? '0' : '-256px'};
