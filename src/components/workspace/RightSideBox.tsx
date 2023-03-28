@@ -35,6 +35,11 @@ function RightSideBox() {
 
   const [isChat, setIsChat] = useState(false); // 사람 클릭시, 채팅방 클릭시 채팅방으로 이동
   const [userId, setUserId] = useState<number>(); // 채팅방 id <Chat /> 에 넘겨주기
+  const [userName, setUserName] = useState('');
+  const [userImage, setUserImage] = useState('');
+  const [userJob, setUserJob] = useState('');
+  const [color, setColor] = useState('');
+
   const [uuid, setuuid] = useState('');
   const [checkPersonInbox, setCheckPersonInbox] = useState(true);
 
@@ -113,7 +118,9 @@ function RightSideBox() {
       {
         isChat
           ?
-          <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} />
+          <StChatBox>
+            <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={color} workspaceId={Number(params)} />
+          </StChatBox>
           :
           <>
           {
@@ -130,11 +137,15 @@ function RightSideBox() {
                 <PersonBox 
                   member={member} 
                   search={search} 
-                  setSearch={(v)=>{setSearch(v)}} 
+                  setSearch={(v)=>setSearch(v)} 
                   setIsChat={(v)=>setIsChat(v)} 
                   setUserId={(v)=>setUserId(v)} 
                   setToggle={(v)=>setToggle(v)}
                   setCheckPersonInbox={(v)=>setCheckPersonInbox(v)}
+                  setUserName={v=>setUserName(v)}
+                  setUserJob={v=>setUserJob(v)}
+                  setUserImage={v=>setUserImage(v)}
+                  setColor={v=>setColor(v)}
                 />
               </StPeopleListBox>
           }
@@ -150,15 +161,21 @@ const StContainer = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  height: 100%;
 `;
 const StSelectBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 36px;
-  padding: 32px 32px 12px 32px;
+  padding: 16px 0px 0px 0px;
+  height: 8%;
 `;
+
+const StChatBox = styled.div`
+  height:92%;
+`;
+
 const StMemberTrue = styled.h3`
   color: #007AFF;
   border-bottom: 2px solid #007AFF;

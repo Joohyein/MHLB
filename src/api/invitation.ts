@@ -1,6 +1,6 @@
 import instance from "./instance/instance";
 
-const inviteMember = async (workspaceId: number, email: string) => {
+const inviteMember = async ({workspaceId, email}:{workspaceId: number, email: string}) => {
     await instance.post(`/api/workspaces/${workspaceId}/invite`, {email});
 };
 

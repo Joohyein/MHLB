@@ -5,7 +5,11 @@ const getPeopleList = async (workspaceId:number | undefined) => {
     const response = await instance.get(`/api/workspaces/${workspaceId}/people`);
     return response.data;
   }
-  
 };
 
-export { getPeopleList };
+const getPrevMessages = async (workspaceId:number) => {
+  const response = await instance.get(`/api/inbox/${workspaceId}`);
+  return response.data;
+};
+
+export { getPeopleList, getPrevMessages };

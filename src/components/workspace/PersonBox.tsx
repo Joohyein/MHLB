@@ -12,9 +12,9 @@ interface MemberDataType {
   description: string
 };
 // member array type지정하기
-function PersonBox({member, search, setSearch, setIsChat, setUserId, setToggle, setCheckPersonInbox}: {member: any, search: string, setSearch: (v: string) => void, setIsChat: (v:boolean)=>void, setUserId: (v:number)=>void, setToggle: (v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void}) {
+function PersonBox({member, search, setSearch, setIsChat, setUserId, setToggle, setCheckPersonInbox}: {member: any, search: string, setSearch: (v: string) => void, setIsChat: (v:boolean)=>void, setUserId: (v:number)=>void, setToggle: (v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void, setUserName:(v:string)=>void, setUserImage:(v:string)=>void, setUserJob:(v:string)=>void, setColor:(v:string)=>void}) {
   const [isHovering, setIsHovering] = useState(false);
-  const onClickPersonHandler = (userId:number) => {
+  const onClickPersonHandler = (userId:number, userImage:string, userName:string, color:string, userJob:string) => {
     setToggle(true);
     setIsChat(true);
     setUserId(userId);
@@ -29,7 +29,7 @@ function PersonBox({member, search, setSearch, setIsChat, setUserId, setToggle, 
       {
         member?.map((item: MemberDataType) => {
           return(
-            <StPersonBox key={item.userId} onClick={()=>onClickPersonHandler(item.userId)} onMouseOver={() => setIsHovering(true)} onMouseOut={() => setIsHovering(false)} >
+            <StPersonBox key={item.userId} onClick={()=>onClickPersonHandler(item.userId, item.userImage, item.userName, item.status, item.userJob)} onMouseOver={() => setIsHovering(true)} onMouseOut={() => setIsHovering(false)} >
               <StDivideBox>
                 <StProfileImg />
                 <StNameRoleBox>
