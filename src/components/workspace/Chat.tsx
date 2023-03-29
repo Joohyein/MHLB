@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 function Chat({userId, uuid, checkPersonInbox}:{userId:number|undefined, uuid:string, checkPersonInbox:boolean}) {
+  const scrollRef = useRef<any>(null); // 메시지 element를 저장 <HTMLUListElement>
   const [messages, setMessages] = useState([]);
 
   // post요청으로 userId 보내고 uuid 받아서 웹소켓에서 구독(url)에 넣기
@@ -17,9 +18,16 @@ function Chat({userId, uuid, checkPersonInbox}:{userId:number|undefined, uuid:st
     }
   }, [uuid]);
 
+  // scroll to bottom
+  useEffect(()=>{
+    if(scrollRef.current){
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    };
+  },[messages]);
+
   return (
     <StContainer>
-      <StChatBox>
+      <StChatBox ref={scrollRef}>
 
       </StChatBox>
       <StChatInputBox>
