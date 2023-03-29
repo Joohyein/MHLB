@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getPeopleList } from "../../api/rightSide";
 import { getCookie } from "../../cookie/cookies";
-import PersonBox from "./PersonBox";
+import MembersBox from "./MembersBox";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import MessageBox from "./MessageBox";
 import Chat from "./Chat";
@@ -26,9 +26,7 @@ function RightSideBox() {
   const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', async () => getPeopleList(Number(params.workspaceId)));
 
   const [toggle, setToggle] = useState(false);
-  const [search, setSearch] = useState('');
-  const [member, setMember] = useState<any>();
-  const [memberCopy, setMemberCopy] = useState([]);
+  const [member, setMember] = useState<any>([]);
 
   const [statusArr, setStatusArr] = useState<any>();
   const [peopleArr, setPeopleArr] = useState<any>([]);
@@ -38,14 +36,19 @@ function RightSideBox() {
   const [userName, setUserName] = useState('');
   const [userImage, setUserImage] = useState('');
   const [userJob, setUserJob] = useState('');
-  const [color, setColor] = useState('');
+  const [color, setColor] = useState<number>();
 
   const [uuid, setuuid] = useState('');
   const [checkPersonInbox, setCheckPersonInbox] = useState(true);
 
   useEffect(() => {
+    console.log(isLoadingPeopleData);
+  }, [isLoadingPeopleData])
+
+  useEffect(() => {
     if(peopleListData) setPeopleArr(peopleListData);
   }, [peopleListData, isLoadingPeopleData]);
+
 
   const EventSource = EventSourcePolyfill;
 
@@ -57,7 +60,7 @@ function RightSideBox() {
       }
     );
 
-    eventSource.addEventListener('connect', (e: any) => {
+    eventSource.addEventListener('connect', (e: any) => { 
       const { data : receiveData } = e;
       // console.log('connect: ', receiveData);
     });
@@ -68,9 +71,7 @@ function RightSideBox() {
     });
   }, []);
 
-  // status 바꼈을 때 다시 정렬 - peopleArr 다시 정렬 / status, color value 변경
   useEffect(() => {
-    // console.log(peopleArr);
     if(peopleArr && statusArr) {
       for(let i = 0; i < peopleArr.length; i++) {
         if(peopleArr[i].userId === statusArr.userId) {
@@ -79,6 +80,16 @@ function RightSideBox() {
         }
       }
     }
+    const currentUser = peopleArr[0];
+    const tempArr = peopleArr.slice(1);
+    tempArr.sort((a:MemberDataType, b:MemberDataType) => {
+      if(a.userName > b.userName) return 1;
+      if(a.userName < b.userName) return -1;
+    }).sort((a: MemberDataType, b: MemberDataType) => {
+      if(a.color > b.color) return 1;
+      if(a.color < b.color) return -1;
+    }).unshift(currentUser);
+    setMember(tempArr);
   }, [peopleArr, statusArr]);
 
   const onClickMemberHandler = () => {
@@ -90,24 +101,25 @@ function RightSideBox() {
     setIsChat(false);
   };
   // 바뀐 status을 배열에 적용
+
   useEffect(() => {
-    const arr = peopleArr?.map((item:MemberDataType) => item);
-    setMemberCopy(arr);
+    setMember(peopleArr);
   }, [peopleArr]);
 
-  useEffect(() => {
-    setMember(memberCopy?.filter((item: MemberDataType)=>item.userName.toLowerCase().includes(search.toLowerCase())));
-  }, [search, memberCopy]);
+  const peopleData = ({isChat, userId, userName, toggle, checkPersonInbox, userJob, userImage, color}:{search:string, isChat:boolean, userId:number|undefined,userName:string,toggle:boolean,checkPersonInbox:boolean,userJob:string,userImage:string,color:number|undefined}) => {
+    setIsChat(isChat)
+    setUserId(userId)
+    setToggle(toggle)
+    setCheckPersonInbox(checkPersonInbox)
+    setUserName(userName)
+    setUserJob(userJob)
+    setUserImage(userImage)
+    setColor(color)
+  };
 
-  useEffect(() => {
-    setMember(member?.sort((a:MemberDataType, b:MemberDataType) => {
-      if(a.userName > b.userName) return 1;
-      if(a.userName < b.userName) return -1;
-    }).sort((a: MemberDataType, b: MemberDataType) => {
-      if(a.color > b.color) return 1;
-      if(a.color < b.color) return -1;
-    }));
-  }, [member]);
+  const searchMember = (search : string) => {
+    setMember(peopleArr.filter((item: MemberDataType)=>item?.userName.toLowerCase().includes(search?.toLowerCase())));
+  };
 
   return (
     <StContainer>
@@ -119,7 +131,7 @@ function RightSideBox() {
         isChat
           ?
           <StChatBox>
-            <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={color} workspaceId={Number(params)} />
+            <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={Number(color)} workspaceId={Number(params)} setToggle={v=>setToggle(v)} setIsChat={v=>setIsChat(v)} />
           </StChatBox>
           :
           <>
@@ -134,18 +146,10 @@ function RightSideBox() {
               </StMessageListBox>
               :
               <StPeopleListBox>
-                <PersonBox 
-                  member={member} 
-                  search={search} 
-                  setSearch={(v)=>setSearch(v)} 
-                  setIsChat={(v)=>setIsChat(v)} 
-                  setUserId={(v)=>setUserId(v)} 
-                  setToggle={(v)=>setToggle(v)}
-                  setCheckPersonInbox={(v)=>setCheckPersonInbox(v)}
-                  setUserName={v=>setUserName(v)}
-                  setUserJob={v=>setUserJob(v)}
-                  setUserImage={v=>setUserImage(v)}
-                  setColor={v=>setColor(v)}
+                <MembersBox 
+                  member={member}
+                  searchMember={searchMember}
+                  peopleData={peopleData}
                 />
               </StPeopleListBox>
           }

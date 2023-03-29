@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { useState } from 'react';
+import styled from "styled-components";
+import { useState } from "react";
 
 interface MemberDataType {
   userId: number,
@@ -11,69 +11,34 @@ interface MemberDataType {
   color: number,
   description: string
 };
-// member array type지정하기
-function PersonBox({member, search, setSearch, setIsChat, setUserId, setToggle, setCheckPersonInbox}: {member: any, search: string, setSearch: (v: string) => void, setIsChat: (v:boolean)=>void, setUserId: (v:number)=>void, setToggle: (v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void, setUserName:(v:string)=>void, setUserImage:(v:string)=>void, setUserJob:(v:string)=>void, setColor:(v:string)=>void}) {
-  const [isHovering, setIsHovering] = useState(false);
-  const onClickPersonHandler = (userId:number, userImage:string, userName:string, color:string, userJob:string) => {
-    setToggle(true);
-    setIsChat(true);
-    setUserId(userId);
-    setCheckPersonInbox(false);
-  };
 
+function PersonBox({member, peopleData}: {member: any, peopleData:any}) {
+  const [isHovering, setIsHovering] = useState(false);
+  const onClickPersonHandler = (userId:number, userName:string, userImage:string, userJob:string, color:number) => {
+    peopleData({isChat:true, userId, userName, toggle:true, checkPersonInbox:false, userJob, userImage, color})
+  };
+  const onMouseOverHandler = (status:string) => {
+    setIsHovering(true)
+  };
   return (
-    <StContainer>
-      <StInputBox>
-        <StInput value={search} name="search" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)} placeholder="이름으로 검색" />
-      </StInputBox>
-      {
-        member?.map((item: MemberDataType) => {
-          return(
-            <StPersonBox key={item.userId} onClick={()=>onClickPersonHandler(item.userId, item.userImage, item.userName, item.status, item.userJob)} onMouseOver={() => setIsHovering(true)} onMouseOut={() => setIsHovering(false)} >
-              <StDivideBox>
-                <StProfileImg />
-                <StNameRoleBox>
-                  <StName>{item.userName}</StName>
-                  <StJob>{item.userJob}</StJob>
-                </StNameRoleBox>
-              </StDivideBox>
-              {item.color === 0 ? <StStatusGreen></StStatusGreen> : item.color === 1 ? <StStatusYellow></StStatusYellow> : item.color === 2 ? <StStatusRed></StStatusRed> : item.color === 3 ? <StStatusGray></StStatusGray> : null}
-              {isHovering ? <StHovering>{item.status}</StHovering> : null}
-            </StPersonBox>
-          )
-        })
-      }
-    </StContainer>
+    <StMembersBox onMouseOver={() => onMouseOverHandler(member?.status)} onMouseOut={() => setIsHovering(false)} key={member?.userId} onClick={()=>onClickPersonHandler(member?.userId, member?.userName, member?.userImage, member?.userJob, member?.color)} >
+      <StDivideBox>
+        <StProfileImg />
+        <StNameRoleBox>
+          <StName>{member?.userName}</StName>
+          <StJob>{member?.userJob}</StJob>
+        </StNameRoleBox>
+      </StDivideBox>
+      {member?.color === 0 ? <StStatusGreen></StStatusGreen> : member?.color === 1 ? <StStatusYellow></StStatusYellow> : member?.color === 2 ? <StStatusRed></StStatusRed> : member?.color === 3 ? <StStatusGray></StStatusGray> : null}          
+      {isHovering && <StHovering>{member?.status}</StHovering>}
+    
+    </StMembersBox>
   )
 }
 
 export default PersonBox;
 
-const StContainer = styled.div`
-  padding: 0px 18px 18px 16px;
-  box-sizing: border-box;
-  border-bottom: 1px solid #eeeeee;
-`;
-
-const StInputBox = styled.div`
-  padding: 0px 24px 24px 24px;
-`;
-const StInput = styled.input`
-  padding: 12px 16px;
-  width: 100%;
-  box-sizing: border-box;
-  border: none;
-  border-radius: 18px;
-  box-shadow: 0 0 5px 0 lightgray;
-  &:focus {
-    outline: none;
-  }
-  &::-webkit-input-placeholder {
-    color: #B1B1B1;
-    font-weight: 200;
-  }
-`;
-const StPersonBox = styled.div`
+const StMembersBox = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
