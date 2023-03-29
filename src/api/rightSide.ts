@@ -12,4 +12,9 @@ const getPrevMessages = async (workspaceId:number) => {
   return response.data;
 };
 
-export { getPeopleList, getPrevMessages };
+const getUuid = async (userId:number) => {
+  const response = await instance.post(`/api/inbox/${userId}`);
+  return response.data;
+};
+
+export { getPeopleList, getPrevMessages, getUuid };
