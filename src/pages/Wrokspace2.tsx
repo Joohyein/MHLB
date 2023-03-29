@@ -73,6 +73,13 @@ const StMainContent = styled.div`
     flex-direction : column;
     justify-content : flex-start;
     align-items : center;
+    transition : 200ms;
+    @media screen and (max-width : 1200px) and (min-width : 968px) {
+        width : 776px;
+    }
+    @media screen and (max-width : 968px) {
+        width : 512px;
+    }
 `
 
 const StWorkspaceInfoDiv = styled.div`
