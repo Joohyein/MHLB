@@ -12,10 +12,10 @@ interface MemberDataType {
   description: string
 };
 
-function PersonBox({member, peopleData}: {member: any, peopleData:any}) {
+function PersonBox({member, peopleData}: {member: MemberDataType, peopleData:any}) {
   const [isHovering, setIsHovering] = useState(false);
   const onClickPersonHandler = (userId:number, userName:string, userImage:string, userJob:string, color:number) => {
-    peopleData({isChat:true, userId, userName, toggle:true, checkPersonInbox:false, userJob, userImage, color})
+    peopleData({isChat:true, userId, userName, toggle:true, checkPersonInbox:true, userJob, userImage, color})
   };
   const onMouseOverHandler = (status:string) => {
     setIsHovering(true)
@@ -23,7 +23,7 @@ function PersonBox({member, peopleData}: {member: any, peopleData:any}) {
   return (
     <StMembersBox onMouseOver={() => onMouseOverHandler(member?.status)} onMouseOut={() => setIsHovering(false)} key={member?.userId} onClick={()=>onClickPersonHandler(member?.userId, member?.userName, member?.userImage, member?.userJob, member?.color)} >
       <StDivideBox>
-        <StProfileImg />
+        <StProfileImg src={member?.userImage} />
         <StNameRoleBox>
           <StName>{member?.userName}</StName>
           <StJob>{member?.userJob}</StJob>
@@ -31,7 +31,6 @@ function PersonBox({member, peopleData}: {member: any, peopleData:any}) {
       </StDivideBox>
       {member?.color === 0 ? <StStatusGreen></StStatusGreen> : member?.color === 1 ? <StStatusYellow></StStatusYellow> : member?.color === 2 ? <StStatusRed></StStatusRed> : member?.color === 3 ? <StStatusGray></StStatusGray> : null}          
       {isHovering && <StHovering>{member?.status}</StHovering>}
-    
     </StMembersBox>
   )
 }

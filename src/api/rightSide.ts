@@ -7,14 +7,19 @@ const getPeopleList = async (workspaceId:number | undefined) => {
   }
 };
 
-const getPrevMessages = async (workspaceId:number) => {
+const getChatList = async (workspaceId:number) => {
   const response = await instance.get(`/api/inbox/${workspaceId}`);
   return response.data;
 };
 
-const getUuid = async (userId:number) => {
-  const response = await instance.post(`/api/inbox/${userId}`);
+const getPrevMessages = async (workspaceId:number, userId:number) => {
+  const response = await instance.get(`/api/inbox/${workspaceId}/${userId}`, );
   return response.data;
 };
 
-export { getPeopleList, getPrevMessages, getUuid };
+const getUuid = async (workspaceId:number, userId:number) => {
+  const response = await instance.post(`/api/inbox/${workspaceId}`, {userId});
+  return response.data.uuid;
+};
+
+export { getPeopleList, getPrevMessages, getUuid, getChatList };

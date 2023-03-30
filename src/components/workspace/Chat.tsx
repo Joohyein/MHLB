@@ -6,13 +6,11 @@ import SockJS from 'sockjs-client';
 import { Stomp } from "@stomp/stompjs";
 import { getCookie } from "../../cookie/cookies";
 import ArrowBack from "../asset/icons/ArrowBack";
-  // post요청으로 userId 보내고 uuid 받아서 웹소켓에서 구독(url)에 넣기
-  // 사람 목록에서 클릭했는지 채팅 목록에서 클릭했는지 구분하기 -> checkpersoninbox - false(messagebox), true(personbox)
-  // true이면 post요청 보내서 uuid 받기
-  // checkpersoninbox가 false이면 websocket연결하기
-function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
-  // const { data : prevMessagesData } = useQuery('prevMessages', async() => getPrevMessages(workspaceId));
 
+function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{isChat:boolean;userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
+  const { data : prevMessagesData } = useQuery('prevMessages', async() => getPrevMessages(workspaceId, Number(userId)));
+  // console.log("prevMessagesData:", prevMessagesData);
+  const [personBoxUuid, setPersonBoxUuid] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const cookie = { Authorization : getCookie('authorization') };
 
@@ -20,30 +18,35 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const [stompClient, setStompClient] = useState<any>(null);
   const [inputMessage, setInputMessage] = useState('');
 
-  // if(checkPersonInbox) {
-  //   getUuid(Number(userId));
-  //   checkPersonInbox = false;
-  // };
+  if(checkPersonInbox) {
+    getUuid(Number(workspaceId), Number(userId))
+    .then((res)=>{
+      setPersonBoxUuid(res);
+    });
+    checkPersonInbox = false;
+  };
 
-  // useEffect(()=>{
-  //   if(!checkPersonInbox){
-  //     // websocket 연결
-  //     const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}`);
-  //     const stompClient = Stomp.over(socket);
-
-  //     stompClient.connect({}, () => {
-  //       console.log("connected");
-  //       stompClient.subscribe(`/sub/inbox/#${uuid}`, (data) => {
-  //         const messageData = JSON.parse(data.body);
-  //         console.log("message data :", messageData);
-  //         setMessages((prev:any) => [...prev, messageData]);
-  //       },
-  //       cookie,
-  //       );
-  //       setStompClient(stompClient);
-  //     })
-  //   }
-  // }, [uuid, checkPersonInbox]);
+  useEffect(()=>{
+    const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`); // 웹소켓을 통해 stomp브로커에 연결
+    const stompClient = Stomp.over(socket);
+    if(!checkPersonInbox && personBoxUuid){
+      stompClient.connect({}, () => {
+        console.log("websocket is connected");
+        stompClient.subscribe(`/sub/${personBoxUuid}`, (data) => {
+          const messageData = JSON.parse(data.body);
+          console.log("message data :", messageData);
+          setMessages((prev:any) => [...prev, messageData]);
+        },
+        // cookie
+        );
+        setStompClient(stompClient);
+      });
+      // if문으로 웹소켓 닫기 or return(unmount) 함수에서 웹소켓 닫기
+    }
+    return () => {
+      if(!isChat) stompClient.disconnect();
+    }
+  }, [personBoxUuid, checkPersonInbox]);
 
   const onKeyDownHandler = (e:any) => {
     if(e.keyCode === 13){
@@ -60,11 +63,13 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
 
   const onSubmitHandler = () => {
     const sendData = {
-      uuid,
+      uuid: personBoxUuid,
       message: inputMessage,
+      workspaceId,
+      senderId:1
     };
     if(inputMessage) {
-      stompClient.send(`/pub/inbox/${workspaceId}`, { cookie }, JSON.stringify(sendData));
+      stompClient.send(`/pub/inbox`,{}, JSON.stringify(sendData));
       setInputMessage('');
     }
   };
@@ -77,9 +82,9 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const scrollToBottom = () => {
     if(scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   };
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [messages]);
 
   return (
     <StContainer>
@@ -98,7 +103,11 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
         <StColor colorNum={color} ></StColor>
       </StUserData>
       <StChatBox ref={scrollRef}>
-
+        {
+          messages?.map((item:any)=>{
+            <div>{item.message}</div>
+          })
+        }
       </StChatBox>
       <StChatInputBox>
         <StChatInput 

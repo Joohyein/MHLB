@@ -23,7 +23,7 @@ interface MemberDataType {
 function RightSideBox() {
   const params = useParams();
 
-  const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', async () => getPeopleList(Number(params.workspaceId)));
+  const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', () => getPeopleList(Number(params.workspaceId)));
 
   const [toggle, setToggle] = useState(false);
   const [member, setMember] = useState<any>([]);
@@ -38,12 +38,8 @@ function RightSideBox() {
   const [userJob, setUserJob] = useState('');
   const [color, setColor] = useState<number>();
 
-  const [uuid, setuuid] = useState('');
+  const [uuid, setUuid] = useState('');
   const [checkPersonInbox, setCheckPersonInbox] = useState(true);
-
-  useEffect(() => {
-    console.log(isLoadingPeopleData);
-  }, [isLoadingPeopleData])
 
   useEffect(() => {
     if(peopleListData) setPeopleArr(peopleListData);
@@ -131,7 +127,7 @@ function RightSideBox() {
         isChat
           ?
           <StChatBox>
-            <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={Number(color)} workspaceId={Number(params)} setToggle={v=>setToggle(v)} setIsChat={v=>setIsChat(v)} />
+            <Chat isChat={isChat} userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={Number(color)} workspaceId={Number(params.workspaceId)} setToggle={v=>setToggle(v)} setIsChat={v=>setIsChat(v)} />
           </StChatBox>
           :
           <>
@@ -142,6 +138,8 @@ function RightSideBox() {
                 <MessageBox 
                   setIsChat={(v:boolean)=>setIsChat(v)} 
                   setCheckPersonInbox={(v)=>setCheckPersonInbox(v)}
+                  workspaceId={Number(params.workspaceId)}
+                  setUuid={v=>setUuid(v)}
                 />
               </StMessageListBox>
               :
