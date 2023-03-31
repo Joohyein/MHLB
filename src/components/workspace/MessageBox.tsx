@@ -1,30 +1,27 @@
 import styled from "styled-components";
-import { useState } from "react";
 import { useQuery } from "react-query";
 import { getChatList } from "../../api/rightSide";
-import ChatRoom from "./ChatRoom";
 
 interface ChatListType {
   uuid: string,
+  userId: number,
   userImage: string,
   userName: string,
+  color: number,
   lastChat: string,
   message: string,
   unreadMessages: number
 };
   // setIsChat은 true, checkpersoninbox은 false, uuid 넘겨주기
   // 시간 추가
-function MessageBox({setIsChat, setCheckPersonInbox, workspaceId, setUuid}:{setIsChat:(v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void, workspaceId:number, setUuid:(v:string)=>void}) {
+function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:any}) {
   
   const { data: chatListData} = useQuery('chatList', () => getChatList(workspaceId))
   console.log("chat list data:", chatListData);
 
-  const onClickChatRoomHandler = (uuid:string) => {
+  const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string, color:number) => {
     console.log("채팅방 클릭 uuid:", uuid);
-    setUuid(uuid);
-    setIsChat(true);
-    setCheckPersonInbox(false);
-    // setUserId()
+    setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, color: color, checkPersonInbox:false, toggle:true})
   };
   
   return (
@@ -34,9 +31,9 @@ function MessageBox({setIsChat, setCheckPersonInbox, workspaceId, setUuid}:{setI
       </StInputBox>
       <StChatListBox>
         {
-          chatListData?.map((item:any) => {
+          chatListData?.map((item:ChatListType) => {
             return(
-              <StChatRoom key={item.uuid} onClick={()=>onClickChatRoomHandler(item.uuid)}>
+              <StChatRoom key={item.uuid} onClick={()=>onClickChatRoomHandler(item.uuid, item.userId, item.userName, item.userImage, item.color)}>
                 <StUserDatabox>
                 <StUserImage src={item.userImage} />
                 <StUserNameMsg>

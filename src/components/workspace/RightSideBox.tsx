@@ -116,7 +116,17 @@ function RightSideBox() {
   const searchMember = (search : string) => {
     setMember(peopleArr.filter((item: MemberDataType)=>item?.userName.toLowerCase().includes(search?.toLowerCase())));
   };
-
+  const setUserData = ({isChat, userId, userName, userImage, color, uuid, checkPersonInbox, toggle}:{isChat:boolean; userId:number; userName:string; userImage:string; color:number, uuid:string; checkPersonInbox:boolean; toggle:boolean}) => {
+    setIsChat(isChat);
+    setUserId(userId);
+    setUserName(userName);
+    setUserImage(userImage);
+    setUuid(uuid);
+    setColor(color);
+    setToggle(toggle);
+    setCheckPersonInbox(checkPersonInbox);
+  };
+ 
   return (
     <StContainer>
       <StSelectBox>
@@ -136,10 +146,8 @@ function RightSideBox() {
               ?
               <StMessageListBox>
                 <MessageBox 
-                  setIsChat={(v:boolean)=>setIsChat(v)} 
-                  setCheckPersonInbox={(v)=>setCheckPersonInbox(v)}
                   workspaceId={Number(params.workspaceId)}
-                  setUuid={v=>setUuid(v)}
+                  setUserData={setUserData}
                 />
               </StMessageListBox>
               :
