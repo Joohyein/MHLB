@@ -140,6 +140,7 @@ function RightSideBox() {
                   setCheckPersonInbox={(v)=>setCheckPersonInbox(v)}
                   workspaceId={Number(params.workspaceId)}
                   setUuid={v=>setUuid(v)}
+                  setUserId={v=>setUserId(v)}
                 />
               </StMessageListBox>
               :
