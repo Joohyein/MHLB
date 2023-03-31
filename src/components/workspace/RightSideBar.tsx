@@ -52,7 +52,7 @@ const StOpener = styled.div`
     height : 48px;
     border-radius : 64px;
     background-color : white;
-    box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.15);
+    box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.1);
     position : absolute;
     top : 80px;
     right : 272px;
