@@ -42,6 +42,9 @@ const StMembersBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #f1f1f1;
+  cursor: pointer;
 `;
 const StDivideBox = styled.div`
   display: flex;

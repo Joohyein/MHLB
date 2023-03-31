@@ -21,7 +21,7 @@ function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:
 
   const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string, color:number) => {
     console.log("채팅방 클릭 uuid:", uuid);
-    setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, color: color, checkPersonInbox:true, toggle:false})
+    setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, color: color, checkPersonInbox:false, toggle:true})
   };
   
   return (
