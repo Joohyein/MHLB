@@ -8,8 +8,8 @@ import { getCookie } from "../../cookie/cookies";
 import ArrowBack from "../asset/icons/ArrowBack";
 
 function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{isChat:boolean;userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
-  const { data : prevMessagesData } = useQuery('prevMessages', () => getPrevMessages(Number(workspaceId), Number(userId)));
-  
+  const { data : prevMessagesData, isLoading } = useQuery('prevMessages', () => getPrevMessages(Number(workspaceId), Number(userId)));
+  // console.log("prev messages data: ", prevMessagesData);
   const [personBoxUuid, setPersonBoxUuid] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const cookie = { Authorization : getCookie('authorization') };
@@ -19,26 +19,28 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
   const [inputMessage, setInputMessage] = useState('');
 
   useEffect(()=>{
-    console.log("prevMessagesData:", prevMessagesData);
-    if(prevMessagesData) setMessages(prevMessagesData);
-  },[prevMessagesData]);
+    // console.log("prevMessagesData:", prevMessagesData);
+    if(!isLoading) setMessages(prevMessagesData);
+  },[isLoading]);
 
-  if(checkPersonInbox) {
-    getUuid(Number(workspaceId), Number(userId))
-    .then((res)=>{
-      setPersonBoxUuid(res);
-    });
-    checkPersonInbox = false;
-  };
+  useEffect(() => {
+    if(checkPersonInbox) {
+      getUuid(Number(workspaceId), Number(userId))
+      .then((res)=>{
+        setPersonBoxUuid(res);
+      });
+    };
+  }, [isChat]);
 
   useEffect(()=>{
+    console.log('uuid: ', checkPersonInbox);
     const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`); // 웹소켓을 통해 stomp브로커에 연결
     const stompClient = Stomp.over(socket);
     // setPersonBoxUuid(uuid);
-    if(!checkPersonInbox && personBoxUuid){
+    if(personBoxUuid){
       stompClient.connect({}, () => {
         console.log("websocket is connected");
-        stompClient.subscribe(`/sub/${personBoxUuid}`, (data) => {
+        stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data) => {
           const messageData = JSON.parse(data.body);
           console.log("message data :", messageData);
           setMessages((prev:any) => [...prev, messageData]);
@@ -50,9 +52,21 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
       // if문으로 웹소켓 닫기 or return(unmount) 함수에서 웹소켓 닫기
     }
     return () => {
-      if(!isChat) stompClient.disconnect();
+      stompClient.disconnect();
     }
-  }, [personBoxUuid, checkPersonInbox]);
+  }, [personBoxUuid]);
+
+  const onSubmitHandler = () => {
+    const sendData = {
+      uuid: personBoxUuid,
+      message: inputMessage,
+      workspaceId,
+    };
+    if(inputMessage) {
+      stompClient.send(`/pub/inbox`, cookie , JSON.stringify(sendData));
+      setInputMessage('');
+    }
+  };
 
   const onKeyDownHandler = (e:any) => {
     if(e.keyCode === 13){
@@ -67,18 +81,6 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
     if(e.keyCode === 13) onSubmitHandler();
   };
 
-  const onSubmitHandler = () => {
-    const sendData = {
-      uuid: personBoxUuid,
-      message: inputMessage,
-      workspaceId,
-    };
-    if(inputMessage) {
-      stompClient.send(`/pub/inbox`,{ cookie }, JSON.stringify(sendData));
-      setInputMessage('');
-    }
-  };
-
   const onClickBackBtnHandler = () => {
     setIsChat(false);
     setToggle(true);
@@ -87,9 +89,9 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
   const scrollToBottom = () => {
     if(scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   };
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   // scroll to bottom
   useEffect(()=>{
@@ -97,6 +99,13 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     };
   },[messages]);
+
+  interface MessagesType {
+    messageId: number,
+    userId: number,
+    message: string,
+    createdAt: string,
+  };
 
   return (
     <StContainer>
@@ -116,8 +125,24 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
       </StUserData>
       <StChatBox ref={scrollRef}>
         {
-          messages?.map((item:any, index:number)=>{
-            return <div key={index}>{item.message}</div>
+          messages?.map((item:MessagesType)=>{
+            return (
+              <StMessagesBox key={item.createdAt}>
+              {
+                item.userId === userId 
+                  ? 
+                  <StMessages flexDirection="row">
+                    <StMessagesOther>{item.message}</StMessagesOther>
+                    <StMessagesOtherTime>{item.createdAt.split('T')[1].split(':')[0]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesOtherTime>
+                  </StMessages>
+                  : 
+                  <StMessages flexDirection="row-reverse">
+                    <StMessagesMine>{item.message}</StMessagesMine>
+                    <StMessagesMineTime>{item.createdAt.split('T')[1].split(':')[0]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesMineTime>
+                  </StMessages>
+              }
+              </StMessagesBox>
+            )
           })
         }
       </StChatBox>
@@ -196,11 +221,59 @@ const StColor = styled.div<{colorNum:number}>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: ${props=>props.colorNum === 0 ? "#34C759" : props.colorNum === 1 ? "#FFCC01" : props.colorNum === 2 ? "#FF3B31" : "#FF3B31"};
+  background-color: ${props=>props.colorNum === 0 ? "#34C759" : props.colorNum === 1 ? "#FFCC01" : props.colorNum === 2 ? "#FF3B31" : "#7f7f7f"};
 `;
 
 const StChatBox = styled.div`
   height: 86%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    /* display: none; */
+  }
+  /* &::-webkit-scrollbar-thumb{
+    color: red
+  }
+  &::-webkit-scrollbar-track{
+    color: green;
+  } */
+`;
+const StMessagesBox = styled.div`
+
+`;
+const StMessages = styled.div<{flexDirection:string}>`
+  display: flex;
+  flex-direction: ${props=>props.flexDirection};
+  align-items: flex-end;
+`;
+const StMessagesOther = styled.div`
+  background-color: #007aff;
+  padding: 8px;
+  color: #ffffff;
+  border-radius: 4px;
+  margin-right: auto;
+`;
+const StMessagesMine = styled.div`
+  font-size: 0.75rem;
+  display: flex;
+  background-color: #f3f3f3;
+  padding: 8px;
+  color: #303030;
+  border-radius: 4px;
+  margin-left: 4px;
+  line-height: 18px;
+`;
+const StMessagesOtherTime = styled.div`
+  font-size: 9px;
+  color: #7f7f7f;
+`;
+const StMessagesMineTime = styled.div`
+  font-size: 9px;
+  color: #7f7f7f;
 `;
 
 const StChatInputBox = styled.div`
