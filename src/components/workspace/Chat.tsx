@@ -20,25 +20,30 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
 
   useEffect(()=>{
     // console.log("prevMessagesData:", prevMessagesData);
-    if(!isLoading) setMessages(prevMessagesData);
+    if(!isLoading) {
+      setMessages(prevMessagesData);
+      if(checkPersonInbox) {
+        getUuid(Number(workspaceId), Number(userId))
+        .then((res)=>{
+          setPersonBoxUuid(res);
+        });
+      } else {
+        if(uuid) setPersonBoxUuid(uuid);
+      }
+    }
   },[isLoading]);
 
-  useEffect(() => {
-    if(checkPersonInbox) {
-      getUuid(Number(workspaceId), Number(userId))
-      .then((res)=>{
-        setPersonBoxUuid(res);
-      });
-    };
-  }, [isChat]);
-
   useEffect(()=>{
-    console.log('uuid: ', checkPersonInbox);
+    console.log('uuid: ', personBoxUuid);
     const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`); // 웹소켓을 통해 stomp브로커에 연결
     const stompClient = Stomp.over(socket);
     // setPersonBoxUuid(uuid);
+    const data = {
+      Authorization: getCookie('authorization'),
+      uuid: personBoxUuid
+    }
     if(personBoxUuid){
-      stompClient.connect({}, () => {
+      stompClient.connect(data, () => {
         console.log("websocket is connected");
         stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data) => {
           const messageData = JSON.parse(data.body);
@@ -48,7 +53,8 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
         cookie 
         );
         setStompClient(stompClient);
-      });
+      },
+      );
       // if문으로 웹소켓 닫기 or return(unmount) 함수에서 웹소켓 닫기
     }
     return () => {
@@ -251,11 +257,14 @@ const StMessages = styled.div<{flexDirection:string}>`
   align-items: flex-end;
 `;
 const StMessagesOther = styled.div`
+  font-size: 0.75rem;
+  display: flex;
   background-color: #007aff;
   padding: 8px;
   color: #ffffff;
   border-radius: 4px;
-  margin-right: auto;
+  margin-right: 4px;
+  line-height: 18px;
 `;
 const StMessagesMine = styled.div`
   font-size: 0.75rem;
