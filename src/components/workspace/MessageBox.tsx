@@ -12,18 +12,26 @@ interface ChatListType {
   message: string,
   unreadMessages: number
 };
-  // setIsChat은 true, checkpersoninbox은 false, uuid 넘겨주기
-  // 시간 추가
-function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:any}) {
+interface SetUSerDataType {
+  isChat: boolean,
+  userId: number,
+  userName: string,
+  uuid: string,
+  userImage: string,
+  color: number,
+  checkPersonInbox: boolean,
+  toggle: boolean
+};
+
+function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:(v:SetUSerDataType)=>void}) {
   
   const { data: chatListData} = useQuery('chatList', () => getChatList(workspaceId))
   console.log("chat list data:", chatListData);
 
   const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string, color:number) => {
-    console.log("채팅방 클릭 uuid:", uuid);
+    console.log("username:", userName);
     setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, color: color, checkPersonInbox:false, toggle:true})
   };
-  
   return (
     <StContainer>
       <StInputBox>
@@ -32,7 +40,8 @@ function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:
       <StChatListBox>
         {
           chatListData?.map((item:ChatListType) => {
-            return(
+            return (
+            chatListData.length ?
               <StChatRoom key={item.uuid} onClick={()=>onClickChatRoomHandler(item.uuid, item.userId, item.userName, item.userImage, item.color)}>
                 <StUserDatabox>
                 <StUserImage src={item.userImage} />
@@ -41,9 +50,9 @@ function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:
                     <StLastMsg>{item.message}</StLastMsg>
                 </StUserNameMsg>
                 </StUserDatabox>
-                {item.unreadMessages && <StUnreadMsg>{item.unreadMessages}</StUnreadMsg>}
+                {item.unreadMessages === 0 ? null : <StUnreadMsg>{item.unreadMessages}</StUnreadMsg>}
               </StChatRoom>
-            )
+             :  <StNoneText>아직 대화방이 없습니다.</StNoneText> )
           })
         }
       </StChatListBox>
@@ -110,6 +119,11 @@ const StLastMsg = styled.h3`
   font-size: 12px;
   font-weight: 400;
   color: #7f7f7f;
+  display: inline-block;
+  width: 138px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 const StUnreadMsg = styled.div`
   width: 21px;
@@ -121,4 +135,8 @@ const StUnreadMsg = styled.div`
   align-items: center;
   color: #ffffff;
   font-size: 12px;
+`;
+const StNoneText = styled.h3`
+  font-size: 12px;
+  color: #7f7f7f;
 `;
