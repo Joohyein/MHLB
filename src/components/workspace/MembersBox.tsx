@@ -34,7 +34,7 @@ function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[
         {
           member?.map((item: MemberDataType) => {
             return(
-              <PersonBox key={item.userId} member={item} peopleData={peopleData} />
+              <PersonBox key={item.userId} member={item} peopleData={peopleData} isCheckMe={member[0].userId} />
             )
           })
         }

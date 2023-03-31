@@ -9,7 +9,7 @@ import ArrowBack from "../asset/icons/ArrowBack";
 
 function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{isChat:boolean;userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
   const { data : prevMessagesData, isLoading } = useQuery('prevMessages', () => getPrevMessages(Number(workspaceId), Number(userId)));
-  // console.log("prev messages data: ", prevMessagesData);
+
   const [personBoxUuid, setPersonBoxUuid] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const cookie = { Authorization : getCookie('authorization') };
@@ -19,7 +19,6 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
   const [inputMessage, setInputMessage] = useState('');
 
   useEffect(()=>{
-    // console.log("prevMessagesData:", prevMessagesData);
     if(!isLoading) {
       setMessages(prevMessagesData);
       if(checkPersonInbox) {
@@ -34,7 +33,6 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
   },[isLoading]);
 
   useEffect(()=>{
-    console.log('uuid: ', personBoxUuid);
     const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`); // 웹소켓을 통해 stomp브로커에 연결
     const stompClient = Stomp.over(socket);
     // setPersonBoxUuid(uuid);
@@ -160,7 +158,7 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
           onKeyPress={onKeyPressHandler}
           onKeyDown={onKeyDownHandler}
         />
-        <StSendBtn onClick={onSubmitHandler} >send</StSendBtn>
+        <StSendBtn onClick={onSubmitHandler}>메시지 보내기</StSendBtn>
       </StChatInputBox>
     </StContainer>
   )
@@ -174,6 +172,8 @@ const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 0 24px;
+  box-sizing: border-box;
 `;
 const StBackBtn = styled.button`
   display: flex;
@@ -190,6 +190,7 @@ const StBackBtn = styled.button`
     font-weight: 500;
   }
 `;
+
 const StUserData = styled.div`
   display: flex;
   justify-content: space-between;
@@ -239,17 +240,16 @@ const StChatBox = styled.div`
   overflow-x: auto;
   overflow-y: scroll;
   &::-webkit-scrollbar {
-    /* display: none; */
+    display: none;
   }
-  /* &::-webkit-scrollbar-thumb{
+  &::-webkit-scrollbar-thumb{
     color: red
   }
   &::-webkit-scrollbar-track{
     color: green;
-  } */
+  }
 `;
 const StMessagesBox = styled.div`
-
 `;
 const StMessages = styled.div<{flexDirection:string}>`
   display: flex;
@@ -289,8 +289,10 @@ const StChatInputBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
   height: 14%;
-  padding: 16px;
+  padding-bottom: 16px;
+  box-sizing: border-box;
 `;
 const StChatInput = styled.textarea`
   width: 100%;
@@ -299,12 +301,21 @@ const StChatInput = styled.textarea`
   box-sizing: border-box;
   border: 1px solid #dbdbdb;
   resize: none;
+  border-radius: 4px;
   :focus{
     outline: none;
     border: 1px solid #007aff;
+    color: #007aff;
+  }
+  &::-webkit-scrollbar {
+    display: none;
   }
 `;
 const StSendBtn = styled.button`
   width: 100%;
   height: 32px;
+  background-color: #007aff;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
 `;
