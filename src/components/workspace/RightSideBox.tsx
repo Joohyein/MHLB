@@ -19,6 +19,16 @@ interface MemberDataType {
   userJob: string,
   userName: string
 };
+interface SetUSerDataType {
+  isChat: boolean,
+  userId: number,
+  userName: string,
+  uuid: string,
+  userImage: string,
+  color: number,
+  checkPersonInbox: boolean,
+  toggle: boolean
+};
 
 function RightSideBox() {
   const params = useParams();
@@ -116,7 +126,7 @@ function RightSideBox() {
   const searchMember = (search : string) => {
     setMember(peopleArr.filter((item: MemberDataType)=>item?.userName.toLowerCase().includes(search?.toLowerCase())));
   };
-  const setUserData = ({isChat, userId, userName, userImage, color, uuid, checkPersonInbox, toggle}:{isChat:boolean; userId:number; userName:string; userImage:string; color:number, uuid:string; checkPersonInbox:boolean; toggle:boolean}) => {
+  const setUserData = ({isChat, userId, userName, userImage, color, uuid, checkPersonInbox, toggle}:SetUSerDataType) => {
     setIsChat(isChat);
     setUserId(userId);
     setUserName(userName);
@@ -126,9 +136,24 @@ function RightSideBox() {
     setToggle(toggle);
     setCheckPersonInbox(checkPersonInbox);
   };
+
+  // 배경 스크롤 막기
+  const onMouseOverRightSideBox = () => {
+    document.body.style.cssText = `
+      position: fixed;
+      top: -${window.scrollY}px;
+      overflow-y: scroll;
+      width: 100%;
+    `
+  };
+  const onMouseOutRightSideBox = () => {
+    const scrollY = document.body.style.top;
+    document.body.style.cssText = ''
+    window.scrollTo(0, parseInt(scrollY || '0', 10) * -1)
+  };
  
   return (
-    <StContainer>
+    <StContainer onMouseOver={onMouseOverRightSideBox} onMouseOut={onMouseOutRightSideBox}>
       <StSelectBox>
         { toggle ? <StMember onClick={onClickMemberHandler} >멤버</StMember> : <StMemberTrue>멤버</StMemberTrue> }
         { toggle ? <StInboxTrue>인박스</StInboxTrue> : <StInbox onClick={onClickInboxHandler} >인박스</StInbox>}

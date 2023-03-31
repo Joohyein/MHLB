@@ -12,9 +12,10 @@ interface MemberDataType {
   description: string
 };
 
-function PersonBox({member, peopleData}: {member: MemberDataType, peopleData:any}) {
+function PersonBox({member, peopleData, isCheckMe}: {member: MemberDataType, peopleData:any, isCheckMe:number}) {
   const [isHovering, setIsHovering] = useState(false);
   const onClickPersonHandler = (userId:number, userName:string, userImage:string, userJob:string, color:number) => {
+    if(isCheckMe === userId) return;
     peopleData({isChat:true, userId, userName, toggle:true, checkPersonInbox:true, userJob, userImage, color})
   };
   const onMouseOverHandler = (status:string) => {
@@ -70,6 +71,11 @@ const StJob = styled.h3`
   font-size: 12px;
   font-weight: 400;
   color: #A7A7A7;
+  display: inline-block;
+  width: 128px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 const StStatusGreen = styled.div`
   width: 8px;
@@ -98,12 +104,16 @@ const StStatusGray = styled.div`
 
 const StHovering = styled.div`
   display: flex;
+  width: 163px;
+  height: 30px;
+  font-size: 12px;
+  color: #ffffff;
+  opacity: 0.8;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 50px;
   position: absolute;
-  bottom: 0px;
-  left: -112px;
-  background-color: #ffd573;
+  bottom: 24px;
+  left: -186px;
+  background-color: #303030;
+  border-radius: 4px;
 `;
