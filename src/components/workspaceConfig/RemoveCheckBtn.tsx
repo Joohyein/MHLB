@@ -5,7 +5,7 @@ import { deleteUser } from '../../api/workspaceConfig';
 
 function RemoveCheckBtn({ userRole, userId, workspaceId }: { userRole: string, userId: number, workspaceId: number }) {
   const [removeToggle, setRemoveToggle] = useState(false);
-  
+
   const queryClient = useQueryClient();
   const mutation = useMutation(deleteUser, {
     onSuccess: () => {
@@ -17,49 +17,86 @@ function RemoveCheckBtn({ userRole, userId, workspaceId }: { userRole: string, u
   };
 
   return (
-    <>
-        {
-            userRole === "ADMIN"
-              ?
-              null
-              :
-              removeToggle
-                ?
-                <StRemoveToggleBox>
-                  <h3>정말로 삭제하시겠습니까?</h3>
-                  <StRemoveCancelBtn>
-                    <StRemoveBtn onClick={() => onClickDeleteUserHandler(userId)}>삭제</StRemoveBtn>
-                    <StRemoveBtn onClick={() => setRemoveToggle(false)}>취소</StRemoveBtn>
-                  </StRemoveCancelBtn>
-                </StRemoveToggleBox>
-                :
-              <StUserRemove onClick={() => setRemoveToggle(true)}>워크스페이스에서 삭제</StUserRemove>
-          }
-    </>
+    <StRemoveToggleBox>
+      {removeToggle
+      ?<StMemberKickCheckButtonDiv>
+        <StMessage>정말로 삭제하시겠습니까?</StMessage>
+        <StKickCheckBtn onClick={() => onClickDeleteUserHandler(userId)}>삭제</StKickCheckBtn>
+        <StCancelBtn onClick={() => setRemoveToggle(false)}>취소</StCancelBtn>
+      </StMemberKickCheckButtonDiv>
+      :<StMemberKickButton onClick={() => setRemoveToggle(true)}>삭제</StMemberKickButton>
+      }
+    </StRemoveToggleBox>
   )
 }
 
 export default RemoveCheckBtn;
 
 const StRemoveToggleBox = styled.div`
-  display: flex;
-  h3 {
-    font-size: 12px;
-    font-weight: 400;
+
+`;
+
+const StMemberKickCheckButtonDiv = styled.div`
+  display : flex;
+  flex-direction : row;
+  align-items : center;
+  gap : 16px;
+`;
+
+const StMessage = styled.div`
+  font-size : 0.75rem;
+  font-weight : 400;
+  color : #7f7f7f;
+`
+
+const StKickCheckBtn = styled.button`
+  right : 0;
+  background : #ff3b30;
+  padding : 8px 16px;
+  border-radius : 4px;
+  border : none;
+  height : 35px;
+  color : white;
+  font-size : 16px;
+  font-weight : 700;
+  transition : 200ms;
+  &:hover {
+    background : #ff645c;
+    cursor : pointer;
   }
 `;
-const StRemoveCancelBtn = styled.div`
-  
+
+const StCancelBtn = styled.button`
+  right : 0;
+  background : white;
+  padding : 8px 16px;
+  border-radius : 4px;
+  border : none;
+  outline : 1px solid #ff3b30;
+  height : 35px;
+  color : #ff3b30;
+  font-size : 16px;
+  font-weight : 700;
+  transition : 200ms;
+  &:hover {
+    background : #ffcac7;
+    cursor : pointer;
+  }
 `;
-const StRemoveBtn = styled.button`
-  
-`;
-const StUserRemove = styled.button`
-  font-size: 12px;
-  color: #FF7A72;
-  background-color: white;
-  border: 1px solid #FF7A72;
-  border-radius: 6px;
-  padding: 4px 6px;
-  cursor: pointer;
-`;
+
+const StMemberKickButton = styled.button`
+  right : 0;
+  background : #ff3b30;
+  padding : 8px 16px;
+  border-radius : 4px;
+  border : none;
+  height : 35px;
+  color : white;
+  font-size : 16px;
+  font-weight : 700;
+  transition : 200ms;
+  &:hover {
+    background : #ff645c;
+    cursor : pointer;
+  }
+` 

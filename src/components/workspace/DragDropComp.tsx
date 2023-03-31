@@ -79,7 +79,7 @@ const DragDropComp = () => {
                                             <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <StMemberPin key = {currentUser.userId}>
                                                     <StUserPinProfile img = {currentUser.userImage}/>
-                                                    <StUserPinName>{currentUser.userName}</StUserPinName>
+                                                    <StUserPinName>{currentUser.userName.split(' ')[0]}</StUserPinName>
                                                 </StMemberPin>
                                             </div>
                                         }
@@ -90,7 +90,7 @@ const DragDropComp = () => {
                                         return (
                                             <StMemberPin key = {item.userId}>
                                                 <StMemberPinProfile img = {item.userImage}/>
-                                                <StMemberPinName>{item.userName}</StMemberPinName>
+                                                <StMemberPinName>{item.userName.split(' ')[0]}</StMemberPinName>
                                             </StMemberPin>
                                         )
                                     })}
@@ -114,7 +114,7 @@ const DragDropComp = () => {
                                     <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                         <StMemberPin key = {currentUser.userId}>
                                             <StUserPinProfile img = {currentUser.userImage}/>
-                                            <StUserPinName>{currentUser.userName}</StUserPinName>
+                                            <StUserPinName>{currentUser.userName.split(' ')[0]}</StUserPinName>
                                         </StMemberPin>
                                     </div>
                                 }
@@ -125,7 +125,7 @@ const DragDropComp = () => {
                                 return (
                                     <StMemberPin key = {item.userId}>
                                         <StMemberPinProfile img = {item.userImage}/>
-                                        <StMemberPinName>{item.userName}</StMemberPinName>
+                                        <StMemberPinName>{item.userName.split(' ')[0]}</StMemberPinName>
                                     </StMemberPin>
                                 )
                             })}
