@@ -7,23 +7,21 @@ interface ChatListType {
   userId: number,
   userImage: string,
   userName: string,
+  color: number,
   lastChat: string,
   message: string,
   unreadMessages: number
 };
   // setIsChat은 true, checkpersoninbox은 false, uuid 넘겨주기
   // 시간 추가
-function MessageBox({setIsChat, setCheckPersonInbox, workspaceId, setUuid, setUserId}:{setIsChat:(v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void, workspaceId:number, setUuid:(v:string)=>void, setUserId:(v:number)=>void}) {
+function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:any}) {
   
   const { data: chatListData} = useQuery('chatList', () => getChatList(workspaceId))
   console.log("chat list data:", chatListData);
 
-  const onClickChatRoomHandler = (uuid:string, userId:number) => {
+  const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string, color:number) => {
     console.log("채팅방 클릭 uuid:", uuid);
-    setUuid(uuid);
-    setIsChat(true);
-    setCheckPersonInbox(false);
-    setUserId(userId);
+    setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, color: color, checkPersonInbox:true, toggle:false})
   };
   
   return (
@@ -35,7 +33,7 @@ function MessageBox({setIsChat, setCheckPersonInbox, workspaceId, setUuid, setUs
         {
           chatListData?.map((item:ChatListType) => {
             return(
-              <StChatRoom key={item.uuid} onClick={()=>onClickChatRoomHandler(item.uuid, item.userId)}>
+              <StChatRoom key={item.uuid} onClick={()=>onClickChatRoomHandler(item.uuid, item.userId, item.userName, item.userImage, item.color)}>
                 <StUserDatabox>
                 <StUserImage src={item.userImage} />
                 <StUserNameMsg>

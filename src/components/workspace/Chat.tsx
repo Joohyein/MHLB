@@ -29,7 +29,9 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
       .then((res)=>{
         setPersonBoxUuid(res);
       });
-    };
+    } else {
+      setPersonBoxUuid(uuid);
+    }
   }, [isChat]);
 
   useEffect(()=>{
@@ -37,8 +39,12 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
     const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`); // 웹소켓을 통해 stomp브로커에 연결
     const stompClient = Stomp.over(socket);
     // setPersonBoxUuid(uuid);
+    const data = {
+      Authorization: getCookie('authorization'),
+      uuid: personBoxUuid
+    }
     if(personBoxUuid){
-      stompClient.connect({}, () => {
+      stompClient.connect(data, () => {
         console.log("websocket is connected");
         stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data) => {
           const messageData = JSON.parse(data.body);
@@ -48,7 +54,8 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
         cookie 
         );
         setStompClient(stompClient);
-      });
+      },
+      );
       // if문으로 웹소켓 닫기 or return(unmount) 함수에서 웹소켓 닫기
     }
     return () => {
