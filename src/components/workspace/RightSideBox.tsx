@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getPeopleList } from "../../api/rightSide";
 import { getCookie } from "../../cookie/cookies";
-import PersonBox from "./PersonBox";
+import MembersBox from "./MembersBox";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import MessageBox from "./MessageBox";
 import Chat from "./Chat";
@@ -23,26 +23,28 @@ interface MemberDataType {
 function RightSideBox() {
   const params = useParams();
 
-  const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', async () => getPeopleList(Number(params.workspaceId)));
+  const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', () => getPeopleList(Number(params.workspaceId)));
 
   const [toggle, setToggle] = useState(false);
-  const [search, setSearch] = useState('');
-  const [member, setMember] = useState<any>();
-  const [memberCopy, setMemberCopy] = useState([]);
-  const [memberClick, setMemberClick] = useState(true);
-  const [inboxClick, setInboxClick] = useState(false);
+  const [member, setMember] = useState<any>([]);
 
   const [statusArr, setStatusArr] = useState<any>();
   const [peopleArr, setPeopleArr] = useState<any>([]);
 
   const [isChat, setIsChat] = useState(false); // 사람 클릭시, 채팅방 클릭시 채팅방으로 이동
   const [userId, setUserId] = useState<number>(); // 채팅방 id <Chat /> 에 넘겨주기
-  const [uuid, setuuid] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userImage, setUserImage] = useState('');
+  const [userJob, setUserJob] = useState('');
+  const [color, setColor] = useState<number>();
+
+  const [uuid, setUuid] = useState('');
   const [checkPersonInbox, setCheckPersonInbox] = useState(true);
 
   useEffect(() => {
     if(peopleListData) setPeopleArr(peopleListData);
   }, [peopleListData, isLoadingPeopleData]);
+
 
   const EventSource = EventSourcePolyfill;
 
@@ -54,7 +56,7 @@ function RightSideBox() {
       }
     );
 
-    eventSource.addEventListener('connect', (e: any) => {
+    eventSource.addEventListener('connect', (e: any) => { 
       const { data : receiveData } = e;
       // console.log('connect: ', receiveData);
     });
@@ -65,9 +67,7 @@ function RightSideBox() {
     });
   }, []);
 
-  // status 바꼈을 때 다시 정렬 - peopleArr 다시 정렬 / status, color value 변경
   useEffect(() => {
-    // console.log(peopleArr);
     if(peopleArr && statusArr) {
       for(let i = 0; i < peopleArr.length; i++) {
         if(peopleArr[i].userId === statusArr.userId) {
@@ -76,50 +76,59 @@ function RightSideBox() {
         }
       }
     }
-  }, [peopleArr, statusArr]);
-
-  const onClickMemberHandler = () => {
-    setToggle(false);
-    setMemberClick(true);
-    setInboxClick(false);
-    setIsChat(false);
-  };
-  const onClickInboxHandler = () => {
-    setToggle(true);
-    setMemberClick(false);
-    setInboxClick(true);
-    setIsChat(false);
-  };
-  // 바뀐 status을 배열에 적용
-  useEffect(() => {
-    const arr = peopleArr?.map((item:MemberDataType) => item);
-    setMemberCopy(arr);
-  }, [peopleArr]);
-
-  useEffect(() => {
-    setMember(memberCopy?.filter((item: MemberDataType)=>item.userName.toLowerCase().includes(search.toLowerCase())));
-  }, [search, memberCopy]);
-
-  useEffect(() => {
-    setMember(member?.sort((a:MemberDataType, b:MemberDataType) => {
+    const currentUser = peopleArr[0];
+    const tempArr = peopleArr.slice(1);
+    tempArr.sort((a:MemberDataType, b:MemberDataType) => {
       if(a.userName > b.userName) return 1;
       if(a.userName < b.userName) return -1;
     }).sort((a: MemberDataType, b: MemberDataType) => {
       if(a.color > b.color) return 1;
       if(a.color < b.color) return -1;
-    }));
-  }, [member]);
+    }).unshift(currentUser);
+    setMember(tempArr);
+  }, [peopleArr, statusArr]);
+
+  const onClickMemberHandler = () => {
+    setToggle(false);
+    setIsChat(false);
+  };
+  const onClickInboxHandler = () => {
+    setToggle(true);
+    setIsChat(false);
+  };
+  // 바뀐 status을 배열에 적용
+
+  useEffect(() => {
+    setMember(peopleArr);
+  }, [peopleArr]);
+
+  const peopleData = ({isChat, userId, userName, toggle, checkPersonInbox, userJob, userImage, color}:{search:string, isChat:boolean, userId:number|undefined,userName:string,toggle:boolean,checkPersonInbox:boolean,userJob:string,userImage:string,color:number|undefined}) => {
+    setIsChat(isChat)
+    setUserId(userId)
+    setToggle(toggle)
+    setCheckPersonInbox(checkPersonInbox)
+    setUserName(userName)
+    setUserJob(userJob)
+    setUserImage(userImage)
+    setColor(color)
+  };
+
+  const searchMember = (search : string) => {
+    setMember(peopleArr.filter((item: MemberDataType)=>item?.userName.toLowerCase().includes(search?.toLowerCase())));
+  };
 
   return (
     <StContainer>
       <StSelectBox>
-        { memberClick ? <StMemberTrue>멤버</StMemberTrue> : <StMember onClick={onClickMemberHandler} >멤버</StMember> }
-        { inboxClick ? <StInboxTrue>인박스</StInboxTrue> : <StInbox onClick={onClickInboxHandler} >인박스</StInbox>}
+        { toggle ? <StMember onClick={onClickMemberHandler} >멤버</StMember> : <StMemberTrue>멤버</StMemberTrue> }
+        { toggle ? <StInboxTrue>인박스</StInboxTrue> : <StInbox onClick={onClickInboxHandler} >인박스</StInbox>}
       </StSelectBox>
       {
         isChat
           ?
-          <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} />
+          <StChatBox>
+            <Chat isChat={isChat} userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={Number(color)} workspaceId={Number(params.workspaceId)} setToggle={v=>setToggle(v)} setIsChat={v=>setIsChat(v)} />
+          </StChatBox>
           :
           <>
           {
@@ -129,17 +138,16 @@ function RightSideBox() {
                 <MessageBox 
                   setIsChat={(v:boolean)=>setIsChat(v)} 
                   setCheckPersonInbox={(v)=>setCheckPersonInbox(v)}
+                  workspaceId={Number(params.workspaceId)}
+                  setUuid={v=>setUuid(v)}
                 />
               </StMessageListBox>
               :
               <StPeopleListBox>
-                <PersonBox 
-                  member={member} 
-                  search={search} 
-                  setSearch={(v)=>{setSearch(v)}} 
-                  setIsChat={(v)=>setIsChat(v)} 
-                  setUserId={(v)=>setUserId(v)} 
-                  setCheckPersonInbox={(v)=>setCheckPersonInbox(v)}
+                <MembersBox 
+                  member={member}
+                  searchMember={searchMember}
+                  peopleData={peopleData}
                 />
               </StPeopleListBox>
           }
@@ -155,15 +163,21 @@ const StContainer = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  height: 100%;
 `;
 const StSelectBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 36px;
-  padding: 32px 32px 12px 32px;
+  padding: 16px 0px 0px 0px;
+  height: 8%;
 `;
+
+const StChatBox = styled.div`
+  height:92%;
+`;
+
 const StMemberTrue = styled.h3`
   color: #007AFF;
   border-bottom: 2px solid #007AFF;

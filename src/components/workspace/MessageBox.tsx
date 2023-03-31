@@ -1,16 +1,55 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { useQuery } from "react-query";
+import { getChatList } from "../../api/rightSide";
+import ChatRoom from "./ChatRoom";
 
-function MessageBox({setIsChat}:{setIsChat:(v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void}) {
-  // 방을 클릭했을 때 userId, uuId 둘 다 넘겨줘? 그럼 <Chat />에 uuid, userid 둘 다 넘겨줘? 
-  // checkpersoninbox로 false 넘겨주기
+interface ChatListType {
+  uuid: string,
+  userImage: string,
+  userName: string,
+  lastChat: string,
+  message: string,
+  unreadMessages: number
+};
+  // setIsChat은 true, checkpersoninbox은 false, uuid 넘겨주기
+  // 시간 추가
+function MessageBox({setIsChat, setCheckPersonInbox, workspaceId, setUuid}:{setIsChat:(v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void, workspaceId:number, setUuid:(v:string)=>void}) {
+  
+  const { data: chatListData} = useQuery('chatList', () => getChatList(workspaceId))
+  console.log("chat list data:", chatListData);
 
-
+  const onClickChatRoomHandler = (uuid:string) => {
+    console.log("채팅방 클릭 uuid:", uuid);
+    setUuid(uuid);
+    setIsChat(true);
+    setCheckPersonInbox(false);
+    // setUserId()
+  };
+  
   return (
     <StContainer>
       <StInputBox>
         <StInput  name="search" placeholder="이름으로 검색" />
       </StInputBox>
+      <StChatListBox>
+        {
+          chatListData?.map((item:any) => {
+            return(
+              <StChatRoom key={item.uuid} onClick={()=>onClickChatRoomHandler(item.uuid)}>
+                <StUserDatabox>
+                <StUserImage src={item.userImage} />
+                <StUserNameMsg>
+                    <StUserName>{item.userName}</StUserName>
+                    <StLastMsg>{item.message}</StLastMsg>
+                </StUserNameMsg>
+                </StUserDatabox>
+                {item.unreadMessages && <StUnreadMsg>{item.unreadMessages}</StUnreadMsg>}
+              </StChatRoom>
+            )
+          })
+        }
+      </StChatListBox>
     </StContainer>
   )
 };
@@ -39,4 +78,50 @@ const StInput = styled.input`
     color: #B1B1B1;
     font-weight: 200;
   }
+`;
+const StChatListBox = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const StChatRoom = styled.div`
+  padding: 16px 0px;
+  border-bottom: 1px solid #f1f1f1;
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+`;
+const StUserDatabox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+const StUserImage = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+`;
+const StUserNameMsg = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+const StUserName = styled.h3`
+  font-size: 16px;
+  font-weight: 700;
+`;
+const StLastMsg = styled.h3`
+  font-size: 12px;
+  font-weight: 400;
+  color: #7f7f7f;
+`;
+const StUnreadMsg = styled.div`
+  width: 21px;
+  height: 21px;
+  background-color: #007AFF;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 12px;
 `;
