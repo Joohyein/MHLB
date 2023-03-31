@@ -43,7 +43,6 @@ function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[
     </StContainer>
   )
 }
-// setStatus={v=>setStatus(v)} setIsHovering={v=>setIsHovering(v)}
 export default MembersBox;
 
 const StContainer = styled.div`

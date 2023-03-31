@@ -8,15 +8,19 @@ import { getCookie } from "../../cookie/cookies";
 import ArrowBack from "../asset/icons/ArrowBack";
 
 function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{isChat:boolean;userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
-  const { data : prevMessagesData } = useQuery('prevMessages', async() => getPrevMessages(workspaceId, Number(userId)));
-  // console.log("prevMessagesData:", prevMessagesData);
+  const { data : prevMessagesData } = useQuery('prevMessages', () => getPrevMessages(Number(workspaceId), Number(userId)));
   const [personBoxUuid, setPersonBoxUuid] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const cookie = { Authorization : getCookie('authorization') };
 
-  const [messages, setMessages] = useState<any>([]);
+  const [messages, setMessages] = useState<any>([]); // 초깃값 넣기
   const [stompClient, setStompClient] = useState<any>(null);
   const [inputMessage, setInputMessage] = useState('');
+
+  useEffect(()=>{
+    console.log("prevMessagesData:", prevMessagesData);
+    if(prevMessagesData) setMessages(prevMessagesData);
+  },[prevMessagesData]);
 
   if(checkPersonInbox) {
     getUuid(Number(workspaceId), Number(userId))
@@ -29,6 +33,7 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
   useEffect(()=>{
     const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`); // 웹소켓을 통해 stomp브로커에 연결
     const stompClient = Stomp.over(socket);
+    // setPersonBoxUuid(uuid);
     if(!checkPersonInbox && personBoxUuid){
       stompClient.connect({}, () => {
         console.log("websocket is connected");
@@ -37,7 +42,7 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
           console.log("message data :", messageData);
           setMessages((prev:any) => [...prev, messageData]);
         },
-        // cookie
+        cookie 
         );
         setStompClient(stompClient);
       });
@@ -66,10 +71,9 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
       uuid: personBoxUuid,
       message: inputMessage,
       workspaceId,
-      senderId:1
     };
     if(inputMessage) {
-      stompClient.send(`/pub/inbox`,{}, JSON.stringify(sendData));
+      stompClient.send(`/pub/inbox`,{ cookie }, JSON.stringify(sendData));
       setInputMessage('');
     }
   };
@@ -104,8 +108,8 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
       </StUserData>
       <StChatBox ref={scrollRef}>
         {
-          messages?.map((item:any)=>{
-            <div>{item.message}</div>
+          messages?.map((item:any, index:number)=>{
+            return <div key={index}>{item.message}</div>
           })
         }
       </StChatBox>

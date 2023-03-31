@@ -14,32 +14,17 @@ interface ChatListType {
 };
   // setIsChat은 true, checkpersoninbox은 false, uuid 넘겨주기
   // 시간 추가
-function MessageBox({setIsChat, workspaceId, setUuid}:{setIsChat:(v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void, workspaceId:number, setUuid:(v:string)=>void}) {
+function MessageBox({setIsChat, setCheckPersonInbox, workspaceId, setUuid}:{setIsChat:(v:boolean)=>void, setCheckPersonInbox:(v:boolean)=>void, workspaceId:number, setUuid:(v:string)=>void}) {
   
-  // const { data: chatListData} = useQuery('chatList', () => getChatList(workspaceId))
-  // console.log("chat list data:", chatListData);
-  const chatListData = [
-    {
-      uuid: "uuid1",
-      userImage: "userImage",
-      userName:"user name",
-      lastChat: '2023',
-      message:'message1',
-      unreadMessages: 3
-    },
-    {
-      uuid: "uuid2",
-      userImage: "userImage",
-      userName:"user name2",
-      lastChat: '2023',
-      message:'message1',
-      unreadMessages: 37
-    }
-  ]
+  const { data: chatListData} = useQuery('chatList', () => getChatList(workspaceId))
+  console.log("chat list data:", chatListData);
 
   const onClickChatRoomHandler = (uuid:string) => {
     console.log("채팅방 클릭 uuid:", uuid);
     setUuid(uuid);
+    setIsChat(true);
+    setCheckPersonInbox(false);
+    // setUserId()
   };
   
   return (
@@ -59,7 +44,7 @@ function MessageBox({setIsChat, workspaceId, setUuid}:{setIsChat:(v:boolean)=>vo
                     <StLastMsg>{item.message}</StLastMsg>
                 </StUserNameMsg>
                 </StUserDatabox>
-                <StUnreadMsg>{item.unreadMessages}</StUnreadMsg>
+                {item.unreadMessages && <StUnreadMsg>{item.unreadMessages}</StUnreadMsg>}
               </StChatRoom>
             )
           })
