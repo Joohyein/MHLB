@@ -37,11 +37,12 @@ const NavBarWorkspace = () => {
     const onClickLogout = () => {
         logout();
         navigate('/');
+        window.location.reload();
     }
 
     return (
         <StNavBar>
-            <StLogo onClick = {() => {navigate('/')}}>
+            <StLogo onClick = {() => {navigate('/select-workspace')}}>
                 Pin me
             </StLogo>
             <StRightsideDiv ref = {dropdownRef}>
