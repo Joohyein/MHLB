@@ -1,9 +1,10 @@
 import instance from "./instance/instance";
 
 const createWorkspace = async (formData: FormData) => {
-    await instance.post('/api/workspaces', 
+    const response = await instance.post('/api/workspaces', 
     formData,
     { headers: { "Content-Type": "multipart/form-data" } });
+    return response;
 };
 
 const getWorkspaceList = async () => {

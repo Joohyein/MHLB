@@ -49,7 +49,7 @@ const LeftSideBar = () => {
                             return (
                                 <Draggable key = {String(obj.workspaceId)} draggableId = {String(obj.workspaceId)} index = {index}>
                                     {(provided) => (
-                                        <StIcon onClick = {() => {navigate(`/workspace2/${obj.workspaceId}`); window.location.reload()}} img = {obj.workspaceImage} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}/>
+                                        <StIcon onClick = {() => {navigate(`/workspace/${obj.workspaceId}`); window.location.reload()}} img = {obj.workspaceImage} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}/>
                                     )}
                                 </Draggable>
                             )

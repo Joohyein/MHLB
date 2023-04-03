@@ -186,7 +186,7 @@ const WorkspaceConfig = () => {
       <NavBarWorkspace />
       <StContainer>
         <StWorkspaceProfileDiv>
-          <StArrowBackDiv onClick = {() => {navigate(`/workspace2/${params.workspaceId}`)}}><ArrowBack size="30" fill="#303030" cursor="pointer" /></StArrowBackDiv>
+          <StArrowBackDiv onClick = {() => {navigate(`/workspace/${params.workspaceId}`)}}><ArrowBack size="30" fill="#303030" cursor="pointer" /></StArrowBackDiv>
           <StManageTitle>워크스페이스 관리</StManageTitle>
           <StSubTitleDiv>
             <StSubTitle>워크스페이스 이미지</StSubTitle>
