@@ -51,9 +51,10 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
     formData.append('data', data);
 
     createWorkspace(formData)
-    .then(() => {
-      console.log('success');
-      navigate('/workspace');
+    .then((res) => {
+      console.log(res);
+      window.location.reload();
+      // navigate(`/workspace`);
     })
     .catch((error) => console.log("error :", error))
 

@@ -37,13 +37,8 @@ const DragDropComp = () => {
         .then((res) => {
             setCurrentUser(res[0]);
             setUserList(res.slice(1));
-            console.log(res);
         });
     }, [])
-
-    useEffect(() => {
-        console.log(userList);
-    }, [userList]);
 
     const onDragEnd = (result : any) => {
         if (result.destination === null || result.source.droppableId === result.destination.droppableId) return;
@@ -79,7 +74,7 @@ const DragDropComp = () => {
                                             <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <StMemberPin key = {currentUser.userId}>
                                                     <StUserPinProfile img = {currentUser.userImage}/>
-                                                    <StUserPinName>{currentUser.userName.split(' ')[0]}</StUserPinName>
+                                                    <StUserPinName>{currentUser.userName.split(' ')[0].substring(0, 5)}</StUserPinName>
                                                 </StMemberPin>
                                             </div>
                                         }
@@ -90,7 +85,7 @@ const DragDropComp = () => {
                                         return (
                                             <StMemberPin key = {item.userId}>
                                                 <StMemberPinProfile img = {item.userImage}/>
-                                                <StMemberPinName>{item.userName.split(' ')[0]}</StMemberPinName>
+                                                <StMemberPinName>{item.userName.split(' ')[0].substring(0, 5)}</StMemberPinName>
                                             </StMemberPin>
                                         )
                                     })}
@@ -114,7 +109,7 @@ const DragDropComp = () => {
                                     <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                         <StMemberPin key = {currentUser.userId}>
                                             <StUserPinProfile img = {currentUser.userImage}/>
-                                            <StUserPinName>{currentUser.userName.split(' ')[0]}</StUserPinName>
+                                            <StUserPinName>{currentUser.userName.split(' ')[0].substring(0, 5)}</StUserPinName>
                                         </StMemberPin>
                                     </div>
                                 }
@@ -125,7 +120,7 @@ const DragDropComp = () => {
                                 return (
                                     <StMemberPin key = {item.userId}>
                                         <StMemberPinProfile img = {item.userImage}/>
-                                        <StMemberPinName>{item.userName.split(' ')[0]}</StMemberPinName>
+                                        <StMemberPinName>{item.userName.split(' ')[0].substring(0, 5)}</StMemberPinName>
                                     </StMemberPin>
                                 )
                             })}

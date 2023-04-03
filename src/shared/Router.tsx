@@ -11,7 +11,6 @@ import ResetPasswordSucceed from "../pages/ResetPasswordSucceed";
 import SelectWorkspace from "../pages/SelectWorkspace";
 import Workspace from "../pages/Workspace";
 import WorkspaceConfig from "../pages/WorkspaceConfig";
-import Workspace2 from "../pages/Wrokspace2";
 
 const Router = () => {
   return (
@@ -22,8 +21,7 @@ const Router = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/select-workspace" element={<SelectWorkspace />} />
         <Route path="/my-page" element={<MyPage />} />
-        <Route path="/workspace" element={<Workspace />} />
-        <Route path="/workspace2/:workspaceId" element={<Workspace2 />} />
+        <Route path="/workspace/:workspaceId" element={<Workspace />} />
         <Route path="/workspace-config/:workspaceId" element={<WorkspaceConfig />} />
         <Route path="/celebrate-sign-up" element={<CelebrateSignUp />} />
         <Route path="/reset-password-send-email" element={<ResetPasswordSendEmail />} />
