@@ -19,22 +19,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import NavBarWorkspace from '../components/common/NavBarWorkspace';
 import Plus from '../components/asset/icons/Plus';
 
+const fontLengthTitle = 50; // 워크스페이스 이름, 소개 글자수 제한
+const fontLengthDesc = 200;
+
 const WorkspaceConfig = () => {
 
   const params = useParams();
   const navigate = useNavigate();
 
-  const { isLoading: isLoadingInfo, data: workspaceInfoData } = useQuery(
-    'workspaceInfo',
-    () => getWorkspaceInfo({workspaceId : params.workspaceId})
-  );
-  const { isLoading: isLoadingMember, data: workspaceMember } = useQuery(
-    'workspaceMember',
-    () => getWorkspaceMember({workspaceId : params.workspaceId})
-  );
+  const { isLoading: isLoadingInfo, data: workspaceInfoData } = useQuery('workspaceInfo',() => getWorkspaceInfo({workspaceId : params.workspaceId}));
+  const { isLoading: isLoadingMember, data: workspaceMember } = useQuery('workspaceMember',() => getWorkspaceMember({workspaceId : params.workspaceId}));
   // const imgInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null);
   const imgInputRef = useRef<any>(null);
-  const titleInputRef = useRef<any>(null);
+  const titleInputRef:React.MutableRefObject<any> = useRef(null);
 
   const modalRef = useOutsideClick(() => setInviteModal(false));
   const deleteModalRef = useOutsideClick(() => setWorkspaceDeleteModal(false));
@@ -64,11 +61,6 @@ const WorkspaceConfig = () => {
     const arr = workspaceMember?.map((item: any) => item);
     setMemberCopy(arr);
   }, [workspaceMember, isLoadingMember]);
-
-  // 버튼 클릭시 input으로 포커스
-  const onClickImgUpload = () => {
-    imgInputRef.current.click();
-  };
 
   const queryClient = useQueryClient();
 
@@ -107,8 +99,8 @@ const WorkspaceConfig = () => {
 
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      if (e.target.files[0].size >= 1024 ** 2 * 5) {
-        alert(`5MB 이하 파일만 등록할 수 있습니다. 
+      if (e.target.files[0].size >= 1024 ** 2 * 10) {
+        alert(`10MB 이하 파일만 등록할 수 있습니다. 
 현재 파일 용량: ${Math.round(e.target.files[0].size / 1024 / 1024)}MB`);
         return;
       } else setImgFile(e.target.files[0]);
@@ -123,10 +115,7 @@ const WorkspaceConfig = () => {
     mutationImg.mutate({ workspaceImage, workspaceId });
   }, [imgFile]);
 
-  const onClickEditTitleHandler = (
-    workspaceTitle: string,
-    workspaceId: number
-  ) => {
+  const onClickEditCompleteTitleHandler = (workspaceTitle: string, workspaceId: number) => {
     if (!workspaceTitle) {
       alert('워크스페이스 이름을 입력해주세요');
       return;
@@ -135,10 +124,7 @@ const WorkspaceConfig = () => {
     mutationTitle.mutate({ workspaceTitle, workspaceId });
   };
 
-  const onClickEditDescHandler = (
-    workspaceDesc: string,
-    workspaceId: number
-  ) => {
+  const onClickEditCompleteDescHandler = (workspaceDesc: string, workspaceId: number) => {
     if (!workspaceDesc) {
       alert('워크스페이스 설명을 입력해주세요');
       return;
@@ -147,14 +133,17 @@ const WorkspaceConfig = () => {
     mutationDesc.mutate({ workspaceDesc, workspaceId });
   };
 
+  const onClickEditTitleHandler = () => {
+    setEditTitle(true);
+    // titleInputRef.current.focus();
+  };
+
   // onKeyPress
   const onKeyPressTitleHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter')
-      onClickEditTitleHandler(title, workspaceInfoData?.workspaceId);
+    if (e.key === 'Enter') onClickEditCompleteTitleHandler(title, workspaceInfoData?.workspaceId);
   };
   const onKeyPressDescHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter')
-      onClickEditDescHandler(description, workspaceInfoData?.workspaceId);
+    if (e.key === 'Enter') onClickEditCompleteDescHandler(description, workspaceInfoData?.workspaceId);
   };
 
   // Search Member
@@ -163,7 +152,7 @@ const WorkspaceConfig = () => {
     userName: string;
     userEmail: string;
     userImage: string;
-  }
+  };
 
   useEffect(() => {
     setMember(
@@ -209,7 +198,7 @@ const WorkspaceConfig = () => {
 
           <StSubTitleDiv>
             <StSubTitle>워크스페이스 이름</StSubTitle>
-            {editTitle ? <StSubTitleEdit onClick={() => onClickEditTitleHandler(title, workspaceInfoData?.workspaceId)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={() => {setEditTitle(true)}}>편집</StSubTitleEdit>}
+            {editTitle ? <StSubTitleEdit onClick={() => onClickEditCompleteTitleHandler(title, workspaceInfoData?.workspaceId)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={onClickEditTitleHandler}>편집</StSubTitleEdit>}
           </StSubTitleDiv>
           {editTitle
           ? <StWorkspaceTextInput
@@ -218,12 +207,13 @@ const WorkspaceConfig = () => {
             onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
             onKeyPress = {onKeyPressTitleHandler}
             ref = {titleInputRef}
+            maxLength={fontLengthTitle}
             />
           : <StWorkspaceText>{title}</StWorkspaceText>
           }
           <StSubTitleDiv>
             <StSubTitle>워크스페이스 소개</StSubTitle>
-            {editDesc ? <StSubTitleEdit onClick={() => onClickEditDescHandler(description, workspaceInfoData?.workspaceId)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={() => {setEditDesc(true)}}>편집</StSubTitleEdit>}
+            {editDesc ? <StSubTitleEdit onClick={() => onClickEditCompleteDescHandler(description, workspaceInfoData?.workspaceId)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={() => {setEditDesc(true)}}>편집</StSubTitleEdit>}
           </StSubTitleDiv>
           {editDesc
           ? <StWorkspaceTextInput
@@ -231,6 +221,7 @@ const WorkspaceConfig = () => {
             value={description}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
             onKeyPress={onKeyPressDescHandler}
+            maxLength={fontLengthDesc}
             />
           : <StWorkspaceText>{description}</StWorkspaceText>
           }
@@ -258,7 +249,8 @@ const WorkspaceConfig = () => {
                     <StRole>{item.userRole}</StRole>
                     </StRoleDiv>
                     :<StRoleDiv role = 'other'>
-                      <StRoleCheckbox type = 'checkbox' onChange={() => onChangeCheckboxHandler(item.userId, item.userRole)} />
+                      {item.userRole === 'MANAGER' ? <StRoleCheckbox type = 'checkbox' checked={true} onChange={() => onChangeCheckboxHandler(item.userId, item.userRole)} />
+                        : <StRoleCheckbox type = 'checkbox' checked={false} onChange={() => onChangeCheckboxHandler(item.userId, item.userRole)} />}
                       <StRole>{item.userRole}</StRole>
                     </StRoleDiv>
                   }
@@ -268,7 +260,8 @@ const WorkspaceConfig = () => {
             })}
           </StMemberList>
         </StWorkspaceMemberDiv>
-        <StWorkspaceDeleteDiv>
+        { workspaceInfoData?.userRole === 'ADMIN' &&
+          <StWorkspaceDeleteDiv>
           <StSubTitle>데인저존</StSubTitle>
           <StWorkspaceDeleteContentDiv>
             <StWorkspaceDeleteMessageDiv>
@@ -277,7 +270,7 @@ const WorkspaceConfig = () => {
             </StWorkspaceDeleteMessageDiv>
             <StWorkspaceDeleteButton onClick={() => {setWorkspaceDeleteModal(true); document.body.style.overflow = 'hidden'}}>워크스페이스 삭제하기</StWorkspaceDeleteButton>
           </StWorkspaceDeleteContentDiv>
-        </StWorkspaceDeleteDiv>
+        </StWorkspaceDeleteDiv>}
       </StContainer>
       {inviteModal ? (
         <AddMemberModal
@@ -304,7 +297,7 @@ const StContainer = styled.div`
   flex-direction : column;
   justify-content : flex-start;
   align-items : flex-start;
-  width : 1040px;
+  width : 68%;
   height: 100%;
   box-sizing : border-box;
   padding-top : 64px;

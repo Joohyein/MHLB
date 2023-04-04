@@ -42,7 +42,7 @@ function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:
           chatListData?.map((item:ChatListType) => {
             return (
             chatListData.length ?
-              <StChatRoom key={item.uuid} onClick={()=>onClickChatRoomHandler(item.uuid, item.userId, item.userName, item.userImage, item.color)}>
+              <StChatRoom key={item.userId} onClick={()=>onClickChatRoomHandler(item.uuid, item.userId, item.userName, item.userImage, item.color)}>
                 <StUserDatabox>
                 <StUserImage src={item.userImage} />
                 <StUserNameMsg>
