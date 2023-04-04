@@ -62,14 +62,16 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: Reac
     onSuccess: () => {
       queryClient.invalidateQueries('inviting');
       setEmail('');
+    },
+    onError: (error:any) => {
+      if(error.response.data.statusCode) setAlreadyInvited(true);
     }
   })
   const mutationCancel = useMutation(cancelInvite, {
     onSuccess: (response) => {
       queryClient.invalidateQueries('inviting');
       console.log(response);
-    },
-    onError: (error) => console.log(error),
+    }
   });
 
   const onClickInviteHandler = () => {
