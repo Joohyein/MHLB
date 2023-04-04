@@ -297,7 +297,7 @@ const StContainer = styled.div`
   flex-direction : column;
   justify-content : flex-start;
   align-items : flex-start;
-  width : 68%;
+  width : 1040px;
   height: 100%;
   box-sizing : border-box;
   padding-top : 64px;
