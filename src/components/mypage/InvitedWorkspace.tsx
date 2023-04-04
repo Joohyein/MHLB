@@ -11,6 +11,8 @@ interface InvitedWorkspaceType {
 
 function InvitedWorkspace({invitedWorkspaceData}:{invitedWorkspaceData:InvitedWorkspaceType[]}) {
 
+  console.log(invitedWorkspaceData);
+
   const queryClient = useQueryClient();
   const mutationAccept = useMutation(acceptInvite, {
     onSuccess: (response) => {
@@ -37,89 +39,111 @@ function InvitedWorkspace({invitedWorkspaceData}:{invitedWorkspaceData:InvitedWo
   };
 
   return (
-    <StWorkspaceBox>
-    {
-      invitedWorkspaceData?.map((item: InvitedWorkspaceType) => {
+    <StWorkspaceList>
+      {invitedWorkspaceData?.map((item : InvitedWorkspaceType) => {
         return (
-          <StWorkspaceData key={item.workspaceId}>
-            <StWorkspaceDataBox>
-              <StWorkspaceImg src={item.workspaceImage}/>
-              <StNameSubBox>
-                <StWorkspaceName>{item.workspaceTitle}</StWorkspaceName>
-                <StWorkspaceDesc>{item.workspaceDesc}</StWorkspaceDesc>
-              </StNameSubBox>
-            </StWorkspaceDataBox>
-            <StBtnBox>
-              <StAcceptBtn onClick={() => onClickRejectHandler(item.workspaceId)}>거절</StAcceptBtn>
-              <StRejectBtn onClick={() => onClickAcceptHandler(item.workspaceId)}>수락</StRejectBtn>
-            </StBtnBox>
-        </StWorkspaceData>
+          <StWorkspaceInfoDiv key={item.workspaceId}>
+            <StWorkspaceImage img = {item.workspaceImage} />
+            <StWorkspaceTextInfoDiv>
+              <StWorkspaceName>{item.workspaceTitle}</StWorkspaceName>
+              <StWorkspaceDesc>{item.workspaceDesc}</StWorkspaceDesc>
+            </StWorkspaceTextInfoDiv>
+            <StBtnDiv>
+              <StAcceptBtn onClick={() => onClickAcceptHandler(item.workspaceId)}>수락</StAcceptBtn>
+              <StRejectBtn onClick={() => onClickRejectHandler(item.workspaceId)}>거절</StRejectBtn>
+            </StBtnDiv>
+          </StWorkspaceInfoDiv>
         )
-      })
-    }
-  </StWorkspaceBox>
+      })}
+    </StWorkspaceList>
   )
 }
 
 export default InvitedWorkspace;
 
-const StWorkspaceBox = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+const StWorkspaceList = styled.div`
+  width : 100%;
+  height : 100%;
+  display : flex;
+  flex-direction : column;
+`
 
-const StWorkspaceData = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 24px 0 24px 0;
-  border-bottom: 1px solid #F5F5F5;
-`;
+const StWorkspaceInfoDiv = styled.div`
+  width : 100%;
+  height : 80px;
+  display : flex;
+  flex-direction : row;
+  justify-content : flex-start;
+  align-items : center;
+  border-bottom : 1px solid #f1f1f1;
+`
 
-const StWorkspaceDataBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 24px;
-`;
-const StWorkspaceImg = styled.img`
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-`;
+const StWorkspaceImage = styled.div`
+  width : 48px;
+  height : 48px;
+  flex-shrink : 0;
+  border-radius : 48px;
+  background : gray;
+  background-image : url('${(props : {img : string}) => props.img}');
+  background-size : cover;
+  background-position : center;
+  margin-right : 16px;
+`
 
-const StNameSubBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-`;
-const StWorkspaceName = styled.h3`
-  font-size: 16px;
-  font-weight: 800;
-`;
-const StWorkspaceDesc = styled.h3`
-  font-size: 14px;
-  font-weight: 500;
-  color: #808080;
-`;
+const StWorkspaceTextInfoDiv = styled.div`
+  display : flex;
+  justify-content : flex-start;
+  flex-direction : column;
+  gap : 4px;
+  margin-right : auto;
+`
 
-const StBtnBox = styled.div`
-  display: flex;
-  gap: 8px;
-`;
+const StWorkspaceName = styled.div`
+  font-size : 16px;
+  font-weight : 700;
+  color : #303030;
+`
+
+const StWorkspaceDesc = styled.div`
+  font-size : 0.75rem;
+  font-weight : 400;
+  color : #7f7f7f;
+`
+
+const StBtnDiv = styled.div`
+  display : flex;
+  gap : 8px;
+`
+
 const StAcceptBtn = styled.button`
-  width: 52px;
-  height: 32px;
-  border: none;
-  color: #007AFF;
-  background-color: #FFFFFF;
-  border-radius: 4px;
-`;
+  border : none;
+  border-radius : 4px;
+  color : white;
+  flex-shrink : 0;
+  background : #007aff;
+  font-size : 1rem;
+  font-weight : 700;
+  padding : 8px 16px;
+  transition : 200ms;
+  &:hover {
+    background : #4da2ff;
+    cursor : pointer;
+  }
+`
+
 const StRejectBtn = styled.button`
-  width: 52px;
-  height: 32px;
-  border: none;
-  color: #FFFFFF;
-  background-color: #007AFF;
-  border-radius: 4px;
-`;
+  border : none;
+  border-radius : 4px;
+  outline : 1px solid #007aff;
+  color : #007aff;
+  flex-shrink : 0;
+  background : transparent;
+  font-size : 1rem;
+  font-weight : 700;
+  padding : 8px 16px;
+  transition : 200ms;
+  &:hover {
+    background : #deeeff;
+    cursor : pointer;
+  }
+`

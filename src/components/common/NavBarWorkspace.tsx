@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { navBarProfileImage } from "../../api/general";
 import useLogout from "../../hooks/useLogout";
@@ -31,6 +31,7 @@ const NavBarWorkspace = () => {
     }
 
     const onClickMyPage = () => {
+        if (window.location.pathname === '/my-page') return;
         navigate('/my-page');
     }
 
