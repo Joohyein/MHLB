@@ -8,12 +8,16 @@ import MyWorkspace from "../components/mypage/MyWorkspace";
 import useOutsideClick from "../hooks/useOutsideClick";
 import LeaveWorkspaceModal from "../components/mypage/LeaveWorkspaceModal";
 import InvitedWorkspace from "../components/mypage/InvitedWorkspace";
+import NavBarWorkspace from "../components/common/NavBarWorkspace";
+import { useNavigate } from "react-router-dom";
 
 const MyPage = () => {
   const { data : dataUser } = useQuery('user', getUserData);
   const { data : dataWorkspace } = useQuery('workspace', getWorkspaces);
 
   const imgInputRef = useRef<any>(null);
+
+  const navigate = useNavigate();
 
   const [image, setImage] = useState(dataUser?.userImage);
   const [imgFile, setImgFile] = useState<any>();
@@ -36,7 +40,7 @@ const MyPage = () => {
     setDesc(dataUser?.userDesc);
   }, [dataUser]);
 
-  const onImgchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if(e.target.files) {
       if(e.target.files[0].size >= 1024 ** 2 * 5){
         alert(`5MB 이하 파일만 등록할 수 있습니다. 
@@ -45,11 +49,6 @@ const MyPage = () => {
       }
       else setImgFile(e.target.files[0]);
     }
-  };
-
-  // 버튼 클릭시 이미지 업로드창 띄우기
-  const onClickImgUpload = () => {
-    imgInputRef.current.click();
   };
   
   const queryClient = useQueryClient();
@@ -75,7 +74,6 @@ const MyPage = () => {
   const mutationDesc = useMutation(editUserDesc, {
     onSuccess: (response) => {
       queryClient.invalidateQueries('user');
-      setDesc(response.userDesc);
     },
     onError: (error) => {console.log(error)}
   })
@@ -126,78 +124,74 @@ const MyPage = () => {
 
   return (
     <Wrapper>
+      <NavBarWorkspace />
       <StContainer>
-        <ArrowBack size="24" fill="#363636" cursor="pointer"/>
-        <StTitle>마이 페이지</StTitle>
-        <StProfileImg>
-          <StSub>프로필 이미지</StSub>
-          <StImgInput type="file" name="userImg" ref={imgInputRef} onChange={onImgchange} accept='image/png, image/jpg, image/jpeg, image/gif'/>
-          <StImg src={image} />
-          <StEditBtn onClick={onClickImgUpload}>이미지 변경</StEditBtn>
-        </StProfileImg>
-
-        <StEditContainer>
-          <StSub>내 이름</StSub>
-          <StEditBox>
-            {
-              editName
-                ?
-                <>
-                  <StEditInput name="userName" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setName(e.target.value)} onKeyPress={onKeyPressNameHandler} />
-                  <h5 onClick={() => onClickEditNameHandler(name)}>완료</h5>
-                </>
-                :
-                <>
-                  <h3>{name}</h3>
-                  <h5 onClick = {() => setEditName(true)}>편집</h5>
-                </>
-            }
-          </StEditBox>
-        </StEditContainer>
-
-        <StEditContainer>
-          <StSub>직업</StSub>
-          <StEditBox>
-            {
-              editJob
-                ?
-                <>
-                  <StEditInput name = "userJob" value = {job} onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value)} onKeyPress = {onKeyPressJobHandler} />
-                  <h5 onClick = {() => onClickEditJobHandler(job)}>완료</h5>
-                </>
-                :
-                <>
-                  <h3>{job}</h3>
-                  <h5 onClick = {() => setEditJob(true)}>편집</h5>
-                </>
-            }
-          </StEditBox>
-        </StEditContainer>
-
-        <StEditContainer>
-          <StSub>상태 메시지</StSub>
-          <StEditBox>
-            {
-              editDesc
-                ?
-                <>
-                  <StEditInput name = "userDesc" value = {desc} onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setDesc(e.target.value)} onKeyPress = {onKeyPressDescHandler} />
-                  <h5 onClick = {() => onClickEditDescHandler(desc)}>완료</h5>
-                </>
-                :
-                <>
-                  <h3>{desc}</h3>
-                  <h5 onClick = {() => setEditDesc(true)}>편집</h5>
-                </>
-            }
-          </StEditBox>
-        </StEditContainer>
-
-        <StMyWorkspaceContainer>
-          <StSub>내 워크스페이스</StSub>
+        <StMypageProfileDiv>
+          <StArrowBackDiv onClick = {() => {navigate(-1)}}><ArrowBack size="30" fill="#303030" cursor="pointer" /></StArrowBackDiv>
+          <StManageTitle>마이페이지</StManageTitle>
+          <StSubTitleDiv>
+            <StSubTitle>프로필 이미지</StSubTitle>
+            <StSubTitleEdit onClick = {() => {imgInputRef.current.click()}}>이미지 변경</StSubTitleEdit>
+          </StSubTitleDiv>
+          <StMypageProfile img={image}>
+            <StMypageProfileEdit onClick = {() => {imgInputRef.current.click()}}>
+              <StMypageProfileEditText>
+                이미지 편집
+                <StMypageProfileEditInput
+                  type="file"
+                  name="profileImage"
+                  ref={imgInputRef}
+                  onChange={onImgChange}
+                  accept="image/png, image/jpg, image/jpeg, image/gif"
+                />
+              </StMypageProfileEditText>
+            </StMypageProfileEdit>
+          </StMypageProfile>
+          <StSubTitleDiv>
+            <StSubTitle>내 이름</StSubTitle>
+            {editName ? <StSubTitleEdit onClick={() => onClickEditNameHandler(name)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={() => {setEditName(true)}}>편집</StSubTitleEdit>}
+          </StSubTitleDiv>
+          {editName
+          ? <StMypageTextInput
+            name = "userName"
+            value = {name}
+            onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+            onKeyPress = {onKeyPressNameHandler}
+            />
+          : <StMypageText>{name}</StMypageText>
+          }
+          <StSubTitleDiv>
+            <StSubTitle>직업</StSubTitle>
+            {editJob ? <StSubTitleEdit onClick={() => onClickEditJobHandler(job)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={() => {setEditJob(true)}}>편집</StSubTitleEdit>}
+          </StSubTitleDiv>
+          {editJob
+          ? <StMypageTextInput
+            name="userJob"
+            value={job}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value)}
+            onKeyPress={onKeyPressJobHandler}
+            />
+          : <StMypageText>{job}</StMypageText>
+          }
+          <StSubTitleDiv>
+            <StSubTitle>상태 메세지</StSubTitle>
+            {editDesc ? <StSubTitleEdit onClick={() => onClickEditDescHandler(desc)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={() => {setEditDesc(true)}}>편집</StSubTitleEdit>}
+          </StSubTitleDiv>
+          {editDesc
+          ? <StMypageTextInput
+            name="userDesc"
+            value={desc}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDesc(e.target.value)}
+            onKeyPress={onKeyPressDescHandler}
+            />
+          : <StMypageText>{desc}</StMypageText>
+          }
+        </StMypageProfileDiv>
+        <StMypageWorkspaceDiv>
+          <StSubTitleMgT>워크스페이스에 멤버 추가 및 삭제</StSubTitleMgT>
           { dataWorkspace?.inviteList.length ? <InvitedWorkspace invitedWorkspaceData={dataWorkspace?.inviteList} /> : null }
           <MyWorkspace setLeaveModal={(v: boolean) => setLeaveModal(v)} dataWorkspace={dataWorkspace?.workspaceList} setWorkspaceId={(v:number) => setWorkspaceId(v)} />
-        </StMyWorkspaceContainer>
+        </StMypageWorkspaceDiv>
       </StContainer>
       { leaveModal ? <LeaveWorkspaceModal modalRef={modalRef} setLeaveModal={(v: boolean) => setLeaveModal(v)} dataWorkspace = {dataWorkspace?.workspaceList} myWorkspaceId = {workspaceId} /> : null}
     </Wrapper>
@@ -207,75 +201,149 @@ const MyPage = () => {
 export default MyPage;
 
 const StContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 56px;
-  width: 68%;
+  display : flex;
+  flex-direction : column;
+  justify-content : flex-start;
+  align-items : flex-start;
+  width : 1040px;
   height: 100%;
-  margin: 32px;
-`;
-const StTitle = styled.h3`
-  font-size: 32px;
-`;
-
-const StSub = styled.h3`
-  font-size: 18px;
-  font-weight: 500;
-`;
-const StImgInput = styled.input`
-  display: none;
-`;
-const StProfileImg  = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: relative;
-`;
-const StImg = styled.img`
-  width: 212px;
-  height: 212px;
-  border-radius: 50%;
-`;
-const StEditBtn = styled.div`
-  font-size: 14px;
-  position: absolute;
-  top: 4px;
-  left: 112px;
-  color: #007AFF;
-  cursor: pointer;
-`;
-
-const StEditContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-const StEditBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  h3 {
-    font-size: 14px;
-    font-weight: 400;
+  box-sizing : border-box;
+  padding-top : 64px;
+  transition : 200ms;
+  @media screen and (max-width : 1200px) and (min-width : 968px) {
+    width : 776px;
   }
-  h5 {
-    font-size: 14px;
-    color: #007AFF;
-    font-weight: 400;
-    cursor: pointer;
+  @media screen and (max-width : 968px) {
+      width : 512px;
   }
 `;
-const StEditInput = styled.input`
-  border: none;
-  border-bottom: 1px solid gray;
+
+const StMypageProfileDiv = styled.div`
+  display : flex;
+  flex-direction : column;
+  justify-content : flex-start;
+  align-items : flex-start;
+  width : 100%;
+  height : 100%;
+  margin-bottom : 64px;
+`
+
+const StArrowBackDiv = styled.div`
+  margin-top : 64px;
+  width : 36px;
+  height : 36px;
+  display : flex;
+  align-items : center;
+`
+
+const StManageTitle = styled.div`
+  font-size : 32px;
+  font-weight : 900;
+  margin-top : 32px;
+  color : #303030;
+`;
+
+const StSubTitleDiv = styled.div`
+  margin-top : 32px;
+  display : flex;
+  align-items: flex-end;
+  gap : 8px;
+  margin-bottom : 16px;
+`
+
+const StSubTitle = styled.div`
+  font-size : 24px;
+  font-weight : 700;
+  color : #303030;
+`
+
+const StSubTitleMgT = styled.div`
+  font-size : 24px;
+  font-weight : 700;
+  color : #303030;
+  margin-bottom : 32px;
+`
+
+const StSubTitleEdit = styled.div`
+  font-size : 16px;
+  font-weight : 700;
+  color : #007aff;
+  &:hover {
+    cursor : pointer;
+  }
+`
+
+const StMypageProfile = styled.div`
+  width : 256px;
+  height : 256px;
+  border-radius : 256px;
+  background-color : #303030;
+  background-image : url('${(props : {img : string}) => props.img}');
+  background-size : cover;
+  background-position : center;
+`
+
+const StMypageProfileEdit = styled.div`
+  width : 256px;
+  height : 256px;
+  border-radius : 256px;
+  position : absolute;
+  background : linear-gradient(180deg, rgba(217, 217, 217, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
+  opacity : 0%;
+  transition : 200ms;
+  color : transparent;
+  display : flex;
+  justify-content : center;
+  align-items: flex-end;
+  &:hover {
+    opacity : 100%;
+    cursor : pointer;
+  }
+`
+
+const StMypageProfileEditText = styled.div`
+  font-size : 1rem;
+  font-weight : 700;
+  color : white;
+  transition : 200ms;
+  opacity : 100%;
+  margin-bottom : 1rem;
+  &:hover {
+    opacity : 100%;
+    cursor : pointer;
+  }
+`
+
+const StMypageProfileEditInput = styled.input`
+  display : none;
+`
+
+const StMypageText = styled.div`
+  font-size : 1rem;
+  font-weight : 400;
+  line-height : 1.5rem;
+  color : #303030;
+`
+
+const StMypageTextInput = styled.input`
+  font-size : 1rem;
+  font-weight : 400;
+  line-height : 1.5rem;
+  color : #303030;
+  border : none;
+  color : #007aff;
+  width : 100%;
   &:focus {
     outline : none;
   }
-`;
+`
 
-// 내 워크스페이스
-const StMyWorkspaceContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-`;
+const StMypageWorkspaceDiv = styled.div`
+  display : flex;
+  flex-direction : column;
+  justify-content : flex-start;
+  align-items : flex-start;
+  width : 100%;
+  height : 100%;
+  margin-bottom : 64px;
+`

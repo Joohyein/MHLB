@@ -183,7 +183,7 @@ const WorkspaceConfig = () => {
           </StSubTitleDiv>
           <StWorkspaceProfile img={image}>
             <StWorkspaceProfileEdit onClick = {() => {imgInputRef.current.click()}}>
-              <StWrokspaceProfileEditText>
+              <StWorkspaceProfileEditText>
                 이미지 편집
                 <StWorkspaceProfileEditInput
                   type="file"
@@ -192,7 +192,7 @@ const WorkspaceConfig = () => {
                   onChange={onImgChange}
                   accept="image/png, image/jpg, image/jpeg, image/gif"
                 />
-              </StWrokspaceProfileEditText>
+              </StWorkspaceProfileEditText>
             </StWorkspaceProfileEdit>
           </StWorkspaceProfile>
 
@@ -301,6 +301,13 @@ const StContainer = styled.div`
   height: 100%;
   box-sizing : border-box;
   padding-top : 64px;
+  transition : 200ms;
+  @media screen and (max-width : 1200px) and (min-width : 968px) {
+    width : 776px;
+  }
+  @media screen and (max-width : 968px) {
+      width : 512px;
+  }
 `;
 
 const StWorkspaceProfileDiv = styled.div`
@@ -379,7 +386,7 @@ const StWorkspaceProfileEdit = styled.div`
   }
 `
 
-const StWrokspaceProfileEditText = styled.div`
+const StWorkspaceProfileEditText = styled.div`
   font-size : 1rem;
   font-weight : 700;
   color : white;
@@ -399,12 +406,14 @@ const StWorkspaceProfileEditInput = styled.input`
 const StWorkspaceText = styled.div`
   font-size : 1rem;
   font-weight : 400;
+  line-height : 1.5rem;
   color : #303030;
 `
 
 const StWorkspaceTextInput = styled.input`
   font-size : 1rem;
   font-weight : 400;
+  line-height : 1.5rem;
   color : #303030;
   border : none;
   color : #007aff;
