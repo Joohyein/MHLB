@@ -64,7 +64,7 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: Reac
       setEmail('');
     },
     onError: (error:any) => {
-      if(error.response.data.statusCode) setAlreadyInvited(true);
+      if(error.response.data.statusCode === 400) setAlreadyInvited(true);
     }
   })
   const mutationCancel = useMutation(cancelInvite, {
