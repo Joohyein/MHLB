@@ -26,7 +26,6 @@ interface SetUSerDataType {
 function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:(v:SetUSerDataType)=>void}) {
   
   const { data: chatListData} = useQuery('chatList', () => getChatList(workspaceId))
-  console.log("chat list data:", chatListData);
 
   const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string, color:number) => {
     console.log("username:", userName);
@@ -65,10 +64,14 @@ export default MessageBox;
 const StContainer = styled.div`
   padding: 0px 18px 18px 16px;
   box-sizing: border-box;
+  width: 100%;
+  height: 92%;
 `;
 
 const StInputBox = styled.div`
-  padding: 0px 24px 24px 24px;
+  padding: 0px 24px 12px 24px;
+  width: 100%;
+  box-sizing: border-box;
 `;
 const StInput = styled.input`
   padding: 12px 16px;
@@ -88,6 +91,7 @@ const StInput = styled.input`
 const StChatListBox = styled.div`
   display: flex;
   flex-direction: column;
+  height: 88%;
 `;
 const StChatRoom = styled.div`
   padding: 16px 0px;
@@ -95,6 +99,7 @@ const StChatRoom = styled.div`
   display:flex;
   justify-content: space-between;
   align-items:center;
+  cursor: pointer;
 `;
 const StUserDatabox = styled.div`
   display: flex;

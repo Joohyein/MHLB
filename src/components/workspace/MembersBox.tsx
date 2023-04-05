@@ -47,15 +47,16 @@ export default MembersBox;
 const StContainer = styled.div`
   padding: 0px 18px 18px 16px;
   box-sizing: border-box;
+  width: 100%;
+  height: 92%;
 `;
 
 const StInputBox = styled.div`
-  padding: 0px 24px 24px 24px;
+  padding: 0px 24px 12px 24px;
+  width: 100%;
+  box-sizing: border-box;
 `;
-const StPersonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+
 const StInput = styled.input`
   padding: 12px 16px;
   width: 100%;
@@ -66,9 +67,16 @@ const StInput = styled.input`
   &:focus {
     outline: none;
   }
-  &::-webkit-input-placeholder {
+  &::placeholder {
     color: #B1B1B1;
     font-weight: 200;
   }
 `;
 
+const StPersonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 88%;
+  overflow-y: auto;
+`;

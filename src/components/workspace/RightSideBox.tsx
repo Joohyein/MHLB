@@ -9,15 +9,15 @@ import MessageBox from "./MessageBox";
 import Chat from "./Chat";
 import { useParams } from "react-router-dom";
 
-interface MemberDataType {
-  description: string,
-  status: string,
-  color: number,
-  userEmail: string,
+export interface MemberDataType {
   userId: number,
   userImage: string,
+  userName: string,
   userJob: string,
-  userName: string
+  userEmail: string,
+  status: string,
+  color: number,
+  description: string
 };
 interface SetUSerDataType {
   isChat: boolean,
@@ -203,8 +203,7 @@ const StSelectBox = styled.div`
   justify-content: center;
   align-items: center;
   gap: 36px;
-  padding: 16px 0px 0px 0px;
-  height: 8%;
+  padding: 32px 0px 0px 0px;
 `;
 
 const StChatBox = styled.div`
@@ -229,9 +228,19 @@ const StInbox = styled.h3`
 `;
 
 const StPeopleListBox = styled.div`
-  
+  width: 100%;
+  height: 100%;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StMessageListBox = styled.div`
-
+  width: 100%;
+  height: 100%;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
 `;

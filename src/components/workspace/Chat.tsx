@@ -14,9 +14,10 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
   const scrollRef = useRef<HTMLDivElement>(null);
   const cookie = { Authorization : getCookie('authorization') };
 
-  const [messages, setMessages] = useState<any>([]); // 초깃값 넣기
+  const [messages, setMessages] = useState<any>([]); 
   const [stompClient, setStompClient] = useState<any>(null);
   const [inputMessage, setInputMessage] = useState('');
+  const [websocketConnected, setWebsocketConnected] = useState(false);
 
   useEffect(()=>{
     if(!isLoading) {
@@ -33,9 +34,8 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
   },[isLoading]);
 
   useEffect(()=>{
-    const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`); // 웹소켓을 통해 stomp브로커에 연결
+    const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`);
     const stompClient = Stomp.over(socket);
-    // setPersonBoxUuid(uuid);
     const data = {
       Authorization: getCookie('authorization'),
       uuid: personBoxUuid
@@ -43,9 +43,10 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
     if(personBoxUuid){
       stompClient.connect(data, () => {
         console.log("websocket is connected");
+        setWebsocketConnected(true);
         stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data) => {
           const messageData = JSON.parse(data.body);
-          console.log("message data :", messageData);
+          if(!messageData) setWebsocketConnected(false);
           setMessages((prev:any) => [...prev, messageData]);
         },
         cookie 
@@ -60,16 +61,21 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
     }
   }, [personBoxUuid]);
 
-  const onSubmitHandler = () => {
+  const onSubmitHandler =  () => {
     const sendData = {
       uuid: personBoxUuid,
       message: inputMessage,
       workspaceId,
     };
-    if(inputMessage) {
-      stompClient.send(`/pub/inbox`, cookie , JSON.stringify(sendData));
-      setInputMessage('');
+    if(inputMessage && !isLoading && websocketConnected) {
+      stompClient.send(`/pub/inbox`, cookie , JSON.stringify(sendData))
+      .then(()=>{setWebsocketConnected(true)})
+      .catch((error:any)=>{
+        console.log(error);
+        setWebsocketConnected(false);
+      })
     }
+    setInputMessage('');
   };
 
   const onKeyDownHandler = (e:any) => {
@@ -116,7 +122,7 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
       <StBackBtn onClick={onClickBackBtnHandler}>
         <ArrowBack size="16" fill="#ffffff" cursor="pointer" />
         <h3>채팅 목록으로 돌아가기</h3>
-        </StBackBtn>
+      </StBackBtn>
       <StUserData>
         <StLeftBox>
           <StUserImage src={userImage} />
@@ -158,7 +164,9 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
           onKeyPress={onKeyPressHandler}
           onKeyDown={onKeyDownHandler}
         />
-        <StSendBtn onClick={onSubmitHandler}>메시지 보내기</StSendBtn>
+        { websocketConnected
+            ? <StSendBtn backgroundColor='#007aff' onClick={onSubmitHandler}>메시지 보내기</StSendBtn>
+            : <StSendBtn backgroundColor='#7f7f7f' onClick={onSubmitHandler}>메시지 보내기</StSendBtn>}
       </StChatInputBox>
     </StContainer>
   )
@@ -184,6 +192,7 @@ const StBackBtn = styled.button`
   border:none;
   border-radius: 4px;
   padding: 8px 16px 8px 16px;
+  margin: 24px 0 12px 0;
   cursor: pointer;
   h3{
     font-size: 16px;
@@ -232,22 +241,16 @@ const StColor = styled.div<{colorNum:number}>`
 `;
 
 const StChatBox = styled.div`
-  height: 86%;
   display: flex;
   flex-direction: column;
   gap: 16px;
   height: 100%;
-  overflow-x: auto;
-  overflow-y: scroll;
+  overflow-y: auto;
   &::-webkit-scrollbar {
     display: none;
   }
-  &::-webkit-scrollbar-thumb{
-    color: red
-  }
-  &::-webkit-scrollbar-track{
-    color: green;
-  }
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
 `;
 const StMessagesBox = styled.div`
 `;
@@ -259,9 +262,9 @@ const StMessages = styled.div<{flexDirection:string}>`
 const StMessagesOther = styled.div`
   font-size: 0.75rem;
   display: flex;
-  background-color: #007aff;
+  background-color: #f3f3f3;
   padding: 8px;
-  color: #ffffff;
+  color: #303030;
   border-radius: 4px;
   margin-right: 4px;
   line-height: 18px;
@@ -269,9 +272,9 @@ const StMessagesOther = styled.div`
 const StMessagesMine = styled.div`
   font-size: 0.75rem;
   display: flex;
-  background-color: #f3f3f3;
+  background-color: #007aff;
   padding: 8px;
-  color: #303030;
+  color: #ffffff;
   border-radius: 4px;
   margin-left: 4px;
   line-height: 18px;
@@ -311,10 +314,10 @@ const StChatInput = styled.textarea`
     display: none;
   }
 `;
-const StSendBtn = styled.button`
+const StSendBtn = styled.button<{backgroundColor:string}>`
   width: 100%;
   height: 32px;
-  background-color: #007aff;
+  background-color: ${props => props.backgroundColor};
   border: none;
   border-radius: 4px;
   color: #ffffff;
