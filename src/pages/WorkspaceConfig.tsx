@@ -453,7 +453,7 @@ const StMemberSearch = styled.input`
   padding-left : 24px;
   box-sizing : border-box;
   transition : 200ms;
-  &:placeholder {
+  &::placeholder {
     color : #7F7F7F
   }
   &:focus {

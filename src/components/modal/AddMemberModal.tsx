@@ -75,6 +75,7 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: Reac
   });
 
   const onClickInviteHandler = () => {
+    if(inviteLoading) return;
     if (!/[a-z0-9]+@[a-z]+\.[a-z]{2,3}|\.[a-z]{2,3}\.[a-z]{2,3}/g.test(email)) {
       setEmailValidation(true);
       return;

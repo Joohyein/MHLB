@@ -11,9 +11,8 @@ interface InvitedWorkspaceType {
 
 function InvitedWorkspace({invitedWorkspaceData}:{invitedWorkspaceData:InvitedWorkspaceType[]}) {
 
-  console.log(invitedWorkspaceData);
-
   const queryClient = useQueryClient();
+
   const mutationAccept = useMutation(acceptInvite, {
     onSuccess: (response) => {
       queryClient.invalidateQueries('workspace');
@@ -29,11 +28,9 @@ function InvitedWorkspace({invitedWorkspaceData}:{invitedWorkspaceData:InvitedWo
     onError: (error) => console.log(error)
   });
 
-
   const onClickAcceptHandler = (workspaceId: number) => {
     mutationAccept.mutate(workspaceId);
   };
-
   const onClickRejectHandler = (workspaceId: number) => {
     mutationReject.mutate(workspaceId);
   };
