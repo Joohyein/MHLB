@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "react-query";
 import styled from "styled-components";
 import { acceptInvite, rejectInvite } from "../../api/myPage";
+import Workspace2 from "../../pages/Workspace";
 
 interface InvitedWorkspaceType {
     workspaceId: number,
@@ -11,9 +12,8 @@ interface InvitedWorkspaceType {
 
 function InvitedWorkspace({invitedWorkspaceData}:{invitedWorkspaceData:InvitedWorkspaceType[]}) {
 
-  console.log(invitedWorkspaceData);
-
   const queryClient = useQueryClient();
+
   const mutationAccept = useMutation(acceptInvite, {
     onSuccess: (response) => {
       queryClient.invalidateQueries('workspace');
@@ -29,11 +29,9 @@ function InvitedWorkspace({invitedWorkspaceData}:{invitedWorkspaceData:InvitedWo
     onError: (error) => console.log(error)
   });
 
-
   const onClickAcceptHandler = (workspaceId: number) => {
     mutationAccept.mutate(workspaceId);
   };
-
   const onClickRejectHandler = (workspaceId: number) => {
     mutationReject.mutate(workspaceId);
   };

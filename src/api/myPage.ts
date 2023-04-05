@@ -40,13 +40,13 @@ const leaveWorkspace = async ({myWorkspaceId} : {myWorkspaceId: number}) => {
   return response;
 };
 
-const acceptInvite = async (workspaceId: number) => {
+const acceptInvite = async (workspaceId:number) => {
   const response = await instance.post(`/api/mypage/${workspaceId}/invite`);
   return response;
 };
 
-const rejectInvite = async (workspaceId: number) => {
-  const response = await instance.delete(`/api/mypage/${workspaceId}/reject`);
+const rejectInvite = async (workspaceId:number) => {
+  const response = await instance.delete(`/api/mypage/${workspaceId}/invite`);
   return response;
 };
 
