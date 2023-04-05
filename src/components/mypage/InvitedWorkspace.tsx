@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "react-query";
 import styled from "styled-components";
 import { acceptInvite, rejectInvite } from "../../api/myPage";
-import Workspace2 from "../../pages/Workspace";
 
 interface InvitedWorkspaceType {
     workspaceId: number,
