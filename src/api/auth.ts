@@ -6,7 +6,15 @@ const login = async ({email, password} : {email: string, password: string}) => {
 };
 
 const register = async ({email, password, userName, userImage, userJob, userDesc} : {email: string, password: string, userName: string, userImage: any, userJob: string, userDesc: string}) => {
-  const response = await instance.post("/api/users/register", {email, password, userName, userImage, userJob, userDesc});
+  const tmpObj = {userJob, userDesc}
+  if (tmpObj.userJob === '') {
+    tmpObj.userJob = 'White collar';
+  }
+  if (userDesc === '') {
+    tmpObj.userDesc = 'Hello!';
+  }
+  const response = await instance.post("/api/users/register", {email, password, userName, userImage, userJob : tmpObj.userJob, userDesc : tmpObj.userDesc});
+  console.log(response);
   return response;
 };
 
