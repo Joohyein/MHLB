@@ -163,19 +163,25 @@ const Register = () => {
               <StPageSubTitle>이메일과 비밀번호를 입력해주세요!</StPageSubTitle>
               <StInputLabel htmlFor="email" isFocus={emailInputRefFocus}>이메일*</StInputLabel>
               <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownEmail(e)} ref={emailInputRef} id="email" value={emailValue} onChange={(e) => {setEmailValue(e); clearWarningMessage(); setIsEmailInput(true); setAllowEmailMessage(false); setDuplicateEmailValidation(false);}} placeholder="Email"/>
-              {emailValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
-              {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
-              {duplicateEmailValidation ? <StValidationText>해당 이메일이 이미 존재합니다.</StValidationText> : allowedEmailValidation && allowEmailMessage ? <StValidationTextSucceed>사용할 수 있는 이메일입니다.</StValidationTextSucceed> : null}
+              <StValidationTextDiv>
+                {emailValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
+                {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
+                {duplicateEmailValidation ? <StValidationText>해당 이메일이 이미 존재합니다.</StValidationText> : allowedEmailValidation && allowEmailMessage ? <StValidationTextSucceed>사용할 수 있는 이메일입니다.</StValidationTextSucceed> : null}
+              </StValidationTextDiv>
               <StInputLabel htmlFor="password" isFocus={passwordInputRefFocus}>비밀번호*</StInputLabel>
               <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPassword(e)} ref={passwordInputRef} id="password" value={passwordValue} onChange={(e) => {setPasswordValue(e); clearWarningMessage();}} placeholder="Password"/>
               <StValidationInfo>글자수 8~20자, 알파벳 대문자, 소문자, 숫자를 반드시 포함해주세요.</StValidationInfo>
-              {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
-              {passwordFormValidation ? <StValidationText>비밀번호 형식을 맞춰주세요.</StValidationText> : null}
+              <StValidationTextDiv>
+                {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
+                {passwordFormValidation ? <StValidationText>비밀번호 형식을 맞춰주세요.</StValidationText> : null}
+              </StValidationTextDiv>
               <StInputLabel htmlFor="passwordCheck" isFocus={passwordCheckInputRefFocus}>비밀번호 확인*</StInputLabel>
               <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPasswordCheck(e)} ref={passwordCheckInputRef} id="passwordCheck" value={passwordCheckValue} onChange={(e) => {setPasswordCheckValue(e); clearWarningMessage();}} placeholder="Password Check"/>
-              {passwordCheckValidation ? <StValidationText>비밀번호 확인을 입력해주세요.</StValidationText> : null}
-              {emptyValidation ? <StValidationText>모든 정보를 입력해주세요.</StValidationText> : null}
-              {passwordMatchValidation ? <StValidationText>비밀번호가 일치하지 않습니다.</StValidationText> : null}
+              <StValidationTextDiv>
+                {passwordCheckValidation ? <StValidationText>비밀번호 확인을 입력해주세요.</StValidationText> : null}
+                {emptyValidation ? <StValidationText>모든 정보를 입력해주세요.</StValidationText> : null}
+                {passwordMatchValidation ? <StValidationText>비밀번호가 일치하지 않습니다.</StValidationText> : null}
+              </StValidationTextDiv>
               <StRegisterButton ref={registerButtonRef} onClick={() => {onClickContinue();}}>회원가입 계속하기</StRegisterButton>
               <StOrDiv>
                 <StHrTag />
@@ -190,7 +196,9 @@ const Register = () => {
               <StPageSubTitle>정보를 기입해주세요!</StPageSubTitle>
               <StInputLabel htmlFor="name" isFocus={nameInputRefFocus}>이름*</StInputLabel>
               <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownName(e)} ref={nameInputRef} id="name" value={nameValue} onChange={(e) => {setNameValue(e); clearWarningMessage();}} placeholder="Name"/>
-              {nameValidation ? (<StValidationText>이름을 입력해주세요.</StValidationText>) : null}
+              <StValidationTextDiv>
+                {nameValidation ? (<StValidationText>이름을 입력해주세요.</StValidationText>) : null}
+              </StValidationTextDiv>
               <StInputLabel htmlFor="job" isFocus={jobInputRefFocus}>직업</StInputLabel>
               <StInput type={"text"} onKeyDown={(e) => onEnterKeyDownJob(e)} ref={jobInputRef} id="job" value={jobValue} onChange={(e) => {setJobValue(e); clearWarningMessage();}} placeholder="Job - Default value : White collar"/>
               <StInputLabel htmlFor="desc" isFocus={descInputRefFocus}>자기소개</StInputLabel>
@@ -238,13 +246,12 @@ const StPageTitle = styled.div`
 const StPageSubTitle = styled.div`
   font-size: 1rem;
   font-weight: 200;
-  margin-bottom: 1rem;
 `;
 
 const StInputLabel = styled.label`
   font-size: 1rem;
   font-weight: 600;
-  margin-top: 1rem;
+  margin-top: 2rem;
   margin-bottom: 0.5rem;
   transition: 200ms;
   color: ${(props: { isFocus: boolean }) =>
@@ -254,7 +261,7 @@ const StInputLabel = styled.label`
 const StInput = styled.input`
   width: 100%;
   height: 42px;
-  margin-bottom: 1rem;
+  margin-bottom : 0.5rem;
   border: none;
   outline: 1px solid #dbdbdb;
   outline-offset: -1px;
@@ -283,6 +290,7 @@ const StRegisterButton = styled.button`
   color: white;
   line-height: 1.5rem;
   transition: 200ms;
+  margin-top : 32px;
   &:hover {
     cursor : pointer;
     background-color: #429dff;
@@ -358,20 +366,30 @@ const StLoginRecommendLink = styled(Link)`
   }
 `;
 
+const StValidationTextDiv = styled.div`
+  position : relative;
+  width : 100%;
+`
+
 const StValidationText = styled.div`
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #ff3b30;
-`;
+  font-size : 0.75rem;
+  font-weight : 400;
+  color : #ff3b30;
+  position : absolute;
+  top : 0;
+`
 
 const StValidationTextSucceed = styled.div`
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #007aff;
+  position : absolute;
+  top : 0;
 `;
 
 const StValidationInfo = styled.div`
   font-size : 0.75rem;
   font-weight : 400;
   color : #303030;
+  margin-bottom : 4px;
 `
