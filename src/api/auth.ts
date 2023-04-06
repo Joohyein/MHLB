@@ -14,7 +14,6 @@ const register = async ({email, password, userName, userImage, userJob, userDesc
     tmpObj.userDesc = 'Hello!';
   }
   const response = await instance.post("/api/users/register", {email, password, userName, userImage, userJob : tmpObj.userJob, userDesc : tmpObj.userDesc});
-  console.log(response);
   return response;
 };
 
