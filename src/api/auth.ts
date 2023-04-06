@@ -5,7 +5,7 @@ const login = async ({email, password} : {email: string, password: string}) => {
   return response;
 };
 
-const register = async ({email, password, userName, userImage, userJob, userDesc} : {email: string, password: string, userName: string, userImage: any, userJob: string, userDesc: string}) => {
+const register = async ({email, password, userName, userJob, userDesc} : {email: string, password: string, userName: string, userJob: string, userDesc: string}) => {
   const tmpObj = {userJob, userDesc}
   if (tmpObj.userJob === '') {
     tmpObj.userJob = 'White collar';
@@ -13,7 +13,7 @@ const register = async ({email, password, userName, userImage, userJob, userDesc
   if (userDesc === '') {
     tmpObj.userDesc = 'Hello!';
   }
-  const response = await instance.post("/api/users/register", {email, password, userName, userImage, userJob : tmpObj.userJob, userDesc : tmpObj.userDesc});
+  const response = await instance.post("/api/users/register", {email, password, userName, userJob : tmpObj.userJob, userDesc : tmpObj.userDesc});
   return response;
 };
 

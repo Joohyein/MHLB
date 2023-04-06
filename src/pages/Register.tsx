@@ -137,7 +137,7 @@ const Register = () => {
     if (!nameValue) {
       setNameValidation(true);
     } else {
-      register({email: emailValue, password: passwordValue, userName: nameValue, userImage: "temp", userJob: jobValue, userDesc: descValue})
+      register({email: emailValue, password: passwordValue, userName: nameValue, userJob: jobValue, userDesc: descValue})
       .then((res) => {
         navigate('/celebrate-sign-up');
       })
