@@ -87,9 +87,9 @@ const StHovering = styled.div`
   opacity: 0.8;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  bottom: 24px;
-  left: -86px;
+  position: fixed;
+  right: 264px;
   background-color: #303030;
   border-radius: 4px;
+  z-index: 99;
 `;

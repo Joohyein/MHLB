@@ -138,18 +138,26 @@ function RightSideBox() {
   };
 
   // 배경 스크롤 막기
+  const style = document.createElement('style');
+  style.innerHTML = `
+    body::-webkit-scrollbar {
+      display: none;
+    }
+  `;
   const onMouseOverRightSideBox = () => {
     document.body.style.cssText = `
       position: fixed;
       top: -${window.scrollY}px;
-      overflow-y: scroll;
       width: 100%;
+      overflow-y: scroll;
     `
+    document.head.appendChild(style);
   };
   const onMouseOutRightSideBox = () => {
     const scrollY = document.body.style.top;
-    document.body.style.cssText = ''
-    window.scrollTo(0, parseInt(scrollY || '0', 10) * -1)
+    document.body.style.cssText = '';
+    window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+    document.head.removeChild(style);
   };
  
   return (

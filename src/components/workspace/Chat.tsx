@@ -69,11 +69,6 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
     };
     if(inputMessage && !isLoading && websocketConnected) {
       stompClient.send(`/pub/inbox`, cookie , JSON.stringify(sendData))
-      .then(()=>{setWebsocketConnected(true)})
-      .catch((error:any)=>{
-        console.log(error);
-        setWebsocketConnected(false);
-      })
     }
     setInputMessage('');
   };
