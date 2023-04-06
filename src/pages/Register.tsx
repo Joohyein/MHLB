@@ -67,6 +67,15 @@ const Register = () => {
   const [passwordMatchValidation, setPasswordMatchValidation] = useState(false);
   const [nameValidation, setNameValidation] = useState(false);
 
+  useEffect(() => {
+    if (passwordValue === '') return;
+    if (!(passwordValue.length >= 8 && passwordValue.length <= 20 && passwordValue.search(/[0-9]/g) >= 0 && passwordValue.search(/[a-z]/g) >= 0 && passwordValue.search(/[A-Z]/g) >= 0)) {
+      setPasswordFormValidation(true);
+    } else {
+      setPasswordFormValidation(false);
+    }
+  }, [passwordValue])
+
   const onEnterKeyDownEmail = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       passwordInputRef.current.focus();
@@ -79,9 +88,7 @@ const Register = () => {
     }
   };
 
-  const onEnterKeyDownPasswordCheck = (
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  const onEnterKeyDownPasswordCheck = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       onClickContinue();
     }
@@ -114,8 +121,7 @@ const Register = () => {
       setEmailFormValidation(true);
     } else if (!passwordValue) {
       setPasswordValidation(true);
-    } else if (!(passwordValue.length >= 8 && passwordValue.length <= 20 && passwordValue.search(/[0-9]/g) >= 0 && passwordValue.search(/[a-z]/g) >= 0 && passwordValue.search(/[A-Z]/g) >= 0)) {
-      setPasswordFormValidation(true);
+      setPasswordFormValidation(false);
     } else if (!passwordCheckValue) {
       setPasswordCheckValidation(true);
     } else if (!(passwordValue === passwordCheckValue)) {
@@ -147,7 +153,7 @@ const Register = () => {
     setEmailFormValidation(false);
     setEmailValidation(false);
     setPasswordValidation(false);
-    setPasswordFormValidation(false);
+    // setPasswordFormValidation(false);
     setPasswordCheckValidation(false);
     setPasswordMatchValidation(false);
     setNameValidation(false);
