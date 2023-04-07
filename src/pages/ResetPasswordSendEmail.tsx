@@ -66,9 +66,11 @@ const ResetPasswordSendEmail = () => {
                     setEnableSendEmail(true);
                     })
                     .catch((error) => {
-                    setDuplicateEmailValidation(false);
-                    setAllowEmailMessage(true);
-                    setEnableSendEmail(false);
+                    if(error.response.status === 400) {
+                      setDuplicateEmailValidation(false);
+                      setAllowEmailMessage(true);
+                      setEnableSendEmail(false);
+                    }
                     });
                 }
             }
@@ -97,12 +99,16 @@ const ResetPasswordSendEmail = () => {
                     <StPageSubTitle>비밀번호 재설정 메일을 받아보세요!</StPageSubTitle>
                     <StInputLabel htmlFor = 'email' isFocus = {emailInputRefFocus}>이메일</StInputLabel>
                     <StInput type = {'text'} onKeyDown = {(e) => onEnterKeyDownEmail(e)} ref = {emailInputRef} id = 'email' value = {emailValue} onChange = {(e) => {setEmailValue(e); clearWarningMessage(); setIsEmailInput(true); setDuplicateEmailValidation(false); setAllowEmailMessage(false)}} placeholder = 'Email'/>
-                    {duplicateEmailValidation ? <StValidationTextSucceed>이 이메일로 비밀번호 재설정 메일을 보낼 수 있습니다.</StValidationTextSucceed> : allowedEmailValidation && allowEmailMessage ? <StValidationText>이메일이 존재하지 않으므로 보낼 수 없습니다.</StValidationText> : null}
-                    {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
-                    {emptyValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
-                    {errorMessageToggle ? <StValidationText>오류가 발생했습니다. 다시 시도해주세요.</StValidationText> : null}
+                    <StValidationTextDiv>
+                      {duplicateEmailValidation ? <StValidationTextSucceed>이 이메일로 비밀번호 재설정 메일을 보낼 수 있습니다.</StValidationTextSucceed> : allowedEmailValidation && allowEmailMessage ? <StValidationText>이메일이 존재하지 않으므로 보낼 수 없습니다.</StValidationText> : null}
+                      {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
+                      {emptyValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
+                      {errorMessageToggle ? <StValidationText>오류가 발생했습니다. 다시 시도해주세요.</StValidationText> : null}
+                    </StValidationTextDiv>
                     {disableEmail ? <StActivatedButton onClick = {() => {onClickFindPassword()}}>비밀번호 재설정 메일 보내기</StActivatedButton> : <StDeactivatedButton>비밀번호 재설정 메일 보내기</StDeactivatedButton>}
-                    {disableEmail ? null : <StValidationInfo>로딩 중...</StValidationInfo>}
+                    <StValidationTextDiv>
+                      {disableEmail ? null : <StValidationInfo>로딩 중...</StValidationInfo>}
+                    </StValidationTextDiv>
                 </StContainer>
             </StBackground>
         </Wrapper>
@@ -158,7 +164,7 @@ const StInputLabel = styled.label`
 const StInput = styled.input`
   width : 100%;
   height : 42px;
-  margin-bottom : 1rem;
+  margin-bottom : 8px;
   border : none;
   outline : 1px solid #dbdbdb;
   outline-offset : -1px;
@@ -177,7 +183,7 @@ const StInput = styled.input`
 `
 
 const StActivatedButton = styled.button`
-  margin-top : 1rem;
+  margin-top : 48px;
   background-color : #007aff;
   width : 100%;
   height : 35px;
@@ -195,7 +201,7 @@ const StActivatedButton = styled.button`
 `
 
 const StDeactivatedButton = styled.button`
-  margin-top : 1rem;
+  margin-top : 48px;
   background-color : #7f7f7f;
   width : 100%;
   height : 35px;
@@ -209,16 +215,25 @@ const StDeactivatedButton = styled.button`
   cursor : not-allowed;
 `
 
+const StValidationTextDiv = styled.div`
+  position : relative;
+  width : 100%;
+`
+
 const StValidationText = styled.div`
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #ff3b30;
-`;
+  font-size : 0.75rem;
+  font-weight : 400;
+  color : #ff3b30;
+  position : absolute;
+  top : 0;
+`
 
 const StValidationTextSucceed = styled.div`
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #007aff;
+  position : absolute;
+  top : 0;
 `;
 
 const StValidationInfo = styled.div`
@@ -226,4 +241,6 @@ const StValidationInfo = styled.div`
   font-weight : 400;
   color : #303030;
   margin-top : 0.5rem;
+  position : absolute;
+  top : 0;
 `;

@@ -30,6 +30,15 @@ const ResetPassword = () => {
     const [passwordCheckValidation, setPasswordCheckValidation] = useState(false);
     const [passwordMatchValidation, setPasswordMatchValidation] = useState(false);
 
+    useEffect(() => {
+      if (passwordValue === '') return;
+      if (!(passwordValue.length >= 8 && passwordValue.length <= 20 && passwordValue.search(/[0-9]/g) >= 0 && passwordValue.search(/[a-z]/g) >= 0 && passwordValue.search(/[A-Z]/g) >= 0)) {
+        setPasswordFormValidation(true);
+      } else {
+        setPasswordFormValidation(false);
+      }
+    }, [passwordValue])
+
     const onEnterKeyDownPassword = (e : React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             passwordCheckInputRef.current.focus();
@@ -47,8 +56,7 @@ const ResetPassword = () => {
             setEmptyValidation(true);
         } else if (!passwordValue) {
             setPasswordValidation(true);
-        } else if (!(passwordValue.length >= 8 && passwordValue.length <= 20 && passwordValue.search(/[0-9]/g) >= 0 && passwordValue.search(/[a-z]/g) >= 0 && passwordValue.search(/[A-Z]/g) >= 0)) {
-            setPasswordFormValidation(true);
+            setPasswordFormValidation(false);
         } else if (!passwordCheckValue) {
             setPasswordCheckValidation(true);
         } else if (!(passwordValue === passwordCheckValue)) {
@@ -64,7 +72,6 @@ const ResetPassword = () => {
     const clearWarningMessage = () => {
         setEmptyValidation(false);
         setPasswordValidation(false);
-        setPasswordFormValidation(false);
         setPasswordCheckValidation(false);
         setPasswordMatchValidation(false);
     }
@@ -77,14 +84,18 @@ const ResetPassword = () => {
                     <StPageSubTitle>새로운 비밀번호를 설정해주세요.</StPageSubTitle>
                     <StInputLabel htmlFor="password" isFocus = {passwordInputRefFocus}>비밀번호*</StInputLabel>
                     <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPassword(e)} ref={passwordInputRef} id="password" value={passwordValue} onChange={(e) => {setPasswordValue(e); clearWarningMessage();}} placeholder="Password"/>
-                    {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
-                    {passwordFormValidation ? <StValidationText>비밀번호 형식을 맞춰주세요.</StValidationText> : null}
                     <StValidationInfo>글자수 8~20자, 알파벳 대문자, 소문자, 숫자를 반드시 포함해주세요.</StValidationInfo>
+                    <StValidationTextDiv>
+                      {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
+                      {passwordFormValidation ? <StValidationText>비밀번호 형식을 맞춰주세요.</StValidationText> : null}
+                    </StValidationTextDiv>
                     <StInputLabel htmlFor="passwordCheck" isFocus = {passwordCheckInputRefFocus} >비밀번호 확인*</StInputLabel>
                     <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPasswordCheck(e)} ref={passwordCheckInputRef} id="passwordCheck" value={passwordCheckValue} onChange={(e) => {setPasswordCheckValue(e); clearWarningMessage();}} placeholder="Password Check"/>
-                    {emptyValidation ? <StValidationText>모든 정보를 입력해주세요.</StValidationText> : null}
-                    {passwordCheckValidation ? <StValidationText>비밀번호 확인을 입력해주세요.</StValidationText> : null}
-                    {passwordMatchValidation ? <StValidationText>비밀번호가 일치하지 않습니다.</StValidationText> : null}
+                    <StValidationTextDiv>
+                      {emptyValidation ? <StValidationText>모든 정보를 입력해주세요.</StValidationText> : null}
+                      {passwordCheckValidation ? <StValidationText>비밀번호 확인을 입력해주세요.</StValidationText> : null}
+                      {passwordMatchValidation ? <StValidationText>비밀번호가 일치하지 않습니다.</StValidationText> : null}
+                    </StValidationTextDiv>
                     <StResetPasswordButton onClick={() => {onClickResetPassword();}}>비밀번호 변경하기</StResetPasswordButton>
                 </StContainer>
             </StBackground>
@@ -126,13 +137,12 @@ const StPageTitle = styled.div`
 const StPageSubTitle = styled.div`
   font-size : 1rem;
   font-weight : 200;
-  margin-bottom : 1rem;
 `
 
 const StInputLabel = styled.label`
   font-size : 1rem;
   font-weight : 600;
-  margin-top : 1rem;
+  margin-top : 32px;
   margin-bottom : 0.5rem;
   transition : 200ms;
   color : ${(props : {isFocus : boolean}) => props.isFocus ? "#007aff" : "#303030"};
@@ -141,7 +151,7 @@ const StInputLabel = styled.label`
 const StInput = styled.input`
   width : 100%;
   height : 42px;
-  margin-bottom : 1rem;
+  margin-bottom : 8px;
   border : none;
   outline : 1px solid #dbdbdb;
   outline-offset : -1px;
@@ -160,7 +170,7 @@ const StInput = styled.input`
 `
 
 const StResetPasswordButton = styled.button`
-  margin-top : 1rem;
+  margin-top : 48px;
   background-color : #007aff;
   width : 100%;
   height : 35px;
@@ -177,14 +187,22 @@ const StResetPasswordButton = styled.button`
   }
 `
 
+const StValidationTextDiv = styled.div`
+  position : relative;
+  width : 100%;
+`
+
 const StValidationText = styled.div`
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #ff3b30;
-`;
+  font-size : 0.75rem;
+  font-weight : 400;
+  color : #ff3b30;
+  position : absolute;
+  top : 0;
+`
 
 const StValidationInfo = styled.div`
   font-size : 0.75rem;
   font-weight : 400;
   color : #303030;
+  margin-bottom : 4px;
 `
