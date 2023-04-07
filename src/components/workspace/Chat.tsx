@@ -7,8 +7,8 @@ import { Stomp } from "@stomp/stompjs";
 import { getCookie } from "../../cookie/cookies";
 import ArrowBack from "../asset/icons/ArrowBack";
 
-function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{isChat:boolean;userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
-  const { data : prevMessagesData, isLoading } = useQuery('prevMessages', () => getPrevMessages(Number(workspaceId), Number(userId)));
+function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
+  const { data : prevMessagesData, isLoading } = useQuery('prevMessages', () => getPrevMessages(Number(workspaceId), Number(userId), Number(0)));
 
   const [personBoxUuid, setPersonBoxUuid] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -18,6 +18,10 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
   const [stompClient, setStompClient] = useState<any>(null);
   const [inputMessage, setInputMessage] = useState('');
   const [websocketConnected, setWebsocketConnected] = useState(false);
+
+  const [scrollIndex, setScrollIndex] = useState(0);
+  const target = useRef<HTMLDivElement>(null);
+  const [prevScrollHeight, setPrevScrollHeight] = useState(0);
 
   useEffect(()=>{
     if(!isLoading) {
@@ -32,7 +36,7 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
       }
     }
   },[isLoading]);
-
+  
   useEffect(()=>{
     const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`);
     const stompClient = Stomp.over(socket);
@@ -46,6 +50,8 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
         setWebsocketConnected(true);
         stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data) => {
           const messageData = JSON.parse(data.body);
+          console.log(messageData);
+          // const tmp = {...messageData, message:messageData.message.replaceAll(/(\n|\r\n)/g,'<br>')};
           if(!messageData) setWebsocketConnected(false);
           setMessages((prev:any) => [...prev, messageData]);
         },
@@ -54,7 +60,6 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
         setStompClient(stompClient);
       },
       );
-      // if문으로 웹소켓 닫기 or return(unmount) 함수에서 웹소켓 닫기
     }
     return () => {
       stompClient.disconnect();
@@ -62,6 +67,8 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
   }, [personBoxUuid]);
 
   const onSubmitHandler =  () => {
+    setInputMessage('');
+    if(inputMessage === '\n') return;
     const sendData = {
       uuid: personBoxUuid,
       message: inputMessage,
@@ -70,33 +77,57 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
     if(inputMessage && !isLoading && websocketConnected) {
       stompClient.send(`/pub/inbox`, cookie , JSON.stringify(sendData))
     }
-    setInputMessage('');
   };
 
-  const onKeyDownHandler = (e:any) => {
-    if(e.keyCode === 13){
-      if(!e.shiftKey){
-        e.preventDefault();
-        onSubmitHandler();
-      }
+  // 무한스크롤
+  const callback = (entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    // 타겟 요소가 교차 영역에 있는 동안 scrollIndex +1
+    if(target.isIntersecting) setScrollIndex(prev => prev + 1); 
+  };
+  const options = {
+    root: null,
+    rootMargin: '0',
+    threshold: 1.0
+  };
+  const observer = new IntersectionObserver(callback, options);
+
+  useEffect(()=>{
+    if(target.current) observer.observe(target.current);
+    return () => {
+      if(target.current) observer.unobserve(target.current);
     }
+  }, []);
+
+  const scrollTo = () => {
+    if(scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight - prevScrollHeight
+  };
+
+  useEffect(() => {
+    console.log("scroll index : ", scrollIndex);
+    // const prevMessages = getPrevMessages(workspaceId, Number(userId), scrollIndex);
+    // console.log('previous messages :', prevMessages);
+    // setMessages((prev:any) => [prevMessages, ...prev]);
+    scrollTo();
+  }, [scrollIndex]);
+
+  setTimeout(() => {
+    if(scrollRef.current?.scrollHeight) setPrevScrollHeight(scrollRef.current.scrollHeight)
+  }, 50);
+  //
+
+  const onKeyDownHandler = (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if(e.key === 'Enter' && !e.shiftKey) onSubmitHandler();
   };
 
   const onKeyPressHandler = (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if(e.keyCode === 13) onSubmitHandler();
+    if(e.key === 'Enter') onSubmitHandler();
   };
 
   const onClickBackBtnHandler = () => {
     setIsChat(false);
     setToggle(true);
   };
-
-  const scrollToBottom = () => {
-    if(scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  };
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   // scroll to bottom
   useEffect(()=>{
@@ -129,6 +160,7 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
         <StColor colorNum={color} ></StColor>
       </StUserData>
       <StChatBox ref={scrollRef}>
+        <div ref={target}></div>
         {
           messages?.map((item:MessagesType)=>{
             return (
@@ -156,7 +188,7 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
           name='inputMessage'
           value={inputMessage} 
           onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=>{setInputMessage(e.target.value)}} 
-          onKeyPress={onKeyPressHandler}
+          onKeyUp={onKeyPressHandler}
           onKeyDown={onKeyDownHandler}
         />
         { websocketConnected

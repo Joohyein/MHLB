@@ -12,8 +12,8 @@ const getChatList = async (workspaceId:number) => {
   return response.data;
 };
 
-const getPrevMessages = async (workspaceId:number, userId:number) => {
-  const response = await instance.get(`/api/inbox/${workspaceId}/${userId}`, );
+const getPrevMessages = async (workspaceId:number, userId:number, index:number) => {
+  const response = await instance.get(`/api/inbox/${workspaceId}/${userId}/${index}`, );
   return response.data;
 };
 
@@ -21,5 +21,6 @@ const getUuid = async (workspaceId:number, userId:number) => {
   const response = await instance.post(`/api/inbox/${workspaceId}`, {userId});
   return response.data.uuid;
 };
+
 
 export { getPeopleList, getPrevMessages, getUuid, getChatList };

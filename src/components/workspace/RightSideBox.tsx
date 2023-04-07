@@ -138,12 +138,6 @@ function RightSideBox() {
   };
 
   // 배경 스크롤 막기
-  const style = document.createElement('style');
-  style.innerHTML = `
-    body::-webkit-scrollbar {
-      display: none;
-    }
-  `;
   const onMouseOverRightSideBox = () => {
     document.body.style.cssText = `
       position: fixed;
@@ -151,13 +145,11 @@ function RightSideBox() {
       width: 100%;
       overflow-y: scroll;
     `
-    document.head.appendChild(style);
   };
   const onMouseOutRightSideBox = () => {
     const scrollY = document.body.style.top;
     document.body.style.cssText = '';
     window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
-    document.head.removeChild(style);
   };
  
   return (
@@ -170,7 +162,7 @@ function RightSideBox() {
         isChat
           ?
           <StChatBox>
-            <Chat isChat={isChat} userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={Number(color)} workspaceId={Number(params.workspaceId)} setToggle={v=>setToggle(v)} setIsChat={v=>setIsChat(v)} />
+            <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={Number(color)} workspaceId={Number(params.workspaceId)} setToggle={v=>setToggle(v)} setIsChat={v=>setIsChat(v)} />
           </StChatBox>
           :
           <>
