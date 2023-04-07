@@ -121,13 +121,12 @@ const Register = () => {
       setEmailFormValidation(true);
     } else if (!passwordValue) {
       setPasswordValidation(true);
-      setPasswordFormValidation(false);
     } else if (!passwordCheckValue) {
       setPasswordCheckValidation(true);
     } else if (!(passwordValue === passwordCheckValue)) {
       setPasswordMatchValidation(true);
     } else {
-      if (allowEmailMessage === true) {
+      if (allowEmailMessage === true && passwordFormValidation === false) {
         setIsEmailForm(true);
       }
     }
@@ -153,7 +152,6 @@ const Register = () => {
     setEmailFormValidation(false);
     setEmailValidation(false);
     setPasswordValidation(false);
-    // setPasswordFormValidation(false);
     setPasswordCheckValidation(false);
     setPasswordMatchValidation(false);
     setNameValidation(false);
@@ -179,7 +177,7 @@ const Register = () => {
               <StValidationInfo>글자수 8~20자, 알파벳 대문자, 소문자, 숫자를 반드시 포함해주세요.</StValidationInfo>
               <StValidationTextDiv>
                 {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
-                {passwordFormValidation ? <StValidationText>비밀번호 형식을 맞춰주세요.</StValidationText> : null}
+                {passwordFormValidation && !passwordValidation ? <StValidationText>비밀번호 형식을 맞춰주세요.</StValidationText> : null}
               </StValidationTextDiv>
               <StInputLabel htmlFor="passwordCheck" isFocus={passwordCheckInputRefFocus}>비밀번호 확인*</StInputLabel>
               <StInput type={"password"} onKeyDown={(e) => onEnterKeyDownPasswordCheck(e)} ref={passwordCheckInputRef} id="passwordCheck" value={passwordCheckValue} onChange={(e) => {setPasswordCheckValue(e); clearWarningMessage();}} placeholder="Password Check"/>
