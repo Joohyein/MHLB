@@ -8,7 +8,8 @@ import useIsLogin from "../hooks/useIsLogin";
 import useDebounce from "../hooks/useDebounce";
 import { duplicateEmailCheck } from "../api/general";
 import GoogleSocialIcon from "../components/asset/icons/GoogleSocialIcon";
-import { register } from "../api/auth";
+import { googleLoginRequest, register } from "../api/auth";
+import { setCookie } from "../cookie/cookies";
 
 const Register = () => {
   const isLogin = useIsLogin();
@@ -146,6 +147,17 @@ const Register = () => {
     }
   };
 
+  const onClickGoogleAuth = () => {
+    googleLoginRequest()
+    .then((res : any) => {
+      setCookie('authorization', res.authorization);
+      navigate('/select-workspace');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   const clearWarningMessage = () => {
     setAllowedEmailValidation(true);
     setEmptyValidation(false);
@@ -192,7 +204,7 @@ const Register = () => {
                 <StOrText>or</StOrText>
                 <StHrTag />
               </StOrDiv>
-              <StGoogleRegisterButton><GoogleSocialIcon />Google로 계속하기</StGoogleRegisterButton>
+              <StGoogleRegisterButton onClick = {onClickGoogleAuth}><GoogleSocialIcon />Google로 계속하기</StGoogleRegisterButton>
               <StLoginRecommend>이미 계정이 있으신가요?<StLoginRecommendLink to="/login">로그인 하러가기</StLoginRecommendLink></StLoginRecommend>
             </>
           )

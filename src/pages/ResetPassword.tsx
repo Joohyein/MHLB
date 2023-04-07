@@ -54,7 +54,7 @@ const ResetPassword = () => {
         } else if (!(passwordValue === passwordCheckValue)) {
             setPasswordMatchValidation(true);
         } else {
-            resetPassword(params.path, {password : passwordValue})
+            resetPassword(params.uuid, {password : passwordValue})
             .then((res) => {
                 navigate('/reset-password-succeed')
             })

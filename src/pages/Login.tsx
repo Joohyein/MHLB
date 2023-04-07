@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { login } from "../api/auth";
+import { googleLoginRequest, login } from "../api/auth";
 import GoogleSocialIcon from "../components/asset/icons/GoogleSocialIcon";
 import Wrapper from "../components/common/Wrapper";
 import useInput from "../hooks/useInput";
@@ -64,6 +64,17 @@ const Login = () => {
     }
   }
 
+  const onClickGoogleAuth = () => {
+    googleLoginRequest()
+    .then((res : any) => {
+      setCookie('authorization', res.authorization);
+      navigate('/select-workspace');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   const clearWarningMessage = () => {
     setEmptyValidation(false);
     setEmailFormValidation(false);
@@ -98,7 +109,7 @@ const Login = () => {
             <StOrText>or</StOrText>
             <StHrTag />
           </StOrDiv>
-          <StGoogleLoginButton><GoogleSocialIcon />Google로 계속하기</StGoogleLoginButton>
+          <StGoogleLoginButton onClick = {onClickGoogleAuth}><GoogleSocialIcon />Google로 계속하기</StGoogleLoginButton>
           <StRegisterRecommend>아직 계정이 없으신가요?<StRegisterRecommendLink to = '/register'>가입하기</StRegisterRecommendLink></StRegisterRecommend>
         </StContainer>
       </StBackground>

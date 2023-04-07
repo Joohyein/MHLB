@@ -27,4 +27,31 @@ const resetPassword = async (uuid : any, {password} : {password : string}) => {
   return response;
 }
 
-export { login, register, sendResetPasswordEmail, resetPassword };
+const getGoogleCode = async (code : string) => {
+  const response = await instance.get(`http://potato-fried.shop:8080/api/users/auth/google/callback?code=${code}`);
+  return response;
+}
+
+const googleLoginRequest = async () => {
+  const redirectUri = encodeURIComponent('http://localhost:3000/google-auth');
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=766535092476-o59t1krg7rku29jflccpiuo9g98o5pvl.apps.googleusercontent.com&redirect_uri=${redirectUri}&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
+  
+  window.open(authUrl,'Pin me AUTH','width=430,height=500,location=yes,status=no,scrollbars=yes');
+ 
+  const handleMessage = (event : any) => {
+    if (event.origin !== window.origin) return;
+    return event.data;
+  };
+
+  const tmpPrms = await new Promise((resolve, reject) => {
+    const tmpFunc = (event : any) => {
+      resolve(handleMessage(event));
+      window.removeEventListener('message', tmpFunc);
+    }
+    window.addEventListener('message', tmpFunc);
+  });
+
+  return tmpPrms;
+};
+
+export { login, register, sendResetPasswordEmail, resetPassword, getGoogleCode, googleLoginRequest };
