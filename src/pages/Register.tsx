@@ -127,7 +127,7 @@ const Register = () => {
     } else if (!(passwordValue === passwordCheckValue)) {
       setPasswordMatchValidation(true);
     } else {
-      if (allowEmailMessage === true && passwordFormValidation === false) {
+      if (allowEmailMessage === true && passwordFormValidation === true) {
         setIsEmailForm(true);
       }
     }
