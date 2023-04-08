@@ -1,16 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
-
-interface MemberDataType {
-  userId: number,
-  userImage: string,
-  userName: string,
-  userJob: string,
-  userEmail: string,
-  status: string,
-  color: number,
-  description: string
-};
+import { MemberDataType } from "./RightSideBox";
 
 function PersonBox({member, peopleData, isCheckMe}: {member: MemberDataType, peopleData:any, isCheckMe:number}) {
   const [isHovering, setIsHovering] = useState(false);
@@ -19,7 +9,7 @@ function PersonBox({member, peopleData, isCheckMe}: {member: MemberDataType, peo
     peopleData({isChat:true, userId, userName, toggle:true, checkPersonInbox:true, userJob, userImage, color})
   };
   const onMouseOverHandler = (status:string) => {
-    setIsHovering(true)
+    setIsHovering(true);
   };
   return (
     <StMembersBox onMouseOver={() => onMouseOverHandler(member?.status)} onMouseOut={() => setIsHovering(false)} key={member?.userId} onClick={()=>onClickPersonHandler(member?.userId, member?.userName, member?.userImage, member?.userJob, member?.color)} >
@@ -30,7 +20,7 @@ function PersonBox({member, peopleData, isCheckMe}: {member: MemberDataType, peo
           <StJob>{member?.userJob}</StJob>
         </StNameRoleBox>
       </StDivideBox>
-      {member?.color === 0 ? <StStatusGreen></StStatusGreen> : member?.color === 1 ? <StStatusYellow></StStatusYellow> : member?.color === 2 ? <StStatusRed></StStatusRed> : member?.color === 3 ? <StStatusGray></StStatusGray> : null}          
+      <StStatus bgColor={member?.color}></StStatus>        
       {isHovering && <StHovering>{member?.status}</StHovering>}
     </StMembersBox>
   )
@@ -43,7 +33,7 @@ const StMembersBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
+  padding: 16px 16px 16px 0;
   border-bottom: 1px solid #f1f1f1;
   cursor: pointer;
 `;
@@ -66,6 +56,10 @@ const StNameRoleBox = styled.div`
 const StName = styled.h3`
   font-size: 16px;
   font-weight: 500;
+  width: 112px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 const StJob = styled.h3`
   font-size: 12px;
@@ -77,28 +71,10 @@ const StJob = styled.h3`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
-const StStatusGreen = styled.div`
+const StStatus = styled.div<{bgColor:number}>`
   width: 8px;
   height: 8px;
-  background-color: #34C759;
-  border-radius: 50%;
-`;
-const StStatusYellow = styled.div`
-  width: 8px;
-  height: 8px;
-  background-color: #FFCC01;
-  border-radius: 50%;
-`;
-const StStatusRed = styled.div`
-  width: 8px;
-  height: 8px;
-  background-color: #FF3B31;
-  border-radius: 50%;
-`;
-const StStatusGray = styled.div`
-  width: 8px;
-  height: 8px;
-  background-color: #7F7F7F;
+  background-color: ${props => props.bgColor === 0 ? '#34C759' : props.bgColor === 1 ? '#FFCC01' : props.bgColor === 2 ? '#FF3B31' : '#7F7F7F'};
   border-radius: 50%;
 `;
 
@@ -111,9 +87,9 @@ const StHovering = styled.div`
   opacity: 0.8;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  bottom: 24px;
-  left: -186px;
+  position: fixed;
+  right: 264px;
   background-color: #303030;
   border-radius: 4px;
+  z-index: 99;
 `;

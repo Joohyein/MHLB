@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getPeopleList } from "../../api/rightSide";
@@ -9,15 +9,15 @@ import MessageBox from "./MessageBox";
 import Chat from "./Chat";
 import { useParams } from "react-router-dom";
 
-interface MemberDataType {
-  description: string,
-  status: string,
-  color: number,
-  userEmail: string,
+export interface MemberDataType {
   userId: number,
   userImage: string,
+  userName: string,
   userJob: string,
-  userName: string
+  userEmail: string,
+  status: string,
+  color: number,
+  description: string
 };
 interface SetUSerDataType {
   isChat: boolean,
@@ -142,14 +142,14 @@ function RightSideBox() {
     document.body.style.cssText = `
       position: fixed;
       top: -${window.scrollY}px;
-      overflow-y: scroll;
       width: 100%;
-    `
+      overflow-y: scroll;
+    `;
   };
   const onMouseOutRightSideBox = () => {
     const scrollY = document.body.style.top;
-    document.body.style.cssText = ''
-    window.scrollTo(0, parseInt(scrollY || '0', 10) * -1)
+    document.body.style.cssText = '';
+    window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
   };
  
   return (
@@ -162,7 +162,7 @@ function RightSideBox() {
         isChat
           ?
           <StChatBox>
-            <Chat isChat={isChat} userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={Number(color)} workspaceId={Number(params.workspaceId)} setToggle={v=>setToggle(v)} setIsChat={v=>setIsChat(v)} />
+            <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={Number(color)} workspaceId={Number(params.workspaceId)} setToggle={v=>setToggle(v)} setIsChat={v=>setIsChat(v)} />
           </StChatBox>
           :
           <>
@@ -203,8 +203,7 @@ const StSelectBox = styled.div`
   justify-content: center;
   align-items: center;
   gap: 36px;
-  padding: 16px 0px 0px 0px;
-  height: 8%;
+  padding: 32px 0px 0px 0px;
 `;
 
 const StChatBox = styled.div`
@@ -229,9 +228,19 @@ const StInbox = styled.h3`
 `;
 
 const StPeopleListBox = styled.div`
-  
+  width: 100%;
+  height: 100%;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StMessageListBox = styled.div`
-
+  width: 100%;
+  height: 100%;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
 `;
