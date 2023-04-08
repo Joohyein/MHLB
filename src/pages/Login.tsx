@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { login } from "../api/auth";
+import { googleLoginRequest, login } from "../api/auth";
 import GoogleSocialIcon from "../components/asset/icons/GoogleSocialIcon";
 import Wrapper from "../components/common/Wrapper";
 import useInput from "../hooks/useInput";
@@ -64,6 +64,17 @@ const Login = () => {
     }
   }
 
+  const onClickGoogleAuth = () => {
+    googleLoginRequest()
+    .then((res : any) => {
+      setCookie('authorization', res.authorization);
+      navigate('/select-workspace');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   const clearWarningMessage = () => {
     setEmptyValidation(false);
     setEmailFormValidation(false);
@@ -80,21 +91,25 @@ const Login = () => {
           <StPageSubTitle>이메일과 비밀번호를 입력해주세요!</StPageSubTitle>
           <StInputLabel htmlFor = "email" isFocus = {emailInputRefFocus}>이메일</StInputLabel>
           <StInput type = {'text'} onKeyDown = {(e) => onEnterKeyDownEmail(e)} ref = {emailInputRef} id = "email" value = {emailValue} onChange = {(e) => {setEmailValue(e); clearWarningMessage()}} placeholder = "Email"/>
-          {emailValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
-          {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
+          <StValidationTextDiv>
+            {emailValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
+            {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
+          </StValidationTextDiv>
           <StInputLabel htmlFor = "password" isFocus = {passwordInputRefFocus}>비밀번호</StInputLabel>
           <StInput type = {'password'} onKeyDown = {(e) => onEnterKeyDownPassword(e)} ref = {passwordInputRef} id = "password" value = {passwordValue} onChange = {(e) => {setPasswordValue(e); clearWarningMessage()}} placeholder = "Password"/>
-          {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
-          {emptyValidation ? <StValidationText>모든 정보를 입력해주세요.</StValidationText> : null}
-          {wrongValidation ? <StValidationText>이메일이나 비밀번호가 틀렸습니다.</StValidationText> : null}
-          <StFindPassword to = '/reset-password-send-email'>비밀번호를 잊어버리셨나요?</StFindPassword>
+          <StValidationTextDiv>
+            {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
+            {emptyValidation ? <StValidationText>모든 정보를 입력해주세요.</StValidationText> : null}
+            {wrongValidation ? <StValidationText>이메일이나 비밀번호가 틀렸습니다.</StValidationText> : null}
+            <StFindPassword to = '/reset-password-send-email'>비밀번호를 잊어버리셨나요?</StFindPassword>
+          </StValidationTextDiv>
           <StLoginButton ref = {loginButtonRef} onClick = {() => {onClickLogin()}}>로그인</StLoginButton>
           <StOrDiv>
             <StHrTag />
             <StOrText>or</StOrText>
             <StHrTag />
           </StOrDiv>
-          <StGoogleLoginButton><GoogleSocialIcon />Google로 계속하기</StGoogleLoginButton>
+          <StGoogleLoginButton onClick = {onClickGoogleAuth}><GoogleSocialIcon />Google로 계속하기</StGoogleLoginButton>
           <StRegisterRecommend>아직 계정이 없으신가요?<StRegisterRecommendLink to = '/register'>가입하기</StRegisterRecommendLink></StRegisterRecommend>
         </StContainer>
       </StBackground>
@@ -136,13 +151,12 @@ const StPageTitle = styled.div`
 const StPageSubTitle = styled.div`
   font-size : 1rem;
   font-weight : 200;
-  margin-bottom : 1rem;
 `
 
 const StInputLabel = styled.label`
   font-size : 1rem;
   font-weight : 600;
-  margin-top : 1rem;
+  margin-top : 2rem;
   margin-bottom : 0.5rem;
   transition : 200ms;
   color : ${(props : {isFocus : boolean}) => props.isFocus ? "#007aff" : "#303030"};
@@ -151,7 +165,7 @@ const StInputLabel = styled.label`
 const StInput = styled.input`
   width : 100%;
   height : 42px;
-  margin-bottom : 1rem;
+  margin-bottom : 0.5rem;
   border : none;
   outline : 1px solid #dbdbdb;
   outline-offset : -1px;
@@ -173,10 +187,11 @@ const StFindPassword = styled(Link)`
   font-size : 0.75rem;
   font-weight : 400;
   color : #007aff;
-  margin-left : auto;
-  margin-bottom : 2rem;
   text-decoration-line : none;
   transition : 200ms;
+  position : absolute;
+  top : 0;
+  right : 0;
   &:visited {
     text-decoration-line : none;
   }
@@ -197,6 +212,7 @@ const StLoginButton = styled.button`
   color : white;
   line-height : 1.5rem;
   transition : 200ms;
+  margin-top : 48px;
   &:hover {
     cursor : pointer;
     background-color : #429dff;
@@ -272,8 +288,15 @@ const StRegisterRecommendLink = styled(Link)`
   }
 `
 
+const StValidationTextDiv = styled.div`
+  position : relative;
+  width : 100%;
+`
+
 const StValidationText = styled.div`
   font-size : 0.75rem;
-  font-weight : 700;
+  font-weight : 400;
   color : #ff3b30;
+  position : absolute;
+  top : 0;
 `
