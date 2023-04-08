@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getPeopleList } from "../../api/rightSide";
@@ -144,7 +144,7 @@ function RightSideBox() {
       top: -${window.scrollY}px;
       width: 100%;
       overflow-y: scroll;
-    `
+    `;
   };
   const onMouseOutRightSideBox = () => {
     const scrollY = document.body.style.top;

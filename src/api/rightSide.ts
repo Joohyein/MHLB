@@ -13,7 +13,7 @@ const getChatList = async (workspaceId:number) => {
 };
 
 const getPrevMessages = async (workspaceId:number, userId:number, index:number) => {
-  const response = await instance.get(`/api/inbox/${workspaceId}/${userId}?uuid=${index}`, );
+  const response = await instance.get(`/api/inbox/${workspaceId}/${userId}?page=${index}`, );
   return response.data;
 };
 

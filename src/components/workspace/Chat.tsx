@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getPrevMessages, getUuid } from "../../api/rightSide";
 import SockJS from 'sockjs-client';
@@ -7,35 +6,39 @@ import { Stomp } from "@stomp/stompjs";
 import { getCookie } from "../../cookie/cookies";
 import ArrowBack from "../asset/icons/ArrowBack";
 
+interface MessagesType {
+  messageId: number,
+  userId: number,
+  message: string,
+  createdAt: string,
+};
+
 function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
-  const { data : prevMessagesData, isLoading } = useQuery('prevMessages', () => getPrevMessages(Number(workspaceId), Number(userId), Number(0)));
 
   const [personBoxUuid, setPersonBoxUuid] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const cookie = { Authorization : getCookie('authorization') };
 
-  const [messages, setMessages] = useState<any>([]); 
+  const [messages, setMessages] = useState<MessagesType[]>(); 
+  const [prevMessages, setPrevMessages] = useState<MessagesType[]>([]);
   const [stompClient, setStompClient] = useState<any>(null);
   const [inputMessage, setInputMessage] = useState('');
   const [websocketConnected, setWebsocketConnected] = useState(false);
 
-  const [scrollIndex, setScrollIndex] = useState(0);
+  const [scrollIndex, setScrollIndex] = useState(-1);
   const target = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
 
   useEffect(()=>{
-    if(!isLoading) {
-      setMessages(prevMessagesData);
-      if(checkPersonInbox) {
-        getUuid(Number(workspaceId), Number(userId))
-        .then((res)=>{
-          setPersonBoxUuid(res);
-        });
-      } else {
-        if(uuid) setPersonBoxUuid(uuid);
-      }
+    if(checkPersonInbox) {
+      getUuid(Number(workspaceId), Number(userId))
+      .then((res)=>{
+        setPersonBoxUuid(res);
+      });
+    } else {
+      if(uuid) setPersonBoxUuid(uuid);
     }
-  },[isLoading]);
+  },[checkPersonInbox]);
   
   useEffect(()=>{
     const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/ws`);
@@ -46,14 +49,12 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
     }
     if(personBoxUuid){
       stompClient.connect(data, () => {
-        console.log("websocket is connected");
         setWebsocketConnected(true);
         stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data) => {
           const messageData = JSON.parse(data.body);
           console.log(messageData);
-          // const tmp = {...messageData, message:messageData.message.replaceAll(/(\n|\r\n)/g,'<br>')};
           if(!messageData) setWebsocketConnected(false);
-          setMessages((prev:any) => [...prev, messageData]);
+          else setMessages((prev:any) => [...prev, messageData]);
         },
         cookie 
         );
@@ -66,6 +67,10 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
     }
   }, [personBoxUuid]);
 
+  const scrollToBottom = () => {
+    if(scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  };
+
   const onSubmitHandler =  () => {
     setInputMessage('');
     if(inputMessage === '\n') return;
@@ -74,16 +79,15 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
       message: inputMessage,
       workspaceId,
     };
-    if(inputMessage && !isLoading && websocketConnected) {
+    if(inputMessage && websocketConnected) {
       stompClient.send(`/pub/inbox`, cookie , JSON.stringify(sendData))
-    }
+    };
   };
 
   // 무한스크롤
   const callback = (entries: IntersectionObserverEntry[]) => {
     const target = entries[0];
-    // 타겟 요소가 교차 영역에 있는 동안 scrollIndex +1
-    if(target.isIntersecting) setScrollIndex(prev => prev + 1); 
+    if(target.isIntersecting) setScrollIndex(prev => prev + 1);
   };
   const options = {
     root: null,
@@ -99,22 +103,28 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
     }
   }, []);
 
-  const scrollTo = () => {
-    if(scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight - prevScrollHeight
-  };
-
   useEffect(() => {
     console.log("scroll index : ", scrollIndex);
-    // const prevMessages = getPrevMessages(workspaceId, Number(userId), scrollIndex);
-    // console.log('previous messages :', prevMessages);
-    // setMessages((prev:any) => [prevMessages, ...prev]);
-    scrollTo();
+    if(scrollIndex === -1) return;
+    if(scrollRef.current?.scrollHeight) setPrevScrollHeight(scrollRef.current.scrollHeight);
+
+    getPrevMessages(workspaceId, Number(userId), scrollIndex)
+    .then((res) => {
+      console.log('response data: ',res)
+      if(res.length === 0) return;
+      setPrevMessages((prev:MessagesType[]) => [...res, ...prev]);
+    })
+    .catch((error) => console.log(error));
   }, [scrollIndex]);
 
-  setTimeout(() => {
-    if(scrollRef.current?.scrollHeight) setPrevScrollHeight(scrollRef.current.scrollHeight)
-  }, 50);
-  //
+  useEffect(() => {
+    if(scrollIndex === 0) scrollToBottom(); // 처음 채팅방에 입장시 scroll to bottom
+    if(scrollRef.current?.scrollHeight) scrollRef.current.scrollTop = scrollRef.current.scrollHeight - prevScrollHeight;
+  },[prevMessages]);
+
+  useEffect(() => {
+    scrollToBottom(); // message 입력시 scroll to bottom
+  }, [messages]);
 
   const onKeyDownHandler = (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
     if(e.key === 'Enter' && !e.shiftKey) onSubmitHandler();
@@ -127,20 +137,6 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const onClickBackBtnHandler = () => {
     setIsChat(false);
     setToggle(true);
-  };
-
-  // scroll to bottom
-  useEffect(()=>{
-    if(scrollRef.current){
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    };
-  },[messages]);
-
-  interface MessagesType {
-    messageId: number,
-    userId: number,
-    message: string,
-    createdAt: string,
   };
 
   return (
@@ -160,22 +156,43 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
         <StColor colorNum={color} ></StColor>
       </StUserData>
       <StChatBox ref={scrollRef}>
-        <div ref={target}></div>
+        <div ref={target} style={{position: "absolute", top: '256px'}}></div>
+        {
+          prevMessages?.map((item:MessagesType) => {
+            return (
+              <StMessagesBox key={item.messageId}>
+                {
+                  item.userId === userId 
+                  ? 
+                  <StMessages flexDirection="row">
+                    <StMessagesOther>{item.message}</StMessagesOther>
+                    <StMessagesOtherTime>{item.createdAt.split(':')[0].split('T')[1]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesOtherTime>
+                  </StMessages>
+                  : 
+                  <StMessages flexDirection="row-reverse">
+                    <StMessagesMine>{item.message}</StMessagesMine>
+                    <StMessagesMineTime>{item.createdAt.split(':')[0].split('T')[1]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesMineTime>
+                  </StMessages>
+                }
+              </StMessagesBox>
+            )
+          })
+        }
         {
           messages?.map((item:MessagesType)=>{
             return (
-              <StMessagesBox key={item.createdAt}>
+              <StMessagesBox key={item.messageId}>
               {
                 item.userId === userId 
                   ? 
                   <StMessages flexDirection="row">
                     <StMessagesOther>{item.message}</StMessagesOther>
-                    <StMessagesOtherTime>{item.createdAt.split('T')[1].split(':')[0]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesOtherTime>
+                    <StMessagesOtherTime>{item.createdAt.split(':')[0].split('T')[1]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesOtherTime>
                   </StMessages>
                   : 
                   <StMessages flexDirection="row-reverse">
                     <StMessagesMine>{item.message}</StMessagesMine>
-                    <StMessagesMineTime>{item.createdAt.split('T')[1].split(':')[0]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesMineTime>
+                    <StMessagesMineTime>{item.createdAt.split(':')[0].split('T')[1]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesMineTime>
                   </StMessages>
               }
               </StMessagesBox>
@@ -274,10 +291,11 @@ const StChatBox = styled.div`
   height: 100%;
   overflow-y: auto;
   &::-webkit-scrollbar {
-    display: none;
+    /* display: none; */
   }
   -ms-overflow-style: none; 
   scrollbar-width: none;
+  position: relative;
 `;
 const StMessagesBox = styled.div`
 `;
