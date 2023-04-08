@@ -38,7 +38,7 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   },[isLoading]);
   
   useEffect(()=>{
-    const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`);
+    const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/ws`);
     const stompClient = Stomp.over(socket);
     const data = {
       Authorization: getCookie('authorization'),
@@ -87,7 +87,7 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   };
   const options = {
     root: null,
-    rootMargin: '0',
+    rootMargin: '0px',
     threshold: 1.0
   };
   const observer = new IntersectionObserver(callback, options);
