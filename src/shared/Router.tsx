@@ -11,6 +11,7 @@ import ResetPasswordSucceed from "../pages/ResetPasswordSucceed";
 import SelectWorkspace from "../pages/SelectWorkspace";
 import Workspace from "../pages/Workspace";
 import WorkspaceConfig from "../pages/WorkspaceConfig";
+import GoogleAuth from "../pages/GoogleAuth";
 
 const Router = () => {
   return (
@@ -26,8 +27,9 @@ const Router = () => {
         <Route path="/celebrate-sign-up" element={<CelebrateSignUp />} />
         <Route path="/reset-password-send-email" element={<ResetPasswordSendEmail />} />
         <Route path="/reset-password-sent" element={<ResetPasswordSent />} />
-        <Route path="/reset-password/:uui" element={<ResetPassword />} />
+        <Route path="/reset-password/:uuid" element={<ResetPassword />} />
         <Route path="/reset-password-succeed" element={<ResetPasswordSucceed />} />
+        <Route path="/google-auth" element={<GoogleAuth />} />
       </Routes>
     </BrowserRouter>
   );

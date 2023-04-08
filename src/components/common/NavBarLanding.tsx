@@ -37,6 +37,9 @@ const StLogo = styled.div`
     font-size : 2rem;
     font-weight : 900;
     color : #007AFF;
+    &:hover {
+        cursor : pointer;
+    }
 `
 
 const StLinkDiv = styled.div`
