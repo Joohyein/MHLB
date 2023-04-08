@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getPrevMessages, getUuid } from "../../api/rightSide";
 import SockJS from 'sockjs-client';
@@ -7,82 +6,132 @@ import { Stomp } from "@stomp/stompjs";
 import { getCookie } from "../../cookie/cookies";
 import ArrowBack from "../asset/icons/ArrowBack";
 
-function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{isChat:boolean;userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
-  const { data : prevMessagesData, isLoading } = useQuery('prevMessages', () => getPrevMessages(Number(workspaceId), Number(userId)));
+interface MessagesType {
+  messageId: number,
+  userId: number,
+  message: string,
+  createdAt: string,
+};
+
+function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
 
   const [personBoxUuid, setPersonBoxUuid] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const cookie = { Authorization : getCookie('authorization') };
 
-  const [messages, setMessages] = useState<any>([]); // 초깃값 넣기
+  const [messages, setMessages] = useState<MessagesType[]>(); 
+  const [prevMessages, setPrevMessages] = useState<MessagesType[]>([]);
   const [stompClient, setStompClient] = useState<any>(null);
   const [inputMessage, setInputMessage] = useState('');
+  const [websocketConnected, setWebsocketConnected] = useState(false);
+
+  const [scrollIndex, setScrollIndex] = useState(-1);
+  const target = useRef<HTMLDivElement>(null);
+  const [prevScrollHeight, setPrevScrollHeight] = useState(0);
 
   useEffect(()=>{
-    if(!isLoading) {
-      setMessages(prevMessagesData);
-      if(checkPersonInbox) {
-        getUuid(Number(workspaceId), Number(userId))
-        .then((res)=>{
-          setPersonBoxUuid(res);
-        });
-      } else {
-        if(uuid) setPersonBoxUuid(uuid);
-      }
+    if(checkPersonInbox) {
+      getUuid(Number(workspaceId), Number(userId))
+      .then((res)=>{
+        setPersonBoxUuid(res);
+      });
+    } else {
+      if(uuid) setPersonBoxUuid(uuid);
     }
-  },[isLoading]);
-
+  },[checkPersonInbox]);
+  
   useEffect(()=>{
-    const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/chat`); // 웹소켓을 통해 stomp브로커에 연결
+    const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/ws`);
     const stompClient = Stomp.over(socket);
-    // setPersonBoxUuid(uuid);
     const data = {
       Authorization: getCookie('authorization'),
       uuid: personBoxUuid
     }
     if(personBoxUuid){
       stompClient.connect(data, () => {
-        console.log("websocket is connected");
+        setWebsocketConnected(true);
         stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data) => {
           const messageData = JSON.parse(data.body);
-          console.log("message data :", messageData);
-          setMessages((prev:any) => [...prev, messageData]);
+          console.log(messageData);
+          if(!messageData) setWebsocketConnected(false);
+          else setMessages((prev:any) => [...prev, messageData]);
         },
         cookie 
         );
         setStompClient(stompClient);
       },
       );
-      // if문으로 웹소켓 닫기 or return(unmount) 함수에서 웹소켓 닫기
     }
     return () => {
       stompClient.disconnect();
     }
   }, [personBoxUuid]);
 
-  const onSubmitHandler = () => {
+  const scrollToBottom = () => {
+    if(scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  };
+
+  const onSubmitHandler =  () => {
+    setInputMessage('');
+    if(inputMessage === '\n') return;
     const sendData = {
       uuid: personBoxUuid,
       message: inputMessage,
       workspaceId,
     };
-    if(inputMessage) {
-      stompClient.send(`/pub/inbox`, cookie , JSON.stringify(sendData));
-      setInputMessage('');
-    }
+    if(inputMessage && websocketConnected) {
+      stompClient.send(`/pub/inbox`, cookie , JSON.stringify(sendData))
+    };
   };
 
-  const onKeyDownHandler = (e:any) => {
-    if(e.keyCode === 13){
-      if(!e.shiftKey){
-        e.preventDefault();
-        onSubmitHandler();
-      }
+  // 무한스크롤
+  const callback = (entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if(target.isIntersecting) setScrollIndex(prev => prev + 1);
+  };
+  const options = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 1.0
+  };
+  const observer = new IntersectionObserver(callback, options);
+
+  useEffect(()=>{
+    if(target.current) observer.observe(target.current);
+    return () => {
+      if(target.current) observer.unobserve(target.current);
     }
+  }, []);
+
+  useEffect(() => {
+    console.log("scroll index : ", scrollIndex);
+    if(scrollIndex === -1) return;
+    if(scrollRef.current?.scrollHeight) setPrevScrollHeight(scrollRef.current.scrollHeight);
+
+    getPrevMessages(workspaceId, Number(userId), scrollIndex)
+    .then((res) => {
+      console.log('response data: ',res)
+      if(res.length === 0) return;
+      setPrevMessages((prev:MessagesType[]) => [...res, ...prev]);
+    })
+    .catch((error) => console.log(error));
+  }, [scrollIndex]);
+
+  useEffect(() => {
+    if(scrollIndex === 0) scrollToBottom(); // 처음 채팅방에 입장시 scroll to bottom
+    if(scrollRef.current?.scrollHeight) scrollRef.current.scrollTop = scrollRef.current.scrollHeight - prevScrollHeight;
+  },[prevMessages]);
+
+  useEffect(() => {
+    scrollToBottom(); // message 입력시 scroll to bottom
+  }, [messages]);
+
+  const onKeyDownHandler = (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if(e.key === 'Enter' && !e.shiftKey) onSubmitHandler();
   };
 
   const onKeyPressHandler = (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if(e.keyCode === 13) onSubmitHandler();
+    if(e.key === 'Enter') onSubmitHandler();
   };
 
   const onClickBackBtnHandler = () => {
@@ -90,33 +139,12 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
     setToggle(true);
   };
 
-  const scrollToBottom = () => {
-    if(scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  };
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // scroll to bottom
-  useEffect(()=>{
-    if(scrollRef.current){
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    };
-  },[messages]);
-
-  interface MessagesType {
-    messageId: number,
-    userId: number,
-    message: string,
-    createdAt: string,
-  };
-
   return (
     <StContainer>
       <StBackBtn onClick={onClickBackBtnHandler}>
         <ArrowBack size="16" fill="#ffffff" cursor="pointer" />
         <h3>채팅 목록으로 돌아가기</h3>
-        </StBackBtn>
+      </StBackBtn>
       <StUserData>
         <StLeftBox>
           <StUserImage src={userImage} />
@@ -128,21 +156,43 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
         <StColor colorNum={color} ></StColor>
       </StUserData>
       <StChatBox ref={scrollRef}>
+        <div ref={target} style={{position: "absolute", top: '256px'}}></div>
+        {
+          prevMessages?.map((item:MessagesType) => {
+            return (
+              <StMessagesBox key={item.messageId}>
+                {
+                  item.userId === userId 
+                  ? 
+                  <StMessages flexDirection="row">
+                    <StMessagesOther>{item.message}</StMessagesOther>
+                    <StMessagesOtherTime>{item.createdAt.split(':')[0].split('T')[1]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesOtherTime>
+                  </StMessages>
+                  : 
+                  <StMessages flexDirection="row-reverse">
+                    <StMessagesMine>{item.message}</StMessagesMine>
+                    <StMessagesMineTime>{item.createdAt.split(':')[0].split('T')[1]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesMineTime>
+                  </StMessages>
+                }
+              </StMessagesBox>
+            )
+          })
+        }
         {
           messages?.map((item:MessagesType)=>{
             return (
-              <StMessagesBox key={item.createdAt}>
+              <StMessagesBox key={item.messageId}>
               {
                 item.userId === userId 
                   ? 
                   <StMessages flexDirection="row">
                     <StMessagesOther>{item.message}</StMessagesOther>
-                    <StMessagesOtherTime>{item.createdAt.split('T')[1].split(':')[0]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesOtherTime>
+                    <StMessagesOtherTime>{item.createdAt.split(':')[0].split('T')[1]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesOtherTime>
                   </StMessages>
                   : 
                   <StMessages flexDirection="row-reverse">
                     <StMessagesMine>{item.message}</StMessagesMine>
-                    <StMessagesMineTime>{item.createdAt.split('T')[1].split(':')[0]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesMineTime>
+                    <StMessagesMineTime>{item.createdAt.split(':')[0].split('T')[1]+':'+item.createdAt.split('T')[1].split(':')[1]}</StMessagesMineTime>
                   </StMessages>
               }
               </StMessagesBox>
@@ -155,10 +205,12 @@ function Chat({isChat,userId, uuid, checkPersonInbox, workspaceId, userName, use
           name='inputMessage'
           value={inputMessage} 
           onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=>{setInputMessage(e.target.value)}} 
-          onKeyPress={onKeyPressHandler}
+          onKeyUp={onKeyPressHandler}
           onKeyDown={onKeyDownHandler}
         />
-        <StSendBtn onClick={onSubmitHandler}>메시지 보내기</StSendBtn>
+        { websocketConnected
+            ? <StSendBtn backgroundColor='#007aff' onClick={onSubmitHandler}>메시지 보내기</StSendBtn>
+            : <StSendBtn backgroundColor='#7f7f7f' onClick={onSubmitHandler}>메시지 보내기</StSendBtn>}
       </StChatInputBox>
     </StContainer>
   )
@@ -184,6 +236,7 @@ const StBackBtn = styled.button`
   border:none;
   border-radius: 4px;
   padding: 8px 16px 8px 16px;
+  margin: 24px 0 12px 0;
   cursor: pointer;
   h3{
     font-size: 16px;
@@ -232,22 +285,17 @@ const StColor = styled.div<{colorNum:number}>`
 `;
 
 const StChatBox = styled.div`
-  height: 86%;
   display: flex;
   flex-direction: column;
   gap: 16px;
   height: 100%;
-  overflow-x: auto;
-  overflow-y: scroll;
+  overflow-y: auto;
   &::-webkit-scrollbar {
-    display: none;
+    /* display: none; */
   }
-  &::-webkit-scrollbar-thumb{
-    color: red
-  }
-  &::-webkit-scrollbar-track{
-    color: green;
-  }
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
+  position: relative;
 `;
 const StMessagesBox = styled.div`
 `;
@@ -259,9 +307,9 @@ const StMessages = styled.div<{flexDirection:string}>`
 const StMessagesOther = styled.div`
   font-size: 0.75rem;
   display: flex;
-  background-color: #007aff;
+  background-color: #f3f3f3;
   padding: 8px;
-  color: #ffffff;
+  color: #303030;
   border-radius: 4px;
   margin-right: 4px;
   line-height: 18px;
@@ -269,9 +317,9 @@ const StMessagesOther = styled.div`
 const StMessagesMine = styled.div`
   font-size: 0.75rem;
   display: flex;
-  background-color: #f3f3f3;
+  background-color: #007aff;
   padding: 8px;
-  color: #303030;
+  color: #ffffff;
   border-radius: 4px;
   margin-left: 4px;
   line-height: 18px;
@@ -311,10 +359,10 @@ const StChatInput = styled.textarea`
     display: none;
   }
 `;
-const StSendBtn = styled.button`
+const StSendBtn = styled.button<{backgroundColor:string}>`
   width: 100%;
   height: 32px;
-  background-color: #007aff;
+  background-color: ${props => props.backgroundColor};
   border: none;
   border-radius: 4px;
   color: #ffffff;
