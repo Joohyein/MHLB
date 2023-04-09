@@ -19,7 +19,7 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const scrollRef = useRef<HTMLDivElement>(null);
   const cookie = { Authorization : getCookie('authorization') };
 
-  const [messages, setMessages] = useState<MessagesType[]>(); 
+  const [messages, setMessages] = useState<MessagesType[]>([]); 
   const [prevMessages, setPrevMessages] = useState<MessagesType[]>([]);
   const [stompClient, setStompClient] = useState<any>(null);
   const [inputMessage, setInputMessage] = useState('');
@@ -28,6 +28,8 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const [scrollIndex, setScrollIndex] = useState(-1);
   const target = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
+
+  const [prevDate, setPrevDate] = useState('');
 
   useEffect(()=>{
     if(checkPersonInbox) {
@@ -94,23 +96,21 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
     rootMargin: '0px',
     threshold: 1.0
   };
-  const observer = new IntersectionObserver(callback, options);
 
   useEffect(()=>{
+    const observer = new IntersectionObserver(callback, options);
     if(target.current) observer.observe(target.current);
     return () => {
       if(target.current) observer.unobserve(target.current);
     }
-  }, []);
+  }, [target]);
 
   useEffect(() => {
-    console.log("scroll index : ", scrollIndex);
     if(scrollIndex === -1) return;
     if(scrollRef.current?.scrollHeight) setPrevScrollHeight(scrollRef.current.scrollHeight);
 
     getPrevMessages(workspaceId, Number(userId), scrollIndex)
     .then((res) => {
-      console.log('response data: ',res)
       if(res.length === 0) return;
       setPrevMessages((prev:MessagesType[]) => [...res, ...prev]);
     })
@@ -159,6 +159,8 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
         <div ref={target} style={{position: "absolute", top: '256px'}}></div>
         {
           prevMessages?.map((item:MessagesType) => {
+            console.log(prevDate)
+
             return (
               <StMessagesBox key={item.messageId}>
                 {
@@ -290,6 +292,7 @@ const StChatBox = styled.div`
   gap: 16px;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   &::-webkit-scrollbar {
     /* display: none; */
   }
