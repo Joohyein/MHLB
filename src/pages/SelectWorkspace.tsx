@@ -140,17 +140,5 @@ const StWorkspaceContainer = styled.div`
   flex-wrap : wrap;
   justify-content : flex-start;
   align-items : flex-start;
-  gap: 16px;
-`;
-
-const StCreateWorkspaceBtn = styled.button`
-  
-`;
-const StTopBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-const StTitle = styled.h3`
-  
+  gap: 32px 16px;
 `;
