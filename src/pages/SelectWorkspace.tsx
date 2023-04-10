@@ -8,19 +8,12 @@ import { getWorkspaceList } from "../api/selectWorkspace";
 import MyWorkspaceList from "../components/selectWorkspace/MyWorkspaceList";
 import NavBarWorkspace from "../components/common/NavBarWorkspace";
 import Plus from "../components/asset/icons/Plus";
-import { useNavigate } from "react-router-dom";
 
 const SelectWorkspace = () => {
   const { data } = useQuery('workspaceList', getWorkspaceList);
 
   const [createModal, setCreateModal] = useState(false);
   const modalRef = useOutsideClick(() => setCreateModal(false));
-  
-  const navigate = useNavigate();
-
-  const onClickWorkspace = (workspaceId : number) => {
-    navigate(`/workspace/${workspaceId}`);
-  }
 
   return (
     <Wrapper>
@@ -35,7 +28,7 @@ const SelectWorkspace = () => {
             <StCreateWorkspaceButton onClick={() => {setCreateModal(true); document.body.style.overflow = "hidden"}}>새 워크스페이스 생성<Plus size = '24' fill = 'white' /></StCreateWorkspaceButton>
           </StSelectWorkspaceInfoDiv>
           <StWorkspaceContainer>
-            {data?.map((workspaceData : any) => <MyWorkspaceList key = {workspaceData.workspaceId} onClick = {onClickWorkspace} workspaceData={workspaceData} />)}
+            {data?.map((workspaceData : any) => <MyWorkspaceList key = {workspaceData.workspaceId} workspaceData={workspaceData} />)}
           </StWorkspaceContainer>
         </StMainContent>
       </StContainer>

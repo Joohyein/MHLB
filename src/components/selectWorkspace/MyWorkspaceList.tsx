@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { getChatList } from "../../api/rightSide";
 import { getPeopleList } from "../../api/workspace";
+import { useNavigate } from "react-router-dom";
 
 interface workspaceListType {
     workspaceDesc: string,
@@ -10,11 +11,15 @@ interface workspaceListType {
     workspaceTitle: string
 };
 
-function MyWorkspaceList({workspaceData, onClick} : {workspaceData: any, onClick : any}) {
+function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
+
+  const navigate = useNavigate();
 
   const [userList, setUserList] = useState<any>([]);
   const [userListLength, setUserListLength] = useState<any>();
   const [recentMessage, setRecentMessage] = useState<any>();
+
+  const recentMessageRef = useRef<any>(null);
 
   useEffect(() => {
     getPeopleList(workspaceData.workspaceId)
@@ -39,8 +44,13 @@ function MyWorkspaceList({workspaceData, onClick} : {workspaceData: any, onClick
     })
   }, [workspaceData])
 
+  const onClickRecentMessage = (event : any, item : any) => {
+    event.stopPropagation();
+    navigate(`/workspace/${workspaceData.workspaceId}`, {state : {...item}});
+  }
+
   return (
-    <StWorkspaceBox onClick={() => {onClick(workspaceData.workspaceId)}}>
+    <StWorkspaceBox onClick={() => {navigate(`/workspace/${workspaceData.workspaceId}`)}}>
       <StImage img={workspaceData.workspaceImage}/>
       <StTitle>{workspaceData.workspaceTitle}</StTitle>
       <StDesc>{workspaceData.workspaceDesc}</StDesc>
@@ -62,10 +72,10 @@ function MyWorkspaceList({workspaceData, onClick} : {workspaceData: any, onClick
       <StHrTag />
       <StRecentMessageListDiv>
         <StSubTitle>최근 메세지</StSubTitle>
-        <StRecentMessageList>
+        <StRecentMessageList ref = {recentMessageRef}>
           {recentMessage?.map((item : any) => {
             return (
-              <StMessageContentDiv key = {item.userId}>
+              <StMessageContentDiv key = {item.userId} onClick = {(e) => onClickRecentMessage(e, item)}>
                 <StMessageProfileImg img = {item.userImage}/>
                 <StMessageTextDiv>
                   <StMessageName>{item.userName}</StMessageName>
@@ -231,6 +241,10 @@ const StMessageContentDiv = styled.div`
   display : flex;
   justify-content : flex-start;
   align-items : center;
+  transition : 200ms;
+  &:hover {
+    scale : 1.025;
+  }
 `
 
 const StMessageProfileImg = styled.div`

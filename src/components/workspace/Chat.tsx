@@ -52,7 +52,6 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
         setWebsocketConnected(true);
         stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data) => {
           const messageData = JSON.parse(data.body);
-          console.log(messageData);
           if(!messageData) setWebsocketConnected(false);
           else setMessages((prev:any) => [...prev, messageData]);
         },
