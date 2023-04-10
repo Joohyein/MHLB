@@ -18,6 +18,7 @@ import DeleteWorkspaceModal from '../components/workspaceConfig/DeleteWorkspaceM
 import { useNavigate, useParams } from 'react-router-dom';
 import NavBarWorkspace from '../components/common/NavBarWorkspace';
 import Plus from '../components/asset/icons/Plus';
+import useInput from '../hooks/useInput';
 
 const fontLengthTitle = 50; // 워크스페이스 이름, 소개 글자수 제한
 const fontLengthDesc = 200;
@@ -42,10 +43,8 @@ const WorkspaceConfig = () => {
   const [editDesc, setEditDesc] = useState(false);
   const [imgFile, setImgFile] = useState<any>();
   const [image, setImage] = useState(workspaceInfoData?.workspaceImage);
-  const [title, setTitle] = useState(workspaceInfoData?.workspaceTitle);
-  const [description, setDescription] = useState(
-    workspaceInfoData?.workspaceDesc
-  );
+  const [title, setTitle] = useInput(workspaceInfoData?.workspaceTitle);
+  const [description, setDescription] = useInput(workspaceInfoData?.workspaceDesc);
 
   const [search, setSearch] = useState('');
   const [member, setMember] = useState(['']);

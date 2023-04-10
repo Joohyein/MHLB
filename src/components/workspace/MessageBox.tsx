@@ -25,7 +25,7 @@ interface SetUSerDataType {
 
 function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:(v:SetUSerDataType)=>void}) {
   
-  const { data: chatListData} = useQuery('chatList', () => getChatList(workspaceId))
+  const { data: chatListData } = useQuery('chatList', () => getChatList(workspaceId))
 
   const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string, color:number) => {
     console.log("username:", userName);
@@ -34,7 +34,7 @@ function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:
   return (
     <StContainer>
       <StInputBox>
-        <StInput  name="search" placeholder="이름으로 검색" />
+        <StInput name="search" placeholder="이름으로 검색" />
       </StInputBox>
       <StChatListBox>
         {

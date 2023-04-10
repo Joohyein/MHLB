@@ -18,7 +18,7 @@ const ResetPasswordSendEmail = () => {
         if(isLogin === true) return navigate('/select-workspace');
     }, [isLogin])
 
-    const [emailValue, setEmailValue, clearEmailValue] = useInput();
+    const [emailValue, setEmailValue] = useInput();
 
     const [emailInputRef, emailInputRefFocus] = useInputRefFocus();
 
@@ -98,7 +98,7 @@ const ResetPasswordSendEmail = () => {
                     <StPageTitle>비밀번호 찾기</StPageTitle>
                     <StPageSubTitle>비밀번호 재설정 메일을 받아보세요!</StPageSubTitle>
                     <StInputLabel htmlFor = 'email' isFocus = {emailInputRefFocus}>이메일</StInputLabel>
-                    <StInput type = {'text'} onKeyDown = {(e) => onEnterKeyDownEmail(e)} ref = {emailInputRef} id = 'email' value = {emailValue} onChange = {(e) => {setEmailValue(e); clearWarningMessage(); setIsEmailInput(true); setDuplicateEmailValidation(false); setAllowEmailMessage(false)}} placeholder = 'Email'/>
+                    <StInput type = 'text' onKeyDown = {(e) => onEnterKeyDownEmail(e)} ref = {emailInputRef} id = 'email' value = {emailValue} onChange = {(e) => {setEmailValue(e.target.value); clearWarningMessage(); setIsEmailInput(true); setDuplicateEmailValidation(false); setAllowEmailMessage(false)}} placeholder = 'Email'/>
                     <StValidationTextDiv>
                       {duplicateEmailValidation ? <StValidationTextSucceed>이 이메일로 비밀번호 재설정 메일을 보낼 수 있습니다.</StValidationTextSucceed> : allowedEmailValidation && allowEmailMessage ? <StValidationText>이메일이 존재하지 않으므로 보낼 수 없습니다.</StValidationText> : null}
                       {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}

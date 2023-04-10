@@ -90,10 +90,11 @@ const StUserImage = styled.div`
     width : 48px;
     height : 48px;
     border-radius : 64px;
-    background-color : #c9c9c9;
+    background-color : white;
     background-image : url('${(props : {img : string}) => props.img}');
     background-size : cover;
     background-position : center;
+    box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.1);
     &:hover {
         cursor : pointer;
     }

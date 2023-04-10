@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-const useInput = () : any => {
-  const [value, setValue] = useState("");
-  const handler = (e: any) => {
-    setValue(e.target.value);
+const useInput = (defaultValue : any = '') : any => {
+  const [value, setValue] = useState(defaultValue);
+  const handler = (e : any) => {
+    setValue(e);
   };
   const clear = () => {
     setValue("");

@@ -8,19 +8,12 @@ import { getWorkspaceList } from "../api/selectWorkspace";
 import MyWorkspaceList from "../components/selectWorkspace/MyWorkspaceList";
 import NavBarWorkspace from "../components/common/NavBarWorkspace";
 import Plus from "../components/asset/icons/Plus";
-import { useNavigate } from "react-router-dom";
 
 const SelectWorkspace = () => {
   const { data } = useQuery('workspaceList', getWorkspaceList);
 
   const [createModal, setCreateModal] = useState(false);
   const modalRef = useOutsideClick(() => setCreateModal(false));
-  
-  const navigate = useNavigate();
-
-  const onClickWorkspace = (workspaceId : number) => {
-    navigate(`/workspace/${workspaceId}`);
-  }
 
   return (
     <Wrapper>
@@ -35,7 +28,7 @@ const SelectWorkspace = () => {
             <StCreateWorkspaceButton onClick={() => {setCreateModal(true); document.body.style.overflow = "hidden"}}>새 워크스페이스 생성<Plus size = '24' fill = 'white' /></StCreateWorkspaceButton>
           </StSelectWorkspaceInfoDiv>
           <StWorkspaceContainer>
-            {data?.map((workspaceData : any) => <MyWorkspaceList key = {workspaceData.workspaceId} onClick = {onClickWorkspace} workspaceData={workspaceData} />)}
+            {data?.map((workspaceData : any) => <MyWorkspaceList key = {workspaceData.workspaceId} workspaceData={workspaceData} />)}
           </StWorkspaceContainer>
         </StMainContent>
       </StContainer>
@@ -69,7 +62,7 @@ const StMainContent = styled.div`
         width : 688px;
     }
     @media screen and (max-width : 688px) {
-        width : 512px;
+        width : 336px;
     }
 `
 
@@ -81,6 +74,10 @@ const StSelectWorkspaceInfoDiv = styled.div`
     flex-direction : flex-start;
     justify-content : flex-start;
     align-items : center;
+    @media screen and (max-width : 688px) {
+      flex-direction : column;
+      gap : 16px;
+    }
 `
 
 const StTextInfoDiv = styled.div`
@@ -107,6 +104,7 @@ const StCreateWorkspaceButton = styled.button`
     font-size : 1rem;
     font-weight : 700;
     line-height : 24px;
+    text-align: center;
     color : white;
     border : none;
     border-radius : 4px;
@@ -114,6 +112,7 @@ const StCreateWorkspaceButton = styled.button`
     padding : 8px 16px;
     display: flex;
     align-items: center;
+    justify-content: center;
     transition : 200ms;
     flex-shrink : 0;
     &:hover {
@@ -121,6 +120,9 @@ const StCreateWorkspaceButton = styled.button`
     }
     &:active {
         scale : 1.05;
+    }
+    @media screen and (max-width : 688px) {
+      width : 100%;
     }
 `
 
@@ -131,21 +133,6 @@ const StWorkspaceContainer = styled.div`
   flex-wrap : wrap;
   justify-content : flex-start;
   align-items : flex-start;
-  gap: 16px;
-`;
-
-
-
-
-
-const StCreateWorkspaceBtn = styled.button`
-  
-`;
-const StTopBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-const StTitle = styled.h3`
-  
+  gap: 32px 16px;
+  padding-bottom : 64px;
 `;

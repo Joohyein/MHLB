@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Close from "../asset/icons/Close";
 import OpenMenu from "../asset/icons/OpenMenu";
 import RightSideBox from "./RightSideBox";
+import { useLocation } from "react-router-dom";
 
 const RightSideBar = () => {
 
     const [menuOpen, setMenuOpen] = useState(false);
 
+    const location = useLocation();
+
     const onMenuOpenToggleHandler = () => {
         setMenuOpen(!menuOpen);
     }
+
+    useEffect(() => {
+        if (location.state === null) return;
+        setMenuOpen(true);
+    }, [])
 
     return (
         <StRightSideContainer open = {menuOpen}>

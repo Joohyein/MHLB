@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { getChatList, getPeopleList } from "../../api/rightSide";
+import { getChatList } from "../../api/rightSide";
+import { getPeopleList } from "../../api/workspace";
+import { useNavigate } from "react-router-dom";
 
 interface workspaceListType {
     workspaceDesc: string,
@@ -9,18 +11,22 @@ interface workspaceListType {
     workspaceTitle: string
 };
 
-function MyWorkspaceList({workspaceData, onClick} : {workspaceData: any, onClick : any}) {
+function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
+
+  const navigate = useNavigate();
 
   const [userList, setUserList] = useState<any>([]);
   const [userListLength, setUserListLength] = useState<any>();
   const [recentMessage, setRecentMessage] = useState<any>();
 
+  const recentMessageRef = useRef<any>(null);
+
   useEffect(() => {
     getPeopleList(workspaceData.workspaceId)
     .then((res) => {
       const onlineMember = res.filter((val : any) => !(val.color === 3));
-      setUserListLength(Number(onlineMember.length));
-      if (onlineMember.length <= 7) {
+      setUserListLength(Number(onlineMember?.length));
+      if (onlineMember?.length <= 7) {
         setUserList(onlineMember);
       } else {
         setUserList(onlineMember.slice(0, 6));
@@ -38,14 +44,19 @@ function MyWorkspaceList({workspaceData, onClick} : {workspaceData: any, onClick
     })
   }, [workspaceData])
 
+  const onClickRecentMessage = (event : any, item : any) => {
+    event.stopPropagation();
+    navigate(`/workspace/${workspaceData.workspaceId}`, {state : {...item}});
+  }
+
   return (
-    <StWorkspaceBox onClick={() => {onClick(workspaceData.workspaceId)}}>
+    <StWorkspaceBox onClick={() => {navigate(`/workspace/${workspaceData.workspaceId}`)}}>
       <StImage img={workspaceData.workspaceImage}/>
       <StTitle>{workspaceData.workspaceTitle}</StTitle>
       <StDesc>{workspaceData.workspaceDesc}</StDesc>
       <StHrTag />
       <StCurrentUserDiv>
-        <StSubTitle>현재 근무중인 멤버</StSubTitle>
+        <StSubTitle>현재 근무중인 멤버({userList?.length})</StSubTitle>
         <StUserListDiv>
           {userList?.map((item : {color : number, description : string, status : string, userEmail : string, userId : number, userImage : string, userJob : string , userName : string}) => {
             return (
@@ -57,23 +68,25 @@ function MyWorkspaceList({workspaceData, onClick} : {workspaceData: any, onClick
           })}
           {userListLength <= 7 ? null : <StUserListOverCount>+{userListLength - 6}</StUserListOverCount>}
         </StUserListDiv>
+        {userListLength === 0 ? <StEmptyPlaceholder>현재 근무 중인 멤버가 없습니다.</StEmptyPlaceholder> : null}
       </StCurrentUserDiv>
       <StHrTag />
       <StRecentMessageListDiv>
         <StSubTitle>최근 메세지</StSubTitle>
-        <StRecentMessageList>
+        <StRecentMessageList ref = {recentMessageRef}>
           {recentMessage?.map((item : any) => {
-            return (
-              <StMessageContentDiv key = {item.userId}>
-                <StMessageProfileImg img = {item.userImage}/>
-                <StMessageTextDiv>
-                  <StMessageName>{item.userName}</StMessageName>
-                  <StMessageRecent>{item.message}</StMessageRecent>
-                </StMessageTextDiv>
-                <StMessageBadge>{item.unreadMessages}</StMessageBadge>
-              </StMessageContentDiv>
-            )
+              return (
+                <StMessageContentDiv key = {item.userId} onClick = {(e) => onClickRecentMessage(e, item)}>
+                  <StMessageProfileImg img = {item.userImage}/>
+                  <StMessageTextDiv>
+                    <StMessageName>{item.userName}</StMessageName>
+                    <StMessageRecent>{item.message}</StMessageRecent>
+                  </StMessageTextDiv>
+                  <StMessageBadge>{item.unreadMessages}</StMessageBadge>
+                </StMessageContentDiv>
+              )
           })}
+          {recentMessage?.length === 0 ? <StEmptyPlaceholder>읽지 않은 메세지가 없습니다.</StEmptyPlaceholder> : null}
         </StRecentMessageList>
       </StRecentMessageListDiv>
   </StWorkspaceBox>
@@ -230,6 +243,10 @@ const StMessageContentDiv = styled.div`
   display : flex;
   justify-content : flex-start;
   align-items : center;
+  transition : 200ms;
+  &:hover {
+    scale : 1.025;
+  }
 `
 
 const StMessageProfileImg = styled.div`
@@ -271,4 +288,14 @@ const StMessageBadge = styled.div`
   font-weight : 700;
   background : #007aff;
   border-radius : 16px;
+`
+
+const StEmptyPlaceholder = styled.div`
+  width : 100%;
+  height : 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size : 0.75rem;
+  color : #7f7f7f;
 `
