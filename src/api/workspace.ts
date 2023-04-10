@@ -20,4 +20,11 @@ const requestChangeStatus = async ({status} : {status : string}) => {
   return response;
 }
 
-export { getWorkspaceList, reorderWorkspaceList, getMainWorkspaceInfo, requestChangeStatus };
+const getPeopleList = async (workspaceId:number | undefined) => {
+  if(workspaceId){
+    const response = await instance.get(`/api/workspaces/${workspaceId}/people`);
+    return response.data;
+  }
+};
+
+export { getWorkspaceList, reorderWorkspaceList, getMainWorkspaceInfo, requestChangeStatus, getPeopleList };

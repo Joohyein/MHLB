@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getPeopleList } from "../../api/rightSide";
 import { getCookie } from "../../cookie/cookies";
 import MembersBox from "./MembersBox";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import MessageBox from "./MessageBox";
 import Chat from "./Chat";
 import { useParams } from "react-router-dom";
+import { getPeopleList } from "../../api/workspace";
 
 export interface MemberDataType {
   userId: number,

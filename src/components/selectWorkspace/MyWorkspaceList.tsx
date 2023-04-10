@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getChatList, getPeopleList } from "../../api/rightSide";
+import { getChatList } from "../../api/rightSide";
+import { getPeopleList } from "../../api/workspace";
 
 interface workspaceListType {
     workspaceDesc: string,
