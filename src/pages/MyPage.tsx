@@ -10,6 +10,7 @@ import LeaveWorkspaceModal from "../components/mypage/LeaveWorkspaceModal";
 import InvitedWorkspace from "../components/mypage/InvitedWorkspace";
 import NavBarWorkspace from "../components/common/NavBarWorkspace";
 import { useNavigate } from "react-router-dom";
+import useInput from "../hooks/useInput";
 
 const MyPage = () => {
   const { data : dataUser } = useQuery('user', getUserData);
@@ -22,11 +23,11 @@ const MyPage = () => {
   const [image, setImage] = useState(dataUser?.userImage);
   const [imgFile, setImgFile] = useState<any>();
   const [editName, setEditName] = useState(false);
-  const [name, setName] = useState(dataUser?.userName);
+  const [name, setName] = useInput(dataUser?.userName);
   const [editJob, setEditJob] = useState(false);
-  const [job, setJob] = useState(dataUser?.userJob);
+  const [job, setJob, clearJob] = useInput(dataUser?.userJob);
   const [editDesc, setEditDesc] = useState(false);
-  const [desc, setDesc] = useState(dataUser?.userDesc);
+  const [desc, setDesc, clearDesc] = useInput(dataUser?.userDesc);
 
   const [workspaceId, setWorkspaceId] = useState<any>();
 
