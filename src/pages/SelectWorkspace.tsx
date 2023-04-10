@@ -69,7 +69,7 @@ const StMainContent = styled.div`
         width : 688px;
     }
     @media screen and (max-width : 688px) {
-        width : 512px;
+        width : 336px;
     }
 `
 
@@ -81,6 +81,10 @@ const StSelectWorkspaceInfoDiv = styled.div`
     flex-direction : flex-start;
     justify-content : flex-start;
     align-items : center;
+    @media screen and (max-width : 688px) {
+      flex-direction : column;
+      gap : 16px;
+    }
 `
 
 const StTextInfoDiv = styled.div`
@@ -107,6 +111,7 @@ const StCreateWorkspaceButton = styled.button`
     font-size : 1rem;
     font-weight : 700;
     line-height : 24px;
+    text-align: center;
     color : white;
     border : none;
     border-radius : 4px;
@@ -114,6 +119,7 @@ const StCreateWorkspaceButton = styled.button`
     padding : 8px 16px;
     display: flex;
     align-items: center;
+    justify-content: center;
     transition : 200ms;
     flex-shrink : 0;
     &:hover {
@@ -121,6 +127,9 @@ const StCreateWorkspaceButton = styled.button`
     }
     &:active {
         scale : 1.05;
+    }
+    @media screen and (max-width : 688px) {
+      width : 100%;
     }
 `
 
@@ -133,10 +142,6 @@ const StWorkspaceContainer = styled.div`
   align-items : flex-start;
   gap: 16px;
 `;
-
-
-
-
 
 const StCreateWorkspaceBtn = styled.button`
   
