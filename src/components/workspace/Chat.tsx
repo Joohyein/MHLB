@@ -104,7 +104,6 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
         if(target.current) observer.unobserve(target.current);
       }
     }
-   
   }, [target, isLastMessage]);
 
   useEffect(() => {
@@ -132,12 +131,10 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
     scrollToBottom(); // message 입력시 scroll to bottom
   }, [messages]);
 
-  const onKeyDownHandler = (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if(e.key === 'Enter' && !e.shiftKey) onSubmitHandler();
-  };
-
-  const onKeyPressHandler = (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if(e.key === 'Enter') onSubmitHandler();
+  const onKeyPressHandler = (e:React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') {
+      onSubmitHandler();
+    }
   };
 
   const onClickBackBtnHandler = () => {
@@ -209,10 +206,10 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
       <StChatInputBox>
         <StChatInput 
           name='inputMessage'
+          type="text"
           value={inputMessage} 
-          onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=>{setInputMessage(e.target.value)}} 
-          onKeyUp={onKeyPressHandler}
-          onKeyDown={onKeyDownHandler}
+          onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{setInputMessage(e.target.value)}} 
+          onKeyPress={onKeyPressHandler}
         />
         { websocketConnected
             ? <StSendBtn backgroundColor='#007aff' onClick={onSubmitHandler}>메시지 보내기</StSendBtn>
@@ -349,7 +346,7 @@ const StChatInputBox = styled.div`
   padding-bottom: 16px;
   box-sizing: border-box;
 `;
-const StChatInput = styled.textarea`
+const StChatInput = styled.input`
   width: 100%;
   height: 32px;
   padding: 8px;
