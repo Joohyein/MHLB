@@ -72,9 +72,8 @@ const StContainer = styled.div`
 `;
 
 const StInputBox = styled.div`
-  padding: 0px 24px 12px 24px;
+  padding: 0px 12px 24px 12px;
   width: 100%;
-  height: 12%;
   box-sizing: border-box;
 `;
 
@@ -98,9 +97,10 @@ const StPersonContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 88%;
+  height: 84%;
   overflow-y: auto;
   position: relative;
+  margin: 12px 0px;
 `;
 
 const StScrollTopBtn = styled.button`
