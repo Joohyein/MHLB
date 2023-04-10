@@ -45,7 +45,7 @@ function MyWorkspaceList({workspaceData, onClick} : {workspaceData: any, onClick
       <StDesc>{workspaceData.workspaceDesc}</StDesc>
       <StHrTag />
       <StCurrentUserDiv>
-        <StSubTitle>현재 근무중인 멤버</StSubTitle>
+        <StSubTitle>현재 근무중인 멤버({userList.length})</StSubTitle>
         <StUserListDiv>
           {userList?.map((item : {color : number, description : string, status : string, userEmail : string, userId : number, userImage : string, userJob : string , userName : string}) => {
             return (
