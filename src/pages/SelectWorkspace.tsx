@@ -141,4 +141,5 @@ const StWorkspaceContainer = styled.div`
   justify-content : flex-start;
   align-items : flex-start;
   gap: 32px 16px;
+  padding-bottom : 64px;
 `;
