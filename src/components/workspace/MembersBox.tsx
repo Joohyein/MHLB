@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import PersonBox from './PersonBox';
+import ArrowUp from '../asset/icons/ArrowUp';
 
 interface MemberDataType {
   userId: number,
@@ -16,6 +17,8 @@ interface MemberDataType {
 function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[], searchMember:any, peopleData:any}) {
 
   const [inputValue, setInputValue] = useState('');
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showBtn, setShowBtn] = useState(false);
 
   const onChangeInputValue = (e : React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -23,14 +26,28 @@ function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[
 
   useEffect(() => {
     searchMember(inputValue);
-  }, [inputValue])
+  }, [inputValue]);
+
+  const onClickScrollTop = () => {
+    if(scrollRef.current) scrollRef.current.scrollTo({top: 0, behavior:'smooth'})
+  };
+
+  useEffect(() => {
+    console.log(scrollRef.current?.scrollHeight)
+    const onShowBtn = () => {
+      if(scrollRef.current && scrollRef.current.scrollTop > 24) setShowBtn(true);
+      else setShowBtn(false);
+    }
+    scrollRef.current?.addEventListener('scroll', onShowBtn);
+    return () => {scrollRef.current?.removeEventListener('scroll', onShowBtn)}
+  }, [scrollRef.current?.scrollHeight]);
 
   return (
     <StContainer>
       <StInputBox>
         <StInput value={inputValue} name="search" onChange={onChangeInputValue} placeholder="이름으로 검색" />
       </StInputBox>
-      <StPersonContainer>
+      <StPersonContainer ref={scrollRef}>
         {
           member?.map((item: MemberDataType) => {
             return(
@@ -39,6 +56,9 @@ function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[
           })
         }
       </StPersonContainer>
+      { showBtn && <StScrollTopBtn>
+        <ArrowUp size="24" fill="#707070" onClick={onClickScrollTop} cursor="pointer" />
+      </StScrollTopBtn>}
     </StContainer>
   )
 }
@@ -54,6 +74,7 @@ const StContainer = styled.div`
 const StInputBox = styled.div`
   padding: 0px 24px 12px 24px;
   width: 100%;
+  height: 12%;
   box-sizing: border-box;
 `;
 
@@ -79,4 +100,23 @@ const StPersonContainer = styled.div`
   width: 100%;
   height: 88%;
   overflow-y: auto;
+  position: relative;
+`;
+
+const StScrollTopBtn = styled.button`
+  display : flex;
+  flex-direction : column;
+  align-items : center;
+  justify-content : center;
+  width : 42px;
+  height : 42px;
+  border-radius : 64px;
+  border: none;
+  background-color : white;
+  box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.1);
+  position : absolute;
+  bottom : 68px;
+  right : 32px;
+  z-index: 999;
+  cursor : pointer;
 `;
