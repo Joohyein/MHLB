@@ -277,10 +277,11 @@ const StMypageProfile = styled.div`
   width : 256px;
   height : 256px;
   border-radius : 256px;
-  background-color : #303030;
+  background-color : white;
   background-image : url('${(props : {img : string}) => props.img}');
   background-size : cover;
   background-position : center;
+  box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.1);
 `
 
 const StMypageProfileEdit = styled.div`
