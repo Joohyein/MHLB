@@ -28,6 +28,7 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const [scrollIndex, setScrollIndex] = useState(-1);
   const target = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
+  const [isLastMessage, setIsLastMessage] = useState(false);
 
   useEffect(()=>{
     if(checkPersonInbox) {
@@ -94,27 +95,32 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
     rootMargin: '0px',
     threshold: 1.0
   };
-  const observer = new IntersectionObserver(callback, options);
 
   useEffect(()=>{
-    if(target.current) observer.observe(target.current);
-    return () => {
-      if(target.current) observer.unobserve(target.current);
+    if(!isLastMessage){
+      const observer = new IntersectionObserver(callback, options);
+      if(target.current) observer.observe(target.current);
+      return () => {
+        if(target.current) observer.unobserve(target.current);
+      }
     }
-  }, []);
+   
+  }, [target, isLastMessage]);
 
   useEffect(() => {
-    console.log("scroll index : ", scrollIndex);
     if(scrollIndex === -1) return;
     if(scrollRef.current?.scrollHeight) setPrevScrollHeight(scrollRef.current.scrollHeight);
-
-    getPrevMessages(workspaceId, Number(userId), scrollIndex)
-    .then((res) => {
-      console.log('response data: ',res)
-      if(res.length === 0) return;
-      setPrevMessages((prev:MessagesType[]) => [...res, ...prev]);
-    })
-    .catch((error) => console.log(error));
+    if(!isLastMessage) {
+      getPrevMessages(workspaceId, Number(userId), scrollIndex)
+      .then((res) => {
+        if(res.length === 0) {
+          setIsLastMessage(true);
+          return;
+        }
+        setPrevMessages((prev:MessagesType[]) => [...res, ...prev]);
+      })
+      .catch((error) => console.log(error));
+    }
   }, [scrollIndex]);
 
   useEffect(() => {
@@ -290,6 +296,7 @@ const StChatBox = styled.div`
   gap: 16px;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   &::-webkit-scrollbar {
     /* display: none; */
   }
