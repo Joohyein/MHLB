@@ -40,8 +40,6 @@ function RightSideBox() {
 
   const [statusArr, setStatusArr] = useState<any>();
   const [peopleArr, setPeopleArr] = useState<any>([]);
-  console.log(peopleArr);
-  console.log('state', statusArr);
 
   const [isChat, setIsChat] = useState(false); // 사람 클릭시, 채팅방 클릭시 채팅방으로 이동
   const [userId, setUserId] = useState<number>(); // 채팅방 id <Chat /> 에 넘겨주기
