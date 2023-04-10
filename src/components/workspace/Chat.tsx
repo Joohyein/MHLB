@@ -28,8 +28,7 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const [scrollIndex, setScrollIndex] = useState(-1);
   const target = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
-
-  const [prevDate, setPrevDate] = useState('');
+  const [isLastMessage, setIsLastMessage] = useState(false);
 
   useEffect(()=>{
     if(checkPersonInbox) {
@@ -98,23 +97,30 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   };
 
   useEffect(()=>{
-    const observer = new IntersectionObserver(callback, options);
-    if(target.current) observer.observe(target.current);
-    return () => {
-      if(target.current) observer.unobserve(target.current);
+    if(!isLastMessage){
+      const observer = new IntersectionObserver(callback, options);
+      if(target.current) observer.observe(target.current);
+      return () => {
+        if(target.current) observer.unobserve(target.current);
+      }
     }
-  }, [target]);
+   
+  }, [target, isLastMessage]);
 
   useEffect(() => {
     if(scrollIndex === -1) return;
     if(scrollRef.current?.scrollHeight) setPrevScrollHeight(scrollRef.current.scrollHeight);
-
-    getPrevMessages(workspaceId, Number(userId), scrollIndex)
-    .then((res) => {
-      if(res.length === 0) return;
-      setPrevMessages((prev:MessagesType[]) => [...res, ...prev]);
-    })
-    .catch((error) => console.log(error));
+    if(!isLastMessage) {
+      getPrevMessages(workspaceId, Number(userId), scrollIndex)
+      .then((res) => {
+        if(res.length === 0) {
+          setIsLastMessage(true);
+          return;
+        }
+        setPrevMessages((prev:MessagesType[]) => [...res, ...prev]);
+      })
+      .catch((error) => console.log(error));
+    }
   }, [scrollIndex]);
 
   useEffect(() => {
@@ -159,8 +165,6 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
         <div ref={target} style={{position: "absolute", top: '256px'}}></div>
         {
           prevMessages?.map((item:MessagesType) => {
-            console.log(prevDate)
-
             return (
               <StMessagesBox key={item.messageId}>
                 {
