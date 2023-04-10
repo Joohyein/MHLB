@@ -68,23 +68,25 @@ function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
           })}
           {userListLength <= 7 ? null : <StUserListOverCount>+{userListLength - 6}</StUserListOverCount>}
         </StUserListDiv>
+        {userListLength === 0 ? <StEmptyPlaceholder>현재 근무 중인 멤버가 없습니다.</StEmptyPlaceholder> : null}
       </StCurrentUserDiv>
       <StHrTag />
       <StRecentMessageListDiv>
         <StSubTitle>최근 메세지</StSubTitle>
         <StRecentMessageList ref = {recentMessageRef}>
           {recentMessage?.map((item : any) => {
-            return (
-              <StMessageContentDiv key = {item.userId} onClick = {(e) => onClickRecentMessage(e, item)}>
-                <StMessageProfileImg img = {item.userImage}/>
-                <StMessageTextDiv>
-                  <StMessageName>{item.userName}</StMessageName>
-                  <StMessageRecent>{item.message}</StMessageRecent>
-                </StMessageTextDiv>
-                <StMessageBadge>{item.unreadMessages}</StMessageBadge>
-              </StMessageContentDiv>
-            )
+              return (
+                <StMessageContentDiv key = {item.userId} onClick = {(e) => onClickRecentMessage(e, item)}>
+                  <StMessageProfileImg img = {item.userImage}/>
+                  <StMessageTextDiv>
+                    <StMessageName>{item.userName}</StMessageName>
+                    <StMessageRecent>{item.message}</StMessageRecent>
+                  </StMessageTextDiv>
+                  <StMessageBadge>{item.unreadMessages}</StMessageBadge>
+                </StMessageContentDiv>
+              )
           })}
+          {recentMessage.length === 0 ? <StEmptyPlaceholder>읽지 않은 메세지가 없습니다.</StEmptyPlaceholder> : null}
         </StRecentMessageList>
       </StRecentMessageListDiv>
   </StWorkspaceBox>
@@ -286,4 +288,14 @@ const StMessageBadge = styled.div`
   font-weight : 700;
   background : #007aff;
   border-radius : 16px;
+`
+
+const StEmptyPlaceholder = styled.div`
+  width : 100%;
+  height : 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size : 0.75rem;
+  color : #7f7f7f;
 `
