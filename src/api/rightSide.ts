@@ -1,12 +1,5 @@
 import instance from "./instance/instance";
 
-const getPeopleList = async (workspaceId:number | undefined) => {
-  if(workspaceId){
-    const response = await instance.get(`/api/workspaces/${workspaceId}/people`);
-    return response.data;
-  }
-};
-
 const getChatList = async (workspaceId:number) => {
   const response = await instance.get(`/api/inbox?id=${workspaceId}`);
   return response.data;
@@ -23,4 +16,4 @@ const getUuid = async (workspaceId:number, userId:number) => {
 };
 
 
-export { getPeopleList, getPrevMessages, getUuid, getChatList };
+export { getPrevMessages, getUuid, getChatList };

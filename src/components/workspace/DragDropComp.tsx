@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useParams } from "react-router-dom";
-import styled from "styled-components";
-import { getPeopleList } from "../../api/rightSide";
-import { requestChangeStatus } from "../../api/workspace";
+import styled from "styled-components"
+import { getPeopleList, requestChangeStatus } from "../../api/workspace";
 
 export interface UserInfoType {
     color : number,

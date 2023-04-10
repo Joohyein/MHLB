@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getMainWorkspaceInfo } from "../api/workspace";
 import NavBarWorkspace from "../components/common/NavBarWorkspace";
@@ -16,7 +16,7 @@ interface WorkspaceInformationType {
     workspaceTitle : string
 }
 
-const Workspace2 = () => {
+const Workspace = () => {
 
     const params = useParams();
     const navigate = useNavigate();
@@ -52,7 +52,7 @@ const Workspace2 = () => {
     );
 };
 
-export default Workspace2;
+export default Workspace;
 
 const StContainer = styled.div`
     display : flex;

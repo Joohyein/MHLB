@@ -18,8 +18,8 @@ const Login = () => {
     if(isLogin === true) return navigate('/select-workspace');
   }, [isLogin])
 
-  const [emailValue, setEmailValue, clearEmailValue] = useInput();
-  const [passwordValue, setPasswordValue, clearPasswordValue] = useInput();
+  const [emailValue, setEmailValue] = useInput();
+  const [passwordValue, setPasswordValue] = useInput();
 
   const [emailInputRef, emailInputRefFocus] = useInputRefFocus();
   const [passwordInputRef, passwordInputRefFocus] = useInputRefFocus();
@@ -90,13 +90,13 @@ const Login = () => {
           <StPageTitle>로그인</StPageTitle>
           <StPageSubTitle>이메일과 비밀번호를 입력해주세요!</StPageSubTitle>
           <StInputLabel htmlFor = "email" isFocus = {emailInputRefFocus}>이메일</StInputLabel>
-          <StInput type = {'text'} onKeyDown = {(e) => onEnterKeyDownEmail(e)} ref = {emailInputRef} id = "email" value = {emailValue} onChange = {(e) => {setEmailValue(e); clearWarningMessage()}} placeholder = "Email"/>
+          <StInput type = 'text' onKeyDown = {(e) => onEnterKeyDownEmail(e)} ref = {emailInputRef} id = "email" value = {emailValue} onChange = {(e) => {setEmailValue(e.target.value); clearWarningMessage()}} placeholder = "Email"/>
           <StValidationTextDiv>
             {emailValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
             {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
           </StValidationTextDiv>
           <StInputLabel htmlFor = "password" isFocus = {passwordInputRefFocus}>비밀번호</StInputLabel>
-          <StInput type = {'password'} onKeyDown = {(e) => onEnterKeyDownPassword(e)} ref = {passwordInputRef} id = "password" value = {passwordValue} onChange = {(e) => {setPasswordValue(e); clearWarningMessage()}} placeholder = "Password"/>
+          <StInput type = 'password' onKeyDown = {(e) => onEnterKeyDownPassword(e)} ref = {passwordInputRef} id = "password" value = {passwordValue} onChange = {(e) => {setPasswordValue(e.target.value); clearWarningMessage()}} placeholder = "Password"/>
           <StValidationTextDiv>
             {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
             {emptyValidation ? <StValidationText>모든 정보를 입력해주세요.</StValidationText> : null}

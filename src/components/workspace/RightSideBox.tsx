@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getPeopleList } from "../../api/rightSide";
 import { getCookie } from "../../cookie/cookies";
 import MembersBox from "./MembersBox";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import MessageBox from "./MessageBox";
 import Chat from "./Chat";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import { getPeopleList } from "../../api/workspace";
 
 export interface MemberDataType {
   userId: number,
@@ -51,6 +51,8 @@ function RightSideBox() {
   const [uuid, setUuid] = useState('');
   const [checkPersonInbox, setCheckPersonInbox] = useState(true);
 
+  const location = useLocation();
+
   useEffect(() => {
     if(peopleListData) setPeopleArr(peopleListData);
   }, [peopleListData, isLoadingPeopleData]);
@@ -76,6 +78,11 @@ function RightSideBox() {
       setStatusArr(e);
     });
   }, []);
+
+  useEffect(() => {
+    if (location.state === null) return;
+    setUserData({isChat : true, userId : location.state.userId, userName : location.state.userName, userImage : location.state.userImage, color : location.state.color, uuid : location.state.uuid, checkPersonInbox : false, toggle : true});
+  }, [])
 
   useEffect(() => {
     if(peopleArr && statusArr) {
