@@ -19,7 +19,7 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const scrollRef = useRef<HTMLDivElement>(null);
   const cookie = { Authorization : getCookie('authorization') };
 
-  const [messages, setMessages] = useState<MessagesType[]>(); 
+  const [messages, setMessages] = useState<MessagesType[]>([]); 
   const [prevMessages, setPrevMessages] = useState<MessagesType[]>([]);
   const [stompClient, setStompClient] = useState<any>(null);
   const [inputMessage, setInputMessage] = useState('');

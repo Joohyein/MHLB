@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getPeopleList } from "../../api/rightSide";
@@ -19,7 +19,7 @@ export interface MemberDataType {
   color: number,
   description: string
 };
-interface SetUSerDataType {
+interface SetUserDataType {
   isChat: boolean,
   userId: number,
   userName: string,
@@ -40,6 +40,8 @@ function RightSideBox() {
 
   const [statusArr, setStatusArr] = useState<any>();
   const [peopleArr, setPeopleArr] = useState<any>([]);
+  console.log(peopleArr);
+  console.log('state', statusArr);
 
   const [isChat, setIsChat] = useState(false); // 사람 클릭시, 채팅방 클릭시 채팅방으로 이동
   const [userId, setUserId] = useState<number>(); // 채팅방 id <Chat /> 에 넘겨주기
@@ -126,7 +128,7 @@ function RightSideBox() {
   const searchMember = (search : string) => {
     setMember(peopleArr.filter((item: MemberDataType)=>item?.userName.toLowerCase().includes(search?.toLowerCase())));
   };
-  const setUserData = ({isChat, userId, userName, userImage, color, uuid, checkPersonInbox, toggle}:SetUSerDataType) => {
+  const setUserData = ({isChat, userId, userName, userImage, color, uuid, checkPersonInbox, toggle}:SetUserDataType) => {
     setIsChat(isChat);
     setUserId(userId);
     setUserName(userName);
