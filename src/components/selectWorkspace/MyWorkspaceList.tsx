@@ -25,8 +25,8 @@ function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
     getPeopleList(workspaceData.workspaceId)
     .then((res) => {
       const onlineMember = res.filter((val : any) => !(val.color === 3));
-      setUserListLength(Number(onlineMember.length));
-      if (onlineMember.length <= 7) {
+      setUserListLength(Number(onlineMember?.length));
+      if (onlineMember?.length <= 7) {
         setUserList(onlineMember);
       } else {
         setUserList(onlineMember.slice(0, 6));
@@ -56,7 +56,7 @@ function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
       <StDesc>{workspaceData.workspaceDesc}</StDesc>
       <StHrTag />
       <StCurrentUserDiv>
-        <StSubTitle>현재 근무중인 멤버({userList.length})</StSubTitle>
+        <StSubTitle>현재 근무중인 멤버({userList?.length})</StSubTitle>
         <StUserListDiv>
           {userList?.map((item : {color : number, description : string, status : string, userEmail : string, userId : number, userImage : string, userJob : string , userName : string}) => {
             return (
@@ -86,7 +86,7 @@ function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
                 </StMessageContentDiv>
               )
           })}
-          {recentMessage.length === 0 ? <StEmptyPlaceholder>읽지 않은 메세지가 없습니다.</StEmptyPlaceholder> : null}
+          {recentMessage?.length === 0 ? <StEmptyPlaceholder>읽지 않은 메세지가 없습니다.</StEmptyPlaceholder> : null}
         </StRecentMessageList>
       </StRecentMessageListDiv>
   </StWorkspaceBox>
