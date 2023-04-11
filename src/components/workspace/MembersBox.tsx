@@ -108,14 +108,14 @@ const StScrollTopBtn = styled.button`
   flex-direction : column;
   align-items : center;
   justify-content : center;
-  width : 42px;
-  height : 42px;
+  width : 48px;
+  height : 48px;
   border-radius : 64px;
   border: none;
   background-color : white;
   box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.1);
   position : absolute;
-  bottom : 68px;
+  bottom : 32px;
   right : 32px;
   z-index: 999;
   cursor : pointer;
