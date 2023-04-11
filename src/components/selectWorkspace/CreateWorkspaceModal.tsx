@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { createWorkspace } from '../../api/selectWorkspace';
 import Close from '../asset/icons/Close';
+import { GvWorkspaceDescLength, GvWorkspaceNameLength } from '../../global/LimitConfig';
 
 function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.MutableRefObject<any>, setCreateModal: (v: boolean) => void}) {
   const imgInputRef = useRef<any>(null);
@@ -15,8 +16,8 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
 
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if(e.target.files) {
-      if(e.target.files[0].size >= 1024 ** 2 * 5){
-        alert(`5MB 이하 파일만 등록할 수 있습니다. 
+      if(e.target.files[0].size >= 1024 ** 2 * 10){
+        alert(`10MB 이하 파일만 등록할 수 있습니다. 
 현재 파일 용량: ${Math.round(e.target.files[0].size/1024/1024)}MB` );
         return;
       }
@@ -79,11 +80,11 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
         </StImgUploadBox>
         <StNameBox>
           <h3>워크스페이스 이름</h3>
-          <StNameInput type="text" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+          <StNameInput type="text" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} maxLength={GvWorkspaceNameLength} />
         </StNameBox>
         <StDescBox>
           <h3>워크스페이스 소개</h3>
-          <StDescInput value={desc} onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => setDesc(e.target.value)}></StDescInput>
+          <StDescInput value={desc} onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => setDesc(e.target.value)} maxLength={GvWorkspaceDescLength}/>
         </StDescBox>
         <StCreateBtn onClick={onClickCreateHandler}>워크스페이스 생성</StCreateBtn>
       </StModalContainer>
