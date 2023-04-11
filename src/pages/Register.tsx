@@ -10,6 +10,7 @@ import { duplicateEmailCheck } from "../api/general";
 import GoogleSocialIcon from "../components/asset/icons/GoogleSocialIcon";
 import { googleLoginRequest, register } from "../api/auth";
 import { setCookie } from "../cookie/cookies";
+import { GvUserJobLength, GvUserNameLength, GvUserStatusMessageLength } from "../global/LimitConfig";
 
 const Register = () => {
   const isLogin = useIsLogin();
@@ -211,14 +212,14 @@ const Register = () => {
           : (<>
               <StPageSubTitle>정보를 기입해주세요!</StPageSubTitle>
               <StInputLabel htmlFor="name" isFocus={nameInputRefFocus}>이름*</StInputLabel>
-              <StInput type="text" onKeyDown={(e) => onEnterKeyDownName(e)} ref={nameInputRef} id="name" value={nameValue} onChange={(e) => {setNameValue(e.target.value); clearWarningMessage();}} placeholder="Name"/>
+              <StInput type="text" onKeyDown={(e) => onEnterKeyDownName(e)} ref={nameInputRef} id="name" value={nameValue} onChange={(e) => {setNameValue(e.target.value); clearWarningMessage();}} placeholder="Name" maxLength={GvUserNameLength}/>
               <StValidationTextDiv>
                 {nameValidation ? (<StValidationText>이름을 입력해주세요.</StValidationText>) : null}
               </StValidationTextDiv>
               <StInputLabel htmlFor="job" isFocus={jobInputRefFocus}>직업</StInputLabel>
-              <StInput type="text" onKeyDown={(e) => onEnterKeyDownJob(e)} ref={jobInputRef} id="job" value={jobValue} onChange={(e) => {setJobValue(e.target.value); clearWarningMessage();}} placeholder="Job - Default value : White collar"/>
+              <StInput type="text" onKeyDown={(e) => onEnterKeyDownJob(e)} ref={jobInputRef} id="job" value={jobValue} onChange={(e) => {setJobValue(e.target.value); clearWarningMessage();}} placeholder="Job - Default value : White collar" maxLength={GvUserJobLength}/>
               <StInputLabel htmlFor="desc" isFocus={descInputRefFocus}>자기소개</StInputLabel>
-              <StInput type="text" onKeyDown={(e) => onEnterKeyDownDesc(e)} ref={descInputRef} id="desc" value={descValue} onChange={(e) => {setDescValue(e.target.value); clearWarningMessage();}} placeholder="Desciption - Default value : Hello!"/>
+              <StInput type="text" onKeyDown={(e) => onEnterKeyDownDesc(e)} ref={descInputRef} id="desc" value={descValue} onChange={(e) => {setDescValue(e.target.value); clearWarningMessage();}} placeholder="Desciption - Default value : Hello!" maxLength={GvUserStatusMessageLength}/>
               <StRegisterButton ref={registerButtonRef} onClick={() => {onClickRegister();}}>회원가입 계속하기</StRegisterButton>
             </>
           )}

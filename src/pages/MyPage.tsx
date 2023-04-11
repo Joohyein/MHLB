@@ -11,6 +11,7 @@ import InvitedWorkspace from "../components/mypage/InvitedWorkspace";
 import NavBarWorkspace from "../components/common/NavBarWorkspace";
 import { useNavigate } from "react-router-dom";
 import useInput from "../hooks/useInput";
+import { GvUserJobLength, GvUserNameLength, GvUserStatusMessageLength } from "../global/LimitConfig";
 
 const MyPage = () => {
   const { data : dataUser } = useQuery('user', getUserData);
@@ -25,9 +26,9 @@ const MyPage = () => {
   const [editName, setEditName] = useState(false);
   const [name, setName] = useInput(dataUser?.userName);
   const [editJob, setEditJob] = useState(false);
-  const [job, setJob, clearJob] = useInput(dataUser?.userJob);
+  const [job, setJob] = useInput(dataUser?.userJob);
   const [editDesc, setEditDesc] = useState(false);
-  const [desc, setDesc, clearDesc] = useInput(dataUser?.userDesc);
+  const [desc, setDesc] = useInput(dataUser?.userDesc);
 
   const [workspaceId, setWorkspaceId] = useState<any>();
 
@@ -43,8 +44,8 @@ const MyPage = () => {
 
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if(e.target.files) {
-      if(e.target.files[0].size >= 1024 ** 2 * 5){
-        alert(`5MB 이하 파일만 등록할 수 있습니다. 
+      if(e.target.files[0].size >= 1024 ** 2 * 10){
+        alert(`10MB 이하 파일만 등록할 수 있습니다. 
 현재 파일 용량: ${Math.round(e.target.files[0].size/1024/1024)}MB` );
         return;
       }
@@ -158,6 +159,7 @@ const MyPage = () => {
             value = {name}
             onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
             onKeyPress = {onKeyPressNameHandler}
+            maxLength={GvUserNameLength}
             />
           : <StMypageText>{name}</StMypageText>
           }
@@ -171,6 +173,7 @@ const MyPage = () => {
             value={job}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value)}
             onKeyPress={onKeyPressJobHandler}
+            maxLength={GvUserJobLength}
             />
           : <StMypageText>{job}</StMypageText>
           }
@@ -184,6 +187,7 @@ const MyPage = () => {
             value={desc}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDesc(e.target.value)}
             onKeyPress={onKeyPressDescHandler}
+            maxLength={GvUserStatusMessageLength}
             />
           : <StMypageText>{desc}</StMypageText>
           }

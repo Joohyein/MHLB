@@ -19,9 +19,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import NavBarWorkspace from '../components/common/NavBarWorkspace';
 import Plus from '../components/asset/icons/Plus';
 import useInput from '../hooks/useInput';
-
-const fontLengthTitle = 50; // 워크스페이스 이름, 소개 글자수 제한
-const fontLengthDesc = 200;
+import { GvWorkspaceDescLength, GvWorkspaceNameLength } from '../global/LimitConfig';
 
 const WorkspaceConfig = () => {
 
@@ -206,7 +204,7 @@ const WorkspaceConfig = () => {
             onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
             onKeyPress = {onKeyPressTitleHandler}
             ref = {titleInputRef}
-            maxLength={fontLengthTitle}
+            maxLength={GvWorkspaceNameLength}
             />
           : <StWorkspaceText>{title}</StWorkspaceText>
           }
@@ -220,7 +218,7 @@ const WorkspaceConfig = () => {
             value={description}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
             onKeyPress={onKeyPressDescHandler}
-            maxLength={fontLengthDesc}
+            maxLength={GvWorkspaceDescLength}
             />
           : <StWorkspaceText>{description}</StWorkspaceText>
           }
