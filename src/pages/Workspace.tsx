@@ -7,6 +7,9 @@ import Wrapper from "../components/common/Wrapper";
 import DragDropComp from "../components/workspace/DragDropComp";
 import LeftSideBar from "../components/workspace/LeftSideBar";
 import RightSideBar from "../components/workspace/RightSideBar";
+import { getCookie } from "../cookie/cookies";
+import { Stomp } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 interface WorkspaceInformationType {
     userRole : string,

@@ -3,6 +3,9 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useParams } from "react-router-dom";
 import styled from "styled-components"
 import { getPeopleList, requestChangeStatus } from "../../api/workspace";
+import { Stomp } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import { getCookie } from "../../cookie/cookies";
 
 export interface UserInfoType {
     color : number,
@@ -30,6 +33,8 @@ const DragDropComp = () => {
 
     const [userList, setUserList] = useState<UserInfoType[]>([]);
     const [currentUser, setCurrentUser] = useState<any>();
+    const [stompClient, setStompClient] = useState<any>(null);
+    const authorizationCookie = {Authorization: getCookie('authorization')};
 
     useEffect(() => {
         getPeopleList(Number(params.workspaceId))
@@ -39,6 +44,24 @@ const DragDropComp = () => {
         });
     }, [])
 
+    useEffect(()=>{
+        console.log('im here!')
+        const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/ws`);
+        const stompClient = Stomp.over(socket);
+        if(params.workspaceId) {
+            stompClient.connect(authorizationCookie, () => {
+                stompClient.subscribe(`/sub/status/${params.workspaceId}`, (data) => {
+                    console.log(JSON.parse(data.body));
+                }, );
+                setStompClient(stompClient);
+            },
+        );
+        }
+        return () => {
+          stompClient.disconnect();
+        }
+    }, [params.workspaceId]);
+
     const onDragEnd = (result : any) => {
         if (result.destination === null || result.source.droppableId === result.destination.droppableId) return;
         const originObj = {...currentUser, status : result.source.droppableId};
@@ -47,6 +70,10 @@ const DragDropComp = () => {
         requestChangeStatus({status : result.destination.droppableId})
         .then((res) => {
             console.log(res);
+            const sendData = {
+                status : result.destination.droppableId
+            }
+            stompClient.send(`/pub/status`, authorizationCookie, JSON.stringify(sendData))
         })
         .catch((error) => {
             setCurrentUser(originObj);

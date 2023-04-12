@@ -11,7 +11,7 @@ interface MemberDataType {
   userEmail: string,
   status: string,
   color: number,
-  description: string
+  userDesc: string
 };
 
 function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[], searchMember:any, peopleData:any}) {

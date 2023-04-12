@@ -5,7 +5,7 @@ const getWorkspaceList = async () => {
   return response;
 };
 
-const reorderWorkspaceList = async ({orders} : {orders : {workspaceId : number, ordernum : number}[]}) => {
+const reorderWorkspaceList = async ({orders} : {orders : {workspaceId : number, orderNum : number}[]}) => {
     const response = await instance.patch("/api/workspaces/order", {orders});
     return response;
 }
@@ -26,5 +26,7 @@ const getPeopleList = async (workspaceId:number | undefined) => {
     return response.data;
   }
 };
+
+
 
 export { getWorkspaceList, reorderWorkspaceList, getMainWorkspaceInfo, requestChangeStatus, getPeopleList };
