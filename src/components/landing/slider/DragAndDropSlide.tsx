@@ -80,12 +80,6 @@ const StContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  @media screen and (max-width : 1040px) and (min-width : 688px) {
-    width : 688px;
-  };
-  @media screen and (max-width : 688px) {
-    width : 336px;
-  };
 `;
 
 const StTitle = styled.h3`
@@ -168,7 +162,7 @@ const StProfileBox = styled.div`
     font-size: 12px;
     font-weight: 300;
     color: #303030;
-    margin-bottom: 24px;
+    margin-top: 64px;
   };
 `;
 const StUserBox = styled.div`

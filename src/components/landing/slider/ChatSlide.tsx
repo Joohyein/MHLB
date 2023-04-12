@@ -120,12 +120,6 @@ const StContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  @media screen and (max-width : 1040px) and (min-width : 688px) {
-    width : 688px;
-  }
-  @media screen and (max-width : 688px) {
-    width : 336px;
-  }
 `;
 const StTitle = styled.h3`
   font-size: 32px;

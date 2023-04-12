@@ -79,12 +79,12 @@ const StSliderContainer = styled.div`
   align-items: center;
   overflow: hidden;
   transition: 200ms;
-  @media screen and (max-width : 1040px) and (min-width : 688px) {
+  /* @media screen and (max-width : 1040px) and (min-width : 688px) {
     width : 688px;
   }
   @media screen and (max-width : 688px) {
     width : 336px;
-  }
+  } */
 `;
 
 const StSliderBox = styled.div`
