@@ -26,15 +26,15 @@ const getWorkspaceMember = async ({workspaceId} : {workspaceId : string | undefi
 };
 
 const editUserRole = async ({userId , userRole, workspaceId}:{userId: number, userRole: string, workspaceId: number}) => {
-    await instance.patch(`/api/managing/${workspaceId}/people/${userId}`, {userRole});
+    await instance.patch(`/api/managing/${workspaceId}/people/${userId}/role`, {userRole});
 };
 
 const deleteUser = async ({userId, workspaceId}: {userId: number, workspaceId: number}) => {
-    await instance.delete(`/api/managing/${workspaceId}/people/${userId}`);
+    await instance.patch(`/api/managing/${workspaceId}/people/${userId}`);
 };
 
 const deleteWorkspace = async ({workspaceId}:{workspaceId:number}) => {
-    await instance.delete(`/api/managing/${workspaceId}/delete`);
+    await instance.patch(`/api/managing/${workspaceId}`);
 }
 
 export {getWorkspaceInfo, editWorkspaceTitle, editWorkspaceDesc, getWorkspaceMember, editProfileImg, editUserRole, deleteUser, deleteWorkspace};

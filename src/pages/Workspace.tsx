@@ -7,6 +7,9 @@ import Wrapper from "../components/common/Wrapper";
 import DragDropComp from "../components/workspace/DragDropComp";
 import LeftSideBar from "../components/workspace/LeftSideBar";
 import RightSideBar from "../components/workspace/RightSideBar";
+import { getCookie } from "../cookie/cookies";
+import { Stomp } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 interface WorkspaceInformationType {
     userRole : string,
@@ -22,13 +25,31 @@ const Workspace = () => {
     const navigate = useNavigate();
 
     const [workspaceInfomation, setWorkspaceInfomation] = useState<WorkspaceInformationType | undefined>();
+    const [workspaceId, setWorkspaceId] = useState('');
 
     useEffect(() => {
         getMainWorkspaceInfo({workspaceId : String(params.workspaceId)})
         .then((res) => {
             setWorkspaceInfomation(res.data);
+            setWorkspaceId(res.data.workspaceId);
         })
     }, [])
+
+    useEffect(()=>{
+        const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/ws`);
+        const stompClient = Stomp.over(socket);
+        if(workspaceId) {
+            stompClient.connect({Authorization: getCookie('authorization')}, () => {
+                stompClient.subscribe(`/sub/status/${workspaceId}`, (data) => {
+                    console.log(JSON.parse(data.body));
+                }, {Authorization: getCookie('authorization')});
+            },
+        );
+        }
+        return () => {
+          stompClient.disconnect();
+        }
+    }, [workspaceId]);
 
     return (
         <Wrapper>

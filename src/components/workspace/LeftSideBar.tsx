@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getWorkspaceList } from "../../api/workspace";
 import { reorderWorkspaceList } from "../../api/workspace";
+import { getCookie } from "../../cookie/cookies";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 export interface WorkspaceListIconType {
     workspaceId : number,
@@ -16,18 +19,37 @@ const LeftSideBar = () => {
 
     const [workspaceList, setWorkspaceList] = useState([]);
 
+    const userId = getCookie('userId');
+
     const navigate = useNavigate();
+
+    useEffect(()=>{
+        const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/ws`);
+        const stompClient = Stomp.over(socket);
+        if(userId) {
+            stompClient.connect({Authorization: getCookie('authorization')}, () => {
+                stompClient.subscribe(`/sub/unread-message/${userId}`, (data) => {
+                    console.log(JSON.parse(data.body));
+                }, {Authorization: getCookie('authorization')});
+            },
+        );
+        }
+        return () => {
+          stompClient.disconnect();
+        }
+    }, [userId]);
 
     useEffect(() => {
         getWorkspaceList()
         .then((res) => {
+            console.log(res);
             setWorkspaceList(res.data);
         })
     }, [])
 
     useEffect(() => {
         const orderList = ({ orders : [...workspaceList.map((val : WorkspaceListIconType, idx : number) => {
-            return {workspaceId : Number(val.workspaceId), ordernum : Number(idx)};
+            return {workspaceId : Number(val.workspaceId), orderNum : Number(idx)};
         })]})
         reorderWorkspaceList({...orderList})
     }, [workspaceList])

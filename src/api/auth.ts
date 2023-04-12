@@ -28,7 +28,7 @@ const resetPassword = async (uuid : any, {password} : {password : string}) => {
 }
 
 const getGoogleCode = async (code : string) => {
-  const response = await instance.get(`http://potato-fried.shop:8080/api/users/auth/google/callback?code=${code}`);
+  const response = await instance.post(`/api/users/auth/google/callback?code=${code}`);
   return response;
 }
 

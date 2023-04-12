@@ -17,7 +17,7 @@ export interface MemberDataType {
   userEmail: string,
   status: string,
   color: number,
-  description: string
+  userDesc: string
 };
 interface SetUserDataType {
   isChat: boolean,

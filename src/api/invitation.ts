@@ -5,12 +5,12 @@ const inviteMember = async ({workspaceId, email}:{workspaceId: number, email: st
 };
 
 const getInviteMembers = async (workspaceId: number) => {
-    const response = await instance.get(`/api/workspaces/${workspaceId}/invite`);
+    const response = await instance.get(`/api/managing/${workspaceId}/invite`);
     return response.data;
 };
 
 const cancelInvite = async ({workspaceId, inviteId}: {workspaceId: number, inviteId: number}) => {
-    await instance.delete(`/api/workspaces/${workspaceId}/invite/${inviteId}`);
+    await instance.delete(`/api/managing/${workspaceId}/invite/${inviteId}`);
 };
 
 export { inviteMember, getInviteMembers, cancelInvite };
