@@ -55,6 +55,7 @@ export default Slider;
 
 const StMain = styled.div`
   width: 1040px;
+  height: 586px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -67,7 +68,7 @@ const StContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 700px;
+  height: 100%;
 `;
 
 const StSliderContainer = styled.div`
@@ -77,6 +78,7 @@ const StSliderContainer = styled.div`
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  transition: 200ms;
   @media screen and (max-width : 1040px) and (min-width : 688px) {
     width : 688px;
   }

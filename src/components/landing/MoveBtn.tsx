@@ -9,8 +9,8 @@ function MoveBtn() {
   const xInput = [-100, 0, 100];
   const background = useTransform(x, xInput, [
     "linear-gradient(180deg, #ff008c 0%, rgb(211, 9, 225) 100%)",
+    "linear-gradient(180deg, #4da3ff 0%, rgb(127, 81, 255) 100%)",
     "linear-gradient(180deg, #007aff 0%, rgb(68, 0, 255) 100%)",
-    "linear-gradient(180deg, rgb(230, 255, 0) 0%, rgb(3, 209, 0) 100%)"
   ]);
   const color = useTransform(x, xInput, [
     "rgb(211, 9, 225)",
@@ -36,7 +36,6 @@ function MoveBtn() {
         >
           <StSvg viewBox="0 0 50 50">
             <StCircle
-              // onClick={() => console.log('지금 누른건 동그라미 테두리')}
               fill="none"
               strokeWidth="3"
               stroke={color}
@@ -89,7 +88,6 @@ const StMoveToDesc = styled.div`
   margin-top: 36px;
   font-size: 28px;
   color: white;
-  text-shadow: rgba(0, 0, 0, 0.3);
 `;
 const StBox = styled.div`
   width: 100%;

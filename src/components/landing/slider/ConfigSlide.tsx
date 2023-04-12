@@ -72,7 +72,7 @@ const StContainer = styled.div`
     width : 688px;
   }
   @media screen and (max-width : 688px) {
-    width : 568px;
+    width : 336px;
   }
 `;
 const StTitle = styled.h3`
@@ -93,6 +93,7 @@ const StExBox = styled.div`
   justify-content: center;
   align-items: flex-end;
   gap: 24px;
+  border-radius: 6px;
 `;
 
 const StMemberInviteButton = styled.button`
@@ -108,7 +109,7 @@ const StMemberInviteButton = styled.button`
   justify-content: center;
   align-items: center;
   width: 156px;
-`
+`;
 
 const StMemberList = styled.div`
   width : 100%;

@@ -169,6 +169,7 @@ const StBarBox = styled.div`
   box-shadow: 0px 0px 16px 4px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  border-radius: 6px;
 `;
 
 const StSelectBox = styled.div`

@@ -20,7 +20,7 @@ export default Intro;
 const StContainer = styled.div`
   width: 100%;
   height: 100%;
-  margin: 164px 0 64px 0;
+  margin: 164px 0 164px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
