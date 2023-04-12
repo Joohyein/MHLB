@@ -54,6 +54,7 @@ function Slider() {
 export default Slider;
 
 const StMain = styled.div`
+  width: 1040px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -65,7 +66,7 @@ const StContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 1040px;
+  width: 100%;
   height: 700px;
 `;
 
@@ -76,13 +77,17 @@ const StSliderContainer = styled.div`
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  @media screen and (max-width : 1040px) and (min-width : 688px) {
+    width : 688px;
+  }
+  @media screen and (max-width : 688px) {
+    width : 336px;
+  }
 `;
 
 const StSliderBox = styled.div`
   width: 100%;
   display: flex;
-  margin: 0 auto;
-  background-color: pink;
 `;
 
 const StPageDotBox = styled.div`

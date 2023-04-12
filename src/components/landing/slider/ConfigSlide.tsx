@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import RemoveCheckBtn from "../../workspaceConfig/RemoveCheckBtn";
 import Plus from "../../asset/icons/Plus";
 
 function ConfigSlide() {
@@ -33,7 +32,7 @@ function ConfigSlide() {
               <StMemberJob>CTO</StMemberJob>
             </StMemberTextInfoDiv>
             <StRoleDiv>
-              <StRoleCheckbox type = 'checkbox' checked={true} />
+              <StRoleCheckbox type = 'checkbox' checked onChange={() => {}} />
               <StRole>MANAGER</StRole>
             </StRoleDiv>
             <StMemberKickButton>삭제</StMemberKickButton>
@@ -48,7 +47,7 @@ function ConfigSlide() {
               <StMemberJob>COO</StMemberJob>
             </StMemberTextInfoDiv>
             <StRoleDiv>
-              <StRoleCheckbox type = 'checkbox' checked={false} />
+              <StRoleCheckbox type = 'checkbox' />
               <StRole>MEMBER</StRole>
             </StRoleDiv>
             <StMemberKickButton>삭제</StMemberKickButton>
@@ -64,11 +63,17 @@ export default ConfigSlide;
 const StContainer = styled.div`
   width: 100%;
   height: 100%;
-  flex:none;
+  flex: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media screen and (max-width : 1040px) and (min-width : 688px) {
+    width : 688px;
+  }
+  @media screen and (max-width : 688px) {
+    width : 568px;
+  }
 `;
 const StTitle = styled.h3`
   font-size: 32px;
