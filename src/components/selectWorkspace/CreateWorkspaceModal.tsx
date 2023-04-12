@@ -4,15 +4,19 @@ import styled from 'styled-components';
 import { createWorkspace } from '../../api/selectWorkspace';
 import Close from '../asset/icons/Close';
 import { GvWorkspaceDescLength, GvWorkspaceNameLength } from '../../global/LimitConfig';
+import useInputRefFocus from '../../hooks/useInputRefFocus';
 
 function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.MutableRefObject<any>, setCreateModal: (v: boolean) => void}) {
   const imgInputRef = useRef<any>(null);
   const navigate = useNavigate();
 
-  const [image, setImage] = useState<any>('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
+  const [image, setImage] = useState<any>('');
   const [imgFile, setImgFile] = useState<any>();
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
+
+  const [workspaceTitleInputRef, workspaceTitleInputRefFocus] = useInputRefFocus();
+  const [workspaceDescInputRef, workspaceDescInputRefFocus] = useInputRefFocus();
 
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if(e.target.files) {
@@ -69,23 +73,16 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
   return (
     <StWrap>
       <StModalContainer ref={modalRef}>
-        <StTitleBox>
-          <h3>워크스페이스 생성</h3>
-          <Close size="16px" fill="#363636" onClick={() => setCreateModal(false)} cursor='pointer' />
-        </StTitleBox>
+        <StModalTitle>워크스페이스 생성<Close size="36" fill="#363636" onClick={() => setCreateModal(false)} cursor='pointer' /></StModalTitle>
+        <StInputLabel isFocus = {false}>워크스페이스 이미지</StInputLabel>
         <StImgUploadBox>
-          <h3>워크스페이스 이미지</h3>
           <StImage src={image} onClick={onClickImgUpload} />
           <StImageInput type="file" name="creageWorkspaceImg" ref={imgInputRef} onChange={onImgChange} accept='image/png, image/jpg, image/jpeg, image/gif' />
         </StImgUploadBox>
-        <StNameBox>
-          <h3>워크스페이스 이름</h3>
-          <StNameInput type="text" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} maxLength={GvWorkspaceNameLength} />
-        </StNameBox>
-        <StDescBox>
-          <h3>워크스페이스 소개</h3>
-          <StDescInput value={desc} onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => setDesc(e.target.value)} maxLength={GvWorkspaceDescLength}/>
-        </StDescBox>
+        <StInputLabel htmlFor = 'title' isFocus = {workspaceTitleInputRefFocus}>워크스페이스 이름*</StInputLabel>
+        <StTitleInput id = 'title' type="text" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} maxLength={GvWorkspaceNameLength} placeholder = 'Workspace Title' ref = {workspaceTitleInputRef}/>
+        <StInputLabel htmlFor = 'desc' isFocus = {workspaceDescInputRefFocus}>워크스페이스 소개*</StInputLabel>
+        <StDescInput id = 'desc' value={desc} onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => setDesc(e.target.value)} maxLength={GvWorkspaceDescLength} placeholder = 'Description of Workspace' ref = {workspaceDescInputRef}/>
         <StCreateBtn onClick={onClickCreateHandler}>워크스페이스 생성</StCreateBtn>
       </StModalContainer>
     </StWrap>
@@ -98,86 +95,123 @@ const StWrap = styled.div`
   width: 100%;
   height: 100%;
   position: absolute;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index : 5;
+  display : flex;
+  justify-content : center;
+  flex-direction : column;
+  align-items: center;
 `;
-const StModalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  width: 386px;
-  z-index: 999;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
 
-  border: 3px solid gray;
-  padding: 20px;
+const StModalContainer = styled.div`
+  display : flex;
+  flex-direction : column;
+  width : 464px;
+  z-index : 6;
+  position : fixed;
+  background-color : white;
+  border : none;
+  border-radius : 8px;
+  padding : 64px;
   box-sizing: border-box;
 `;
 
-const StTitleBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  h3{
-      font-size: 18px;
-      font-weight: 400;
-  }
+const StModalTitle = styled.div`
+  font-size : 2rem;
+  font-weight : 900;
 `;
+
+const StInputLabel = styled.label`
+  margin-top : 32px;
+  font-size : 1rem;
+  font-weight : 700;
+  transition : 200ms;
+  color : ${(props : {isFocus : boolean}) => props.isFocus ? "#007aff" : "#303030"};
+`;
+
 const StImgUploadBox = styled.div`
-  h3{
-    font-size: 14px;
-    color: #288AFF;
-  }
+  margin-top : 8px;
+  width : 100%;
+  display : flex;
+  justify-content : center;
 `;
+
 const StImage = styled.img`
-  width: 86px;
-  height: 86px;
+  width: 128px;
+  height: 128px;
   border-radius: 50%;
 `;
+
 const StImageInput = styled.input`
   display: none;
 `;
-const StNameBox = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  h3 {
-    font-size: 16px;
-    font-weight: 500;
+
+const StTitleInput = styled.input`
+  width : 100%;
+  height : 42px;
+  margin-top : 8px;
+  margin-bottom : 0.5rem;
+  border : none;
+  outline : 1px solid #dbdbdb;
+  outline-offset : -1px;
+  border-radius : 0.25rem;
+  padding : 1rem;
+  box-sizing : border-box;
+  font-weight : 400;
+  transition : 200ms;
+  &:placeholder {
+    color : #d0d0d0;
   }
-`;
-const StNameInput = styled.input`
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  border: 1px solid lightgray;
   &:focus {
-    outline: none;
+    color : #007aff;
+    outline : 1px solid #007aff;
   }
 `;
-const StDescBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  h3 {
-    font-size: 16px;
-    font-weight: 500;
-  }
-`;
+
 const StDescInput = styled.textarea`
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  border: 1px solid lightgray;
-  height: 128px;
+  resize: none;
+  width : 100%;
+  height : 96px;
+  margin-top : 8px;
+  border : none;
+  outline : 1px solid #dbdbdb;
+  outline-offset : -1px;
+  border-radius : 0.25rem;
+  padding : 12px 16px;
+  box-sizing : border-box;
+  font-weight : 400;
+  transition : 200ms;
+  &:placeholder {
+    color : #d0d0d0;
+  }
   &:focus {
-    outline: none;
+    color : #007aff;
+    outline : 1px solid #007aff;
   }
 `;
 
 const StCreateBtn = styled.button`
-  
+  margin-top : 32px;
+  width : 100%;
+  height : 35px;
+  font-size : 1rem;
+  font-weight : 700;
+  line-height : 24px;
+  text-align: center;
+  color : white;
+  border : none;
+  border-radius : 4px;
+  background-color : #007AFF;
+  padding : 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition : 200ms;
+  flex-shrink : 0;
+  &:hover {
+      background-color : #479fff;
+  }
+  &:active {
+      scale : 1.05;
+  }
 `;

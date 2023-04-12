@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { navBarProfileImage } from "../../api/general";
 import useLogout from "../../hooks/useLogout";
 import useOutsideClick from "../../hooks/useOutsideClick"
+import { setCookie } from "../../cookie/cookies";
 
 const NavBarWorkspace = () => {
 
@@ -19,6 +20,7 @@ const NavBarWorkspace = () => {
     useEffect(() => {
         navBarProfileImage()
         .then((res) => {
+            setCookie('userId', res.data.userId);
             setUserImg(res.data.userImage);
         })
         .catch((error) => {

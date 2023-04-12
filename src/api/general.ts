@@ -11,7 +11,7 @@ const validateEmailCheck = async ({ email }: { email: string }) => {
 };
 
 const navBarProfileImage = async () => {
-  const response = await instance.get('/api/mypage/image');
+  const response = await instance.get('/api/users/user-info');
   return response;
 }
 
