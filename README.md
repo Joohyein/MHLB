@@ -1,4 +1,4 @@
-![header](https://capsule-render.vercel.app/api?type=waving&color=007aff&height=300&section=header&text=pin%20me-nl-&desc=Giga%20Jet&fontSize=90&fontColor=ffffff&animation=scaleIn)
+![header](https://capsule-render.vercel.app/api?type=waving&color=007aff&height=300&section=header&text=Pin%20me-nl-&desc=Giga%20Jet&fontSize=90&fontColor=ffffff&animation=scaleIn)
 <br />
 <br />
 <br />
@@ -10,7 +10,6 @@
 3. [기술 스택](#💻-기술-스택)
 4. [프로젝트 아키텍쳐](#🛠-프로젝트-아키텍쳐)
 5. [기술적 의사 결정](#🔎-기술적-의사-결정)
-6.
 
 <br />
 <br />
