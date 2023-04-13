@@ -13,7 +13,7 @@ function NotFound() {
         <h3>요청하신 페이지의 주소가 변경, 삭제되어 찾을 수 없습니다.</h3>
         <h3>입력하신 페이지의 주소가 정확한지 다시 한 번 확인해 주세요.</h3>
       </StDesc>
-      <StHomeBtn>홈으로</StHomeBtn>
+      <StHomeBtn>메인 페이지로 이동</StHomeBtn>
     </StContainer>
   )
 }
@@ -57,7 +57,7 @@ const StHomeBtn = styled.button`
   font-size : 1rem;
   font-weight : 700;
   color : white;
-  background-color : #007aff;
+  background-color : #3e3e3e;
   padding : 0.5rem 2rem;
   border : none;
   border-radius : 0.25rem;
