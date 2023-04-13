@@ -5,10 +5,10 @@ import defaultWorkspaceImg from '../../asset/img/DefaultWorkspaceImage.png'
 function DragAndDropSlide() {
   return (
     <StContainer>
-      <StTitle>쉽고 빠른 드래그 앤 드롭!</StTitle>
+      <StTitle>쉽고 빠른 드래그 앤 드롭</StTitle>
       <StDesc>
         <h3>파랗게 하이라이팅 된 내 뱃지를 드래그 앤 드롭으로 움직여요!</h3>
-        <h3>나의 워크스페이스 목록의 순서를 드래그 앤 드롭으로 변경해요!</h3>
+        <h3>나의 워크스페이스 목록의 순서를 드래그 앤 드롭으로 변경을 할 수 있어요!</h3>
       </StDesc>
       <StExBox>
         <StLeftBar>

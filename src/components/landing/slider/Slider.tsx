@@ -29,7 +29,9 @@ function Slider() {
   return (
     <StMain>
       <StContainer>
-        <ArrowBack size='32px' fill='#303030' onClick={onClickPrevBtn} cursor="pointer" />
+        <StArrowBtn>
+          <ArrowBack size='32px' fill='#303030' onClick={onClickPrevBtn} cursor="pointer" />
+        </StArrowBtn>
         <StSliderContainer>
           <StSliderBox ref={slideRef}>
             <DragAndDropSlide />
@@ -38,7 +40,9 @@ function Slider() {
             <ChatSlide />
           </StSliderBox>
         </StSliderContainer>
-        <ArrowNext size='32px' fill='#303030' onClick={onClickNextBtn} cursor="pointer" />
+        <StArrowBtn>
+          <ArrowNext size='32px' fill='#303030' onClick={onClickNextBtn} cursor="pointer" />
+        </StArrowBtn>
       </StContainer>
       <StPageDotBox>
         <StPageDotFirst bgColor={currentSlide} />
@@ -79,12 +83,6 @@ const StSliderContainer = styled.div`
   align-items: center;
   overflow: hidden;
   transition: 200ms;
-  /* @media screen and (max-width : 1040px) and (min-width : 688px) {
-    width : 688px;
-  }
-  @media screen and (max-width : 688px) {
-    width : 336px;
-  } */
 `;
 
 const StSliderBox = styled.div`
@@ -119,4 +117,11 @@ const StPageDotFourth = styled.div<{bgColor:number}>`
   height: 10px;
   border-radius: 50%;
   background-color: ${props => props.bgColor === 3 ? '#303030' : '#dadada'};
+`;
+
+const StArrowBtn = styled.div`
+  transition: 300ms;
+  &:hover {
+    scale: 1.2;
+  }
 `;
