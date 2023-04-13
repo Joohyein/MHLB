@@ -66,8 +66,8 @@ const StHomeBtn = styled.button`
   &:hover {
     background-color : #429dff;
     cursor : pointer;
-  }
+  };
   &:active {
     scale : 1.05;
-  }
+  };
 `;
