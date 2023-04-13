@@ -9,44 +9,47 @@
 
 ### Front-End
 
-<img src="https://img.shields.io/badge/React-161B22?style=flat&logo=React&logoColor=61DAFB"/> 
-<img src="https://img.shields.io/badge/HTML5-161B22?style=flat&logo=HTML5&logoColor=E34F26"/>
-<img src="https://img.shields.io/badge/JavaScript-161B22?style=flat&logo=JavaScript&logoColor=F7DF1E"/>
-<img src="https://img.shields.io/badge/TypeScript-161B22?style=flat&logo=TypeScript&logoColor=3178C6"/>
-<img src="https://img.shields.io/badge/SockJS-161B22?style=flat&logo=SockJS&logoColor=6DB33F"/>
-<img src="https://img.shields.io/badge/STOMP-161B22?style=flat&logo=STOMP&logoColor=6DB33F"/>
-<img src="https://img.shields.io/badge/styledComponents-161B22?style=flat&logo=styledcomponents&logoColor=DB7093"/>
-<img src="https://img.shields.io/badge/axios-161B22?style=flat&logo=Axios&logoColor=5A29E4"/>
-<img src="https://img.shields.io/badge/Framer-161B22?style=flat&logo=Framer&logoColor=0055ff"/>
-<img src="https://img.shields.io/badge/ReactRouter-161B22?style=flat&logo=ReactRouter&logoColor=CA4245"/>
+<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white"> 
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"> 
+<img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=HTML5&logoColor=white"> 
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=black"> 
+<img src="https://img.shields.io/badge/SockJS-000000?style=for-the-badge&logo=SockJS&logoColor=white"> 
+<img src="https://img.shields.io/badge/STOMP-000000?style=for-the-badge&logo=STOMP&logoColor=white"> 
+<img src="https://img.shields.io/badge/styledComponents-DB7093?style=for-the-badge&logo=styledComponents&logoColor=white"> 
+<img src="https://img.shields.io/badge/axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white"> 
+<img src="https://img.shields.io/badge/Framer-0055ff?style=for-the-badge&logo=Framer&logoColor=white"> 
+<img src="https://img.shields.io/badge/ReactRouter-CA4245?style=for-the-badge&logo=ReactRouter&logoColor=white">
+
 <br />
 <br />
 
 ### Back-End
 
-<img src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=Java&logoColor=white"/>
-<img src="https://img.shields.io/badge/Spring-161B22?style=flat&logo=Spring&logoColor=6DB33F"/> 
-<img src="https://img.shields.io/badge/SpringBoot-161B22?style=flat&logo=SpringBoot&logoColor=6DB33F"/>
-<img src="https://img.shields.io/badge/SpringSecurity-161B22?style=flat&logo=SpringSecurity&logoColor=6DB33F"/>
-<img src="https://img.shields.io/badge/SockJS-161B22?style=flat&logo=SockJS&logoColor=6DB33F"/>
-<img src="https://img.shields.io/badge/STOMP-161B22?style=flat&logo=STOMP&logoColor=6DB33F"/>
-<img src="https://img.shields.io/badge/MongoDB-161B22?style=flat&logo=MongoDB&logoColor=47A248"/>
-<img src="https://img.shields.io/badge/MySQL-161B22?style=flat&logo=MySQL&logoColor=4479A1"/>
-<img src="https://img.shields.io/badge/AmazonEC2-161B22?style=flat&logo=AmazonEC2&logoColor=FF9900"/>
-<img src="https://img.shields.io/badge/AmazonS3-161B22?style=flat&logo=AmazonS3&logoColor=569A31"/>
-<img src="https://img.shields.io/badge/AmazonRDS-161B22?style=flat&logo=AmazonRDS&logoColor=527FFF"/>
-<img src="https://img.shields.io/badge/Redis-161B22?style=flat&logo=Redis&logoColor=DC382D"/>
-<img src="https://img.shields.io/badge/Docker-161B22?style=flat&logo=Docker&logoColor=2496ED"/>
+<img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white"> 
+<img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"> 
+<img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white"> 
+<img src="https://img.shields.io/badge/SpringSecurity-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white"> 
+<img src="https://img.shields.io/badge/SpringSecurity-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white"> 
+<img src="https://img.shields.io/badge/STOMP-000000?style=for-the-badge&logo=STOMP&logoColor=white">
+<img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=MongoDB&logoColor=white"> 
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"> 
+<img src="https://img.shields.io/badge/AmazonEC2-FF9900?style=for-the-badge&logo=AmazonEC2&logoColor=white"> 
+<img src="https://img.shields.io/badge/AmazonS3-569A31?style=for-the-badge&logo=AmazonS3&logoColor=white"> 
+<img src="https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white"> 
+<img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white"> 
+<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white">
 
 <br />
 
 ### Dev tools
 
-<img src="https://img.shields.io/badge/IntellijIDEA-161B22?style=flat&logo=IntellijIDEA&logoColor=000000"/>
-<img src="https://img.shields.io/badge/Git-161B22?style=flat&logo=Git&logoColor=F05032"/>
-<img src="https://img.shields.io/badge/GitHub-161B22?style=flat&logo=GitHub&logoColor=white"/>
-<img src="https://img.shields.io/badge/Jira-161B22?style=flat&logo=Jira&logoColor=0052CC"/>
-<img src="https://img.shields.io/badge/Google%20Login-161B22?style=flat&logo=Google&logoColor=4285F4"/>
+<img src="https://img.shields.io/badge/Intellij%20IDEA-000000?style=for-the-badge&logo=IntellijIDEA&logoColor=white"> 
+<img src="https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white"> 
+<img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white"> 
+<img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"> 
+<img src="https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=Jira&logoColor=white"> 
+<img src="https://img.shields.io/badge/Google%20Login-4285F4?style=for-the-badge&logo=Google&logoColor=white">
+
 </div>
 <br />
 <br />
@@ -65,7 +68,16 @@
 ## 📌 링크
 
 [Frontend Repository](https://github.com/GIGA-JET/MHLB-FE)  
-[Backend Repository](https://github.com/GIGA-JET/MHLB-BE)
+[Backend Repository](https://github.com/GIGA-JET/MHLB-BE)  
+[Giga Jet Notion](https://daydreampioneer.notion.site/GIGA-JET-8dce960c73884b9499afa03b33e97ff4)
+
+<br />
+<br />
+<br />
+
+## 📌 프로젝트 기간
+
+2023.03.10 - 2023.04.21
 
 <br />
 <br />
