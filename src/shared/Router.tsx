@@ -12,6 +12,7 @@ import SelectWorkspace from "../pages/SelectWorkspace";
 import Workspace from "../pages/Workspace";
 import WorkspaceConfig from "../pages/WorkspaceConfig";
 import GoogleAuth from "../pages/GoogleAuth";
+import NotFound from "../pages/NotFound";
 
 const Router = () => {
   return (
@@ -30,6 +31,7 @@ const Router = () => {
         <Route path="/reset-password/:uuid" element={<ResetPassword />} />
         <Route path="/reset-password-succeed" element={<ResetPasswordSucceed />} />
         <Route path="/google-auth" element={<GoogleAuth />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
