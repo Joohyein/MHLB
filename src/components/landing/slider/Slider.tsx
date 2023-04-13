@@ -28,6 +28,7 @@ function Slider() {
 
   return (
     <StMain>
+      <StLine />
       <StContainer>
         <StArrowBtn>
           <ArrowBack size='32px' fill='#303030' onClick={onClickPrevBtn} cursor="pointer" />
@@ -67,6 +68,12 @@ const StMain = styled.div`
   gap: 24px;
   margin-bottom: 64px;
 `;
+const StLine = styled.div`
+  width: 30%;
+  border: 1px solid #303030;
+  margin-bottom: 24px;
+`;
+
 const StContainer = styled.div`
   display: flex;
   justify-content: center;
