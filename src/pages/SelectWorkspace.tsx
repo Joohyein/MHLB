@@ -20,14 +20,14 @@ const SelectWorkspace = () => {
   const stompClient = useSelector((state : any) => state.websocket.stompClient);
 
   useEffect(() => {
-    if(userId && !(Object.keys(stompClient).length === 0)) {
-        stompClient.subscribe(`/sub/unread-message/${userId}`, (data : any) => {
-            console.log(JSON.parse(data.body));
-        });
-    }
+    if(!(userId && Object.keys(stompClient).length)) return 
+    const connection =  stompClient.subscribe(`/sub/unread-message/${userId}`, (data : any) => {
+      console.log(JSON.parse(data.body));
+    });
+    
     return () => {
         if (stompClient && stompClient.connected) {
-            stompClient.unsubscribe(`/sub/unread-message/${userId}`);
+            connection.unsubscribe({destination: `/sub/unread-message/${userId}`});
         }
     }
 }, [data, stompClient]);
