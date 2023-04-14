@@ -18,7 +18,7 @@ const GoogleAuth = () => {
         })
         .catch((error) => console.log(error));
     };
-    return <div>GoogleAuth</div>
+    return <div>Loading google social auth...</div>
 }
 
 export default GoogleAuth;
