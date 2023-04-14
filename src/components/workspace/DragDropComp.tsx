@@ -184,7 +184,6 @@ const StSectionSize1 = styled.div`
 
 const StSectionSize2 = styled.div`
     width : 248px;
-    height : 100%;
     box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.05);
     border-radius : 8px;
     background-color : white;
