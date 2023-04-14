@@ -4,7 +4,8 @@ import styled from "styled-components";
 import { navBarProfileImage } from "../../api/general";
 import useLogout from "../../hooks/useLogout";
 import useOutsideClick from "../../hooks/useOutsideClick"
-import { removeCookie, setCookie } from "../../cookie/cookies";
+import { getCookie, removeCookie, setCookie } from "../../cookie/cookies";
+import { useSelector } from "react-redux";
 
 const NavBarWorkspace = () => {
 
@@ -17,12 +18,30 @@ const NavBarWorkspace = () => {
 
     const [openProfile, setOpenProfile] = useState(false);
 
+    const stompClient = useSelector((state : any) => state.websocket.stompClient);
+    const myUserId = getCookie('userId');
+    const [inviteBadge, setInviteBadge] = useState(false);
+
+    useEffect(()=>{
+        if(Object.keys(stompClient).length) {
+            stompClient.subscribe(`/sub/workspace-invite/${myUserId}`, (data : any) => {
+                console.log(data.body);
+                setInviteBadge((JSON.parse(data.body)).invitedWorkspace);
+            });
+        }
+        return () => {
+            if (stompClient && stompClient.connected) {
+                stompClient.unsubscribe(`/sub/workspace-invite/${myUserId}`);
+            }
+        }
+    }, [stompClient]);
+
     useEffect(() => {
         navBarProfileImage()
         .then((res) => {
-            console.log(res.data.userId);
             setCookie('userId', res.data.userId);
             setUserImg(res.data.userImage);
+            setInviteBadge(res.data.invitedWorkspace);
         })
         .catch((error) => {
             console.log(error);
@@ -52,9 +71,12 @@ const NavBarWorkspace = () => {
             </StLogo>
             <StRightsideDiv ref = {dropdownRef}>
                 <StUserImage img = {userImg} onClick = {() => {onClickProfileImage()}} />
+                { inviteBadge && <StInviteBadgeProfile />}
                 {openProfile
                     ? <StProfileDropdownDiv>
-                        <StProfileDropdownContent onClick = {() => {onClickMyPage()}}>마이페이지</StProfileDropdownContent>
+                        <StProfileDropdownContent onClick = {() => {onClickMyPage()}}>마이페이지
+                        { inviteBadge && <StInviteBadge />}
+                        </StProfileDropdownContent>
                         <StHrTag />
                         <StProfileDropdownContent onClick = {() => {onClickLogout()}}>로그아웃</StProfileDropdownContent>
                     </StProfileDropdownDiv>
@@ -133,7 +155,10 @@ const StProfileDropdownContent = styled.div`
     &:hover {
         color : #007AFF;
         cursor : pointer;
-    }
+    };
+    display: flex;
+    align-items: center;
+    gap: 4px;
 `
 
 const StHrTag = styled.hr`
@@ -143,3 +168,20 @@ const StHrTag = styled.hr`
     background : #e1e1e1;
     border : none;
 `
+
+const StInviteBadgeProfile = styled.div`
+    width: 9px;
+  height: 9px;
+  background-color: #ff5f5f ;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  position: absolute;
+  bottom: 10px;
+  right: 32px;
+`;
+const StInviteBadge = styled.div`
+  width: 8px;
+  height: 8px;
+  background-color: #ff5f5f ;
+  border-radius: 50%;
+`;
