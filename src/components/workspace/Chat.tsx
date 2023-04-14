@@ -5,6 +5,7 @@ import SockJS from 'sockjs-client';
 import { Stomp } from "@stomp/stompjs";
 import { getCookie } from "../../cookie/cookies";
 import ArrowBack from "../asset/icons/ArrowBack";
+import { useSelector } from "react-redux";
 
 interface MessagesType {
   messageId: number,
@@ -17,11 +18,12 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
 
   const [personBoxUuid, setPersonBoxUuid] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
-  const cookie = { Authorization : getCookie('authorization') };
+  const userIdCookie = { userId : getCookie('userId') };
+  const stompClient = useSelector((state : any) => state.websocket.stompClient);
 
   const [messages, setMessages] = useState<MessagesType[]>([]); 
   const [prevMessages, setPrevMessages] = useState<MessagesType[]>([]);
-  const [stompClient, setStompClient] = useState<any>(null);
+  // const [stompClient, setStompClient] = useState<any>(null);
   const [inputMessage, setInputMessage] = useState('');
   const [websocketConnected, setWebsocketConnected] = useState(false);
 
@@ -42,30 +44,22 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   },[checkPersonInbox]);
   
   useEffect(()=>{
-    const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/ws`);
-    const stompClient = Stomp.over(socket);
-    const data = {
-      Authorization: getCookie('authorization'),
-      uuid: personBoxUuid
-    }
-    if(personBoxUuid){
-      stompClient.connect(data, () => {
+    if(!(personBoxUuid && !(Object.keys(stompClient).length === 0))) return;
+        console.log('connected!')
         setWebsocketConnected(true);
-        stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data) => {
+        const tmpSub = stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data : any) => {
           const messageData = JSON.parse(data.body);
           if(!messageData) setWebsocketConnected(false);
           else setMessages((prev:any) => [...prev, messageData]);
-        },
-        cookie 
-        );
-        setStompClient(stompClient);
-      },
-      );
-    }
+        }, userIdCookie);
+
     return () => {
-      stompClient.disconnect();
+      if (!(Object.keys(stompClient).length === 0)) {
+        // stompClient.unsubscribe(`/sub/inbox/${personBoxUuid}`);
+        tmpSub.unsubscribe({destination : `/sub/inbox/${personBoxUuid}`});
+      }
     }
-  }, [personBoxUuid]);
+  }, [personBoxUuid, stompClient]);
 
   const scrollToBottom = () => {
     if(scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -80,7 +74,7 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
       workspaceId,
     };
     if(inputMessage && websocketConnected) {
-      stompClient.send(`/pub/inbox`, cookie , JSON.stringify(sendData))
+      stompClient.send(`/pub/inbox`, userIdCookie, JSON.stringify(sendData))
     };
   };
 
