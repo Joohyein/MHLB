@@ -45,12 +45,14 @@ const ResetPasswordSendEmail = () => {
                 setDisableEmail(false);
                 sendResetPasswordEmail({email : emailValue})
                 .then((res) => {
+                    console.log(res);
                     setDisableEmail(true);
                     navigate('/reset-password-sent');
                 })
                 .catch((error) => {
                     setDisableEmail(true);
                     setErrorMessageToggle(true);
+                    setDuplicateEmailValidation(false);
                 })
             }
         }
