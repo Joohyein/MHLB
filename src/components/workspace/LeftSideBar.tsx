@@ -7,6 +7,7 @@ import { reorderWorkspaceList } from "../../api/workspace";
 import { getCookie } from "../../cookie/cookies";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
+import { useSelector } from "react-redux";
 
 export interface WorkspaceListIconType {
     workspaceId : number,
@@ -19,30 +20,29 @@ const LeftSideBar = () => {
 
     const [workspaceList, setWorkspaceList] = useState([]);
 
+    const stompClient = useSelector((state : any) => state.websocket.stompClient);
+
     const userId = getCookie('userId');
 
     const navigate = useNavigate();
 
-    useEffect(()=>{
-        const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/ws`);
-        const stompClient = Stomp.over(socket);
-        if(userId) {
-            stompClient.connect({Authorization: getCookie('authorization')}, () => {
-                stompClient.subscribe(`/sub/unread-message/${userId}`, (data) => {
-                    console.log(JSON.parse(data.body));
-                }, {Authorization: getCookie('authorization')});
-            },
-        );
+    useEffect(() => {
+        if(userId && !(Object.keys(stompClient).length === 0)) {
+            stompClient.subscribe(`/sub/unread-message/${userId}`, (data : any) => {
+                console.log(JSON.parse(data.body));
+            });
         }
         return () => {
-          stompClient.disconnect();
+            if (stompClient && stompClient.connected) {
+                stompClient.unsubscribe(`/sub/unread-message/${userId}`);
+            }
         }
-    }, [userId]);
+    }, [userId, stompClient]);
 
     useEffect(() => {
         getWorkspaceList()
         .then((res) => {
-            console.log(res);
+            console.log('workspace list', res);
             setWorkspaceList(res.data);
         })
     }, [])
@@ -115,4 +115,5 @@ const StIcon = styled.div`
     background-position : center;
     cursor : pointer;
     margin-top : 16px;
+    flex-shrink : 0;
 `
