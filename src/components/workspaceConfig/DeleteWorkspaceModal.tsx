@@ -37,10 +37,9 @@ function DeleteWorkspaceModal({deleteModalRef, workspaceInfoData, setWorkspaceDe
     return (
     <StWrap>
         <StModalContainer ref={deleteModalRef}>
-            <StTitleBox>
-                <h3>워크스페이스 삭제</h3>
-                <Close size="24px" fill="#363636" onClick={() => setWorkspaceDeleteModal(false)} cursor="pointer" />
-            </StTitleBox>
+            <StLeaveBtn><Close size="36" fill="#303030" onClick={() => setWorkspaceDeleteModal(false)} cursor="pointer" /></StLeaveBtn>
+            <StModalTitle>워크스페이스 삭제</StModalTitle>
+            
             <StSub>
                 <h3>삭제를 진행하신다면 모든 정보를 잃습니다.</h3>
                 <h3>그리고 복구할 수 없습니다.</h3>
@@ -71,32 +70,75 @@ function DeleteWorkspaceModal({deleteModalRef, workspaceInfoData, setWorkspaceDe
 export default DeleteWorkspaceModal;
 
 const StWrap = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  background-color: rgba(0,0,0,0.3);
-`;
-const StModalContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    width: 524px;
-    z-index: 999;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-
-    border: 3px solid gray;
-    padding: 20px;
-    box-sizing: border-box;
-`;
-const StTitleBox = styled.div`
-    display: flex;
-    justify-content: space-between;
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index : 5;
+    display : flex;
+    justify-content : center;
+    flex-direction : column;
     align-items: center;
 `;
+
+const StLeaveBtn = styled.div`
+  position : absolute;
+  top : 32px;
+  right : 32px;
+`
+
+const StModalContainer = styled.div`
+    display : flex;
+    flex-direction : column;
+    width : 464px;
+    z-index : 6;
+    position : fixed;
+    background-color : white;
+    border : none;
+    border-radius : 8px;
+    padding : 64px;
+    box-sizing: border-box;
+`;
+
+const StModalTitle = styled.div`
+    font-size : 2rem;
+    font-weight : 900;
+`;
+
+const StWorkspaceInfoDiv = styled.div`
+    width : 100%;
+    display : flex;
+    margin-top : 32px;
+    margin-bottom : 32px;
+`
+
+const StWorkspaceImage = styled.div`
+    width : 48px;
+    height : 48px;
+    background-image : url('${(props : {img : string | undefined}) => props.img}');
+    background-size : cover;
+    background-position : center;
+    border-radius : 48px;
+`
+
+const StWorkspaceTextBox = styled.div`
+    margin-left : 16px;
+    display : flex;
+    justify-content: center;
+    flex-direction: column;
+    gap : 4px;
+`
+
+const StWorkspaceTextTitle = styled.div`
+    font-size : 1rem;
+    font-weight : 900;
+`
+
+const StWorkspaceTextDesc = styled.div`
+    font-size : 0.75rem;
+    font-weight : 300;
+`
+
 const StSub = styled.div`
     font-size: 12px;
 
