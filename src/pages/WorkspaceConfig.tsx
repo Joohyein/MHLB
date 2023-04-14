@@ -169,7 +169,6 @@ const WorkspaceConfig = () => {
 
   return (
     <Wrapper>
-      <NavBarWorkspace />
       <StContainer>
         <StWorkspaceProfileDiv>
           <StArrowBackDiv onClick = {() => {navigate(`/workspace/${params.workspaceId}`)}}><ArrowBack size="30" fill="#303030" cursor="pointer" /></StArrowBackDiv>
