@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Wrapper from "../components/common/Wrapper";
 import CreateWorkspaceModal from "../components/selectWorkspace/CreateWorkspaceModal";
@@ -6,18 +6,34 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import { useQuery } from "react-query";
 import { getWorkspaceList } from "../api/selectWorkspace";
 import MyWorkspaceList from "../components/selectWorkspace/MyWorkspaceList";
-import NavBarWorkspace from "../components/common/NavBarWorkspace";
 import Plus from "../components/asset/icons/Plus";
+import { useSelector } from "react-redux";
+import { getCookie } from "../cookie/cookies";
 
 const SelectWorkspace = () => {
   const { data } = useQuery('workspaceList', getWorkspaceList);
 
   const [createModal, setCreateModal] = useState(false);
   const modalRef = useOutsideClick(() => setCreateModal(false));
+  const userId = getCookie('userId');
+
+  const stompClient = useSelector((state : any) => state.websocket.stompClient);
+
+  useEffect(() => {
+    if(userId && !(Object.keys(stompClient).length === 0)) {
+        stompClient.subscribe(`/sub/unread-message/${userId}`, (data : any) => {
+            console.log(JSON.parse(data.body));
+        });
+    }
+    return () => {
+        if (stompClient && stompClient.connected) {
+            stompClient.unsubscribe(`/sub/unread-message/${userId}`);
+        }
+    }
+}, [data, stompClient]);
 
   return (
     <Wrapper>
-      <NavBarWorkspace />
       <StContainer>
         <StMainContent>
           <StSelectWorkspaceInfoDiv>
