@@ -1,10 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
-import tempModule from "../modules/tempModule";
+import websocketReducer from "../modules/websocket";
 
 const store = configureStore({
   reducer: {
-    tempModule,
+    websocket : websocketReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+  }),
 });
 
 export default store;
