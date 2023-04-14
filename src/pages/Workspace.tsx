@@ -2,14 +2,10 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getMainWorkspaceInfo } from "../api/workspace";
-import NavBarWorkspace from "../components/common/NavBarWorkspace";
 import Wrapper from "../components/common/Wrapper";
 import DragDropComp from "../components/workspace/DragDropComp";
 import LeftSideBar from "../components/workspace/LeftSideBar";
 import RightSideBar from "../components/workspace/RightSideBar";
-import { getCookie } from "../cookie/cookies";
-import { Stomp } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
 
 interface WorkspaceInformationType {
     userRole : string,
@@ -25,17 +21,19 @@ const Workspace = () => {
     const navigate = useNavigate();
 
     const [workspaceInfomation, setWorkspaceInfomation] = useState<WorkspaceInformationType | undefined>();
+    const [userListData, setUserListData] = useState([]);
+    const [userRole, setUserRole] = useState<string>('');
 
     useEffect(() => {
         getMainWorkspaceInfo({workspaceId : String(params.workspaceId)})
         .then((res) => {
+            setUserRole(res.data.userRole);
             setWorkspaceInfomation(res.data);
         })
     }, [])
 
     return (
         <Wrapper>
-            <NavBarWorkspace />
             <LeftSideBar />
             <StContainer>
                 <StMainContent>
@@ -45,12 +43,12 @@ const Workspace = () => {
                             <StWorkspaceTitle>{workspaceInfomation?.workspaceTitle}</StWorkspaceTitle>
                             <StWorkspaceDesc>{workspaceInfomation?.workspaceDesc}</StWorkspaceDesc>
                         </StTextInfoDiv>
-                        <StConfigPageLinkButton onClick = {() => {navigate(`/workspace-config/${workspaceInfomation?.workspaceId}`)}}>관리자 페이지로 이동</StConfigPageLinkButton>
+                        {(userRole === 'ADMIN' || userRole === 'MANAGER') ? <StConfigPageLinkButton onClick = {() => {navigate(`/workspace-config/${workspaceInfomation?.workspaceId}`)}}>관리자 페이지로 이동</StConfigPageLinkButton> : null}
                     </StWorkspaceInfoDiv>
-                    <DragDropComp />
+                    <DragDropComp setUserListData = {setUserListData}/>
                 </StMainContent>
             </StContainer>
-            <RightSideBar />
+            <RightSideBar userListData = {userListData} />
         </Wrapper>
     );
 };
@@ -63,9 +61,10 @@ const StContainer = styled.div`
     justify-content : flex-start;
     align-items : center;
     width : 1040px;
-    height : 100vh;
+    height : 100%;
     box-sizing : border-box;
     padding-top : 64px;
+    margin-bottom : 64px;
     background-color : transparent;
 `
 

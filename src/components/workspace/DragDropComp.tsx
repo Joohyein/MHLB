@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useParams } from "react-router-dom";
 import styled from "styled-components"
-import { getPeopleList, requestChangeStatus } from "../../api/workspace";
-import { Stomp } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
+import { getPeopleList } from "../../api/workspace";
 import { getCookie } from "../../cookie/cookies";
+import { useSelector } from "react-redux";
 
 export interface UserInfoType {
     color : number,
@@ -27,58 +26,53 @@ const sectionContents = [
     {title : '휴가 🏝️', desc : '현재 휴가 중인 멤버', dropId : 'Leave'}
 ]
 
-const DragDropComp = () => {
+const DragDropComp = ({setUserListData} : {setUserListData : any}) => {
 
     const params = useParams();
 
+    const stompClient = useSelector((state : any) => state.websocket.stompClient);
+
     const [userList, setUserList] = useState<UserInfoType[]>([]);
     const [currentUser, setCurrentUser] = useState<any>();
-    const [stompClient, setStompClient] = useState<any>(null);
-    const authorizationCookie = {Authorization: getCookie('authorization')};
+    // const [stompClient, setStompClient] = useState<any>(null);
+    const userIdCookie = {userId : getCookie('userId')};
 
     useEffect(() => {
         getPeopleList(Number(params.workspaceId))
         .then((res) => {
-            setCurrentUser(res[0]);
+            setCurrentUser(res[0]);    
             setUserList(res.slice(1));
         });
     }, [])
 
     useEffect(()=>{
-        console.log('im here!')
-        const socket = new SockJS(`${process.env.REACT_APP_BE_SERVER}/stomp/ws`);
-        const stompClient = Stomp.over(socket);
-        if(params.workspaceId) {
-            stompClient.connect(authorizationCookie, () => {
-                stompClient.subscribe(`/sub/status/${params.workspaceId}`, (data) => {
-                    console.log(JSON.parse(data.body));
-                }, );
-                setStompClient(stompClient);
-            },
-        );
+        if(params.workspaceId && !(Object.keys(stompClient).length === 0)) {
+            stompClient.subscribe(`/sub/status/${params.workspaceId}`, (data : any) => {
+                console.log(JSON.parse(data.body));
+            }, userIdCookie);
         }
         return () => {
-          stompClient.disconnect();
+            if (stompClient && stompClient.connected) {
+                stompClient.unsubscribe(`/sub/status/${params.workspaceId}`);
+            }
         }
-    }, [params.workspaceId]);
+    }, [params.workspaceId, stompClient]);
+
+    useEffect(() => {
+        setUserListData(userList);
+    }, [userList])
 
     const onDragEnd = (result : any) => {
         if (result.destination === null || result.source.droppableId === result.destination.droppableId) return;
         const originObj = {...currentUser, status : result.source.droppableId};
         const tempObj = {...currentUser, status : result.destination.droppableId};
         setCurrentUser(tempObj);
-        requestChangeStatus({status : result.destination.droppableId})
-        .then((res) => {
-            console.log(res);
-            const sendData = {
-                status : result.destination.droppableId
-            }
-            stompClient.send(`/pub/status`, authorizationCookie, JSON.stringify(sendData))
-        })
-        .catch((error) => {
+        const sendData = {status : result.destination.droppableId}
+        if (stompClient.connected) {
+            stompClient.send(`/pub/status`, userIdCookie, JSON.stringify(sendData));
+        } else {
             setCurrentUser(originObj);
-            console.log(error);
-        })
+        }
     }
 
     return (
@@ -89,7 +83,7 @@ const DragDropComp = () => {
                         return (
                             <StSectionSize1 key = {sectionItem.dropId}>
                             <StSectionTitle>{sectionItem.title}</StSectionTitle>
-                            <StSectionDesc>{sectionItem.desc}</StSectionDesc>
+                            <StSectionDesc>{sectionItem.desc}({userList?.filter((val : any) => val.status === sectionItem.dropId).length + (currentUser?.status === sectionItem?.dropId ? 1 : 0)})</StSectionDesc>
                             <StSectionHr />
                             <Droppable droppableId = {sectionItem.dropId}>
                             {provided => (
@@ -124,7 +118,7 @@ const DragDropComp = () => {
                 </StSectionSize1Box>
                 <StSectionSize2>
                     <StSectionTitle>업무 종료 🚀</StSectionTitle>
-                    <StSectionDesc>업무를 종료한 멤버</StSectionDesc>
+                    <StSectionDesc>업무를 종료한 멤버({userList?.filter((val : any) => val.status === 'NotWorking').length + (currentUser?.status === 'NotWorking' ? 1 : 0)})</StSectionDesc>
                     <StSectionHr />
                     <Droppable droppableId = 'NotWorking'>
                     {provided => (
