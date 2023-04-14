@@ -8,29 +8,7 @@ import {
 } from '../../api/invitation';
 import Close from '../asset/icons/Close';
 import Lottie from 'react-lottie';
-// import animationData from '../../loadingData.json';
-// import animationData from '../../animationData.json';
 import animationData from '../../threeDot.json';
-
-// const defaultOptions:any| Readonly<any> = { 
-//   src:"https://assets10.lottiefiles.com/datafiles/nT4vnUFY9yay7QI/data.json",
-//   background:"transparent",
-//   animationData,
-//   speed:"1",
-//   loop:true,
-//   controls:true,
-//   autoplay:true,
-// };
-
-// const defaultOptions:any| Readonly<any> = { 
-//   src:"https://assets3.lottiefiles.com/packages/lf20_irzds0pd.json",
-//   background:"transparent",
-//   animationData,
-//   speed:"1",
-//   loop:true,
-//   controls:true,
-//   autoplay:true,
-// };
 
 const defaultOptions:any| Readonly<any> = { 
   src:"https://assets9.lottiefiles.com/packages/lf20_Ok9qdZVyii.json",
@@ -278,10 +256,8 @@ const StAlreadyInvited = styled.h3`
 `;
 const StInvitingMessage = styled.h3`
   position: absolute;
-  /* top: -12px;
-  right: 32px; */
   top: -14px;
-  right: -4px;
+  right: -6px;
 `;
 
 const StInviting = styled.div`
