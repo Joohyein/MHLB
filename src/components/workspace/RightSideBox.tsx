@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getCookie } from "../../cookie/cookies";
 import MembersBox from "./MembersBox";
-import { EventSourcePolyfill } from "event-source-polyfill";
 import MessageBox from "./MessageBox";
 import Chat from "./Chat";
 import { useLocation, useParams } from "react-router-dom";
@@ -30,7 +28,7 @@ interface SetUserDataType {
   toggle: boolean
 };
 
-function RightSideBox() {
+function RightSideBox({userListData} : {userListData : any}) {
   const params = useParams();
 
   const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', () => getPeopleList(Number(params.workspaceId)));
@@ -57,53 +55,10 @@ function RightSideBox() {
     if(peopleListData) setPeopleArr(peopleListData);
   }, [peopleListData, isLoadingPeopleData]);
 
-
-  const EventSource = EventSourcePolyfill;
-
-  useEffect(() => {
-    const eventSource = new EventSource(`${process.env.REACT_APP_BE_SERVER}/api/status/${params.workspaceId}/connect`,
-      {
-        headers: { Authorization: getCookie("authorization")},
-        withCredentials: true
-      }
-    );
-
-    eventSource.addEventListener('connect', (e: any) => { 
-      const { data : receiveData } = e;
-      // console.log('connect: ', receiveData);
-    });
-    eventSource.addEventListener('status changed', (e: any) => {
-      const { data : statusChangedData } = e;
-      // console.log("status changed data : ", statusChangedData);
-      setStatusArr(e);
-    });
-  }, []);
-
   useEffect(() => {
     if (location.state === null) return;
     setUserData({isChat : true, userId : location.state.userId, userName : location.state.userName, userImage : location.state.userImage, color : location.state.color, uuid : location.state.uuid, checkPersonInbox : false, toggle : true});
   }, [])
-
-  useEffect(() => {
-    if(peopleArr && statusArr) {
-      for(let i = 0; i < peopleArr.length; i++) {
-        if(peopleArr[i].userId === statusArr.userId) {
-          peopleArr[i].status = statusArr.status;
-          peopleArr[i].color = statusArr.color;
-        }
-      }
-    }
-    const currentUser = peopleArr[0];
-    const tempArr = peopleArr.slice(1);
-    tempArr.sort((a:MemberDataType, b:MemberDataType) => {
-      if(a.userName > b.userName) return 1;
-      if(a.userName < b.userName) return -1;
-    }).sort((a: MemberDataType, b: MemberDataType) => {
-      if(a.color > b.color) return 1;
-      if(a.color < b.color) return -1;
-    }).unshift(currentUser);
-    setMember(tempArr);
-  }, [peopleArr, statusArr]);
 
   const onClickMemberHandler = () => {
     setToggle(false);

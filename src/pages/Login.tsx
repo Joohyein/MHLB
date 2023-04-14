@@ -127,6 +127,7 @@ const StBackground = styled.div`
   justify-content: center;
   align-items: center;
   background-color : #f4f4f4;
+  padding-top : 64px;
 `
 
 const StContainer = styled.div`

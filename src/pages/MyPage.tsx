@@ -8,7 +8,6 @@ import MyWorkspace from "../components/mypage/MyWorkspace";
 import useOutsideClick from "../hooks/useOutsideClick";
 import LeaveWorkspaceModal from "../components/mypage/LeaveWorkspaceModal";
 import InvitedWorkspace from "../components/mypage/InvitedWorkspace";
-import NavBarWorkspace from "../components/common/NavBarWorkspace";
 import { useNavigate } from "react-router-dom";
 import useInput from "../hooks/useInput";
 import { GvUserJobLength, GvUserNameLength, GvUserStatusMessageLength } from "../global/LimitConfig";
@@ -126,7 +125,6 @@ const MyPage = () => {
 
   return (
     <Wrapper>
-      <NavBarWorkspace />
       <StContainer>
         <StMypageProfileDiv>
           <StArrowBackDiv onClick = {() => {navigate(-1)}}><ArrowBack size="30" fill="#303030" cursor="pointer" /></StArrowBackDiv>
@@ -193,7 +191,7 @@ const MyPage = () => {
           }
         </StMypageProfileDiv>
         <StMypageWorkspaceDiv>
-          <StSubTitleMgT>워크스페이스에 멤버 추가 및 삭제</StSubTitleMgT>
+          <StSubTitleMgT>내 워크스페이스 목록</StSubTitleMgT>
           { dataWorkspace?.inviteList.length ? <InvitedWorkspace invitedWorkspaceData={dataWorkspace?.inviteList} /> : null }
           <MyWorkspace setLeaveModal={(v: boolean) => setLeaveModal(v)} dataWorkspace={dataWorkspace?.workspaceList} setWorkspaceId={(v:number) => setWorkspaceId(v)} />
         </StMypageWorkspaceDiv>

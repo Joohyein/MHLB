@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { navBarProfileImage } from "../../api/general";
 import useLogout from "../../hooks/useLogout";
 import useOutsideClick from "../../hooks/useOutsideClick"
-import { setCookie } from "../../cookie/cookies";
+import { removeCookie, setCookie } from "../../cookie/cookies";
 
 const NavBarWorkspace = () => {
 
@@ -20,6 +20,7 @@ const NavBarWorkspace = () => {
     useEffect(() => {
         navBarProfileImage()
         .then((res) => {
+            console.log(res.data.userId);
             setCookie('userId', res.data.userId);
             setUserImg(res.data.userImage);
         })
@@ -39,6 +40,7 @@ const NavBarWorkspace = () => {
 
     const onClickLogout = () => {
         logout();
+        removeCookie('userId');
         navigate('/');
         window.location.reload();
     }
@@ -66,7 +68,7 @@ export default NavBarWorkspace;
 
 const StNavBar = styled.div`
     width : 100%;
-    height : 4rem;
+    height : 64px;
     background-color : white;
     display : flex;
     justify-content : space-between;

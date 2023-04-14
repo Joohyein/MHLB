@@ -22,7 +22,7 @@ export default NavBarLanding;
 
 const StNavBar = styled.div`
     width : 100%;
-    height : 4rem;
+    height : 64px;
     background-color : white;
     display : flex;
     justify-content : space-between;
