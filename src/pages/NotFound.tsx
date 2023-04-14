@@ -28,7 +28,7 @@ const StContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const StTitle = styled.h3`
+const StTitle = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,7 +36,7 @@ const StTitle = styled.h3`
     font-size: 212px;
   }
 `;
-const StDesc = styled.h3`
+const StDesc = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
