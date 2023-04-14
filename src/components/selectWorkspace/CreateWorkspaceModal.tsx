@@ -19,6 +19,8 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
   const [workspaceDescInputRef, workspaceDescInputRefFocus] = useInputRefFocus();
 
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
     if(e.target.files) {
       if(e.target.files[0].size >= 1024 ** 2 * 10){
         alert(`10MB 이하 파일만 등록할 수 있습니다. 
@@ -57,9 +59,7 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
 
     createWorkspace(formData)
     .then((res) => {
-      console.log(res);
-      window.location.reload();
-      // navigate(`/workspace`);
+      navigate(`/workspace/${res.data.workspaceId}`);
     })
     .catch((error) => console.log("error :", error))
 
@@ -73,10 +73,11 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
   return (
     <StWrap>
       <StModalContainer ref={modalRef}>
-        <StModalTitle>워크스페이스 생성<Close size="36" fill="#363636" onClick={() => setCreateModal(false)} cursor='pointer' /></StModalTitle>
+        <StLeaveBtn><Close size="36" fill="#303030" onClick={() => setCreateModal(false)} cursor='pointer' /></StLeaveBtn>
+        <StModalTitle>워크스페이스 생성</StModalTitle>
         <StInputLabel isFocus = {false}>워크스페이스 이미지</StInputLabel>
         <StImgUploadBox>
-          <StImage src={image} onClick={onClickImgUpload} />
+          <StImage img = {image === '' ? 'https://mhlbbucket.s3.ap-northeast-2.amazonaws.com/default/03f54651-8d39-4cc1-86b4-292040a71e12-DefaultWorkspaceImage.png' : image} onClick={onClickImgUpload} />
           <StImageInput type="file" name="creageWorkspaceImg" ref={imgInputRef} onChange={onImgChange} accept='image/png, image/jpg, image/jpeg, image/gif' />
         </StImgUploadBox>
         <StInputLabel htmlFor = 'title' isFocus = {workspaceTitleInputRefFocus}>워크스페이스 이름*</StInputLabel>
@@ -93,7 +94,7 @@ export default CreateWorkspaceModal;
 
 const StWrap = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.1);
   z-index : 5;
@@ -102,6 +103,12 @@ const StWrap = styled.div`
   flex-direction : column;
   align-items: center;
 `;
+
+const StLeaveBtn = styled.div`
+  position : absolute;
+  top : 32px;
+  right : 32px;
+`
 
 const StModalContainer = styled.div`
   display : flex;
@@ -136,10 +143,13 @@ const StImgUploadBox = styled.div`
   justify-content : center;
 `;
 
-const StImage = styled.img`
+const StImage = styled.div`
   width: 128px;
   height: 128px;
   border-radius: 50%;
+  background-image : url('${(props : {img : string | null}) => props.img}');
+  background-size : cover;
+  background-position : center;
 `;
 
 const StImageInput = styled.input`
@@ -180,6 +190,7 @@ const StDescInput = styled.textarea`
   padding : 12px 16px;
   box-sizing : border-box;
   font-weight : 400;
+  line-height : 1.5rem;
   transition : 200ms;
   &:placeholder {
     color : #d0d0d0;

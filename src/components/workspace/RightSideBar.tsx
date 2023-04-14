@@ -5,7 +5,7 @@ import OpenMenu from "../asset/icons/OpenMenu";
 import RightSideBox from "./RightSideBox";
 import { useLocation } from "react-router-dom";
 
-const RightSideBar = () => {
+const RightSideBar = ({userListData} : {userListData : any}) => {
 
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -26,7 +26,7 @@ const RightSideBar = () => {
                 {menuOpen ? <Close size = {'36'} fill = {'#303030'} onClick = {() => {}} cursor = {'pointer'} /> : <OpenMenu size = {'36'} fill = {'#303030'}/>}
             </StOpener>
             {/* RightSideBox implement not yet */}
-            <RightSideBox />
+            <RightSideBox userListData = {userListData} />
         </StRightSideContainer>
     );
 };

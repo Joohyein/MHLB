@@ -12,24 +12,30 @@ import SelectWorkspace from "../pages/SelectWorkspace";
 import Workspace from "../pages/Workspace";
 import WorkspaceConfig from "../pages/WorkspaceConfig";
 import GoogleAuth from "../pages/GoogleAuth";
+import WebSocketConnection from "../pages/WebSocketConnection";
+import Unauthenticated from "../pages/Unauthenticated";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/select-workspace" element={<SelectWorkspace />} />
-        <Route path="/my-page" element={<MyPage />} />
-        <Route path="/workspace/:workspaceId" element={<Workspace />} />
-        <Route path="/workspace-config/:workspaceId" element={<WorkspaceConfig />} />
-        <Route path="/celebrate-sign-up" element={<CelebrateSignUp />} />
-        <Route path="/reset-password-send-email" element={<ResetPasswordSendEmail />} />
-        <Route path="/reset-password-sent" element={<ResetPasswordSent />} />
-        <Route path="/reset-password/:uuid" element={<ResetPassword />} />
-        <Route path="/reset-password-succeed" element={<ResetPasswordSucceed />} />
-        <Route path="/google-auth" element={<GoogleAuth />} />
+        <Route element={<Unauthenticated/>}>
+          <Route path="/" element={<Landing />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/celebrate-sign-up" element={<CelebrateSignUp />} />
+          <Route path="/reset-password-send-email" element={<ResetPasswordSendEmail />} />
+          <Route path="/reset-password-sent" element={<ResetPasswordSent />} />
+          <Route path="/reset-password/:uuid" element={<ResetPassword />} />
+          <Route path="/reset-password-succeed" element={<ResetPasswordSucceed />} />
+        </Route>
+        <Route element={<WebSocketConnection/>}>
+          <Route path="/select-workspace" element={<SelectWorkspace />} />
+          <Route path="/my-page" element={<MyPage />} />
+          <Route path="/workspace/:workspaceId" element={<Workspace />} />
+          <Route path="/workspace-config/:workspaceId" element={<WorkspaceConfig />} />
+        </Route>
+          <Route path="/google-auth" element={<GoogleAuth />} />
       </Routes>
     </BrowserRouter>
   );
