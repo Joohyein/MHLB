@@ -14,6 +14,7 @@ import WorkspaceConfig from "../pages/WorkspaceConfig";
 import GoogleAuth from "../pages/GoogleAuth";
 import WebSocketConnection from "../pages/WebSocketConnection";
 import Unauthenticated from "../pages/Unauthenticated";
+import NotFound from "../pages/NotFound";
 
 const Router = () => {
   return (
@@ -36,6 +37,20 @@ const Router = () => {
           <Route path="/workspace-config/:workspaceId" element={<WorkspaceConfig />} />
         </Route>
           <Route path="/google-auth" element={<GoogleAuth />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/select-workspace" element={<SelectWorkspace />} />
+        <Route path="/my-page" element={<MyPage />} />
+        <Route path="/workspace/:workspaceId" element={<Workspace />} />
+        <Route path="/workspace-config/:workspaceId" element={<WorkspaceConfig />} />
+        <Route path="/celebrate-sign-up" element={<CelebrateSignUp />} />
+        <Route path="/reset-password-send-email" element={<ResetPasswordSendEmail />} />
+        <Route path="/reset-password-sent" element={<ResetPasswordSent />} />
+        <Route path="/reset-password/:uuid" element={<ResetPassword />} />
+        <Route path="/reset-password-succeed" element={<ResetPasswordSucceed />} />
+        <Route path="/google-auth" element={<GoogleAuth />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
