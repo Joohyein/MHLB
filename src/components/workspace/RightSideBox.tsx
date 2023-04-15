@@ -26,10 +26,8 @@ interface SetUserDataType {
   toggle: boolean
 };
 
-function RightSideBox({userListData} : {userListData : any}) {
+function RightSideBox({userListData, setMouseHoverSection, chatListProps, setChatListProps} : {userListData : any, setMouseHoverSection : any, chatListProps : any, setChatListProps : any}) {
   const params = useParams();
-
-  // const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', () => getPeopleList(Number(params.workspaceId)));
 
   const [toggle, setToggle] = useState(false);
   const [member, setMember] = useState<any>([]);
@@ -71,7 +69,7 @@ function RightSideBox({userListData} : {userListData : any}) {
     setMember(peopleArr);
   }, [peopleArr]);
 
-  const peopleData = ({isChat, userId, userName, toggle, checkPersonInbox, userJob, userImage, color}:{search:string, isChat:boolean, userId:number|undefined,userName:string,toggle:boolean,checkPersonInbox:boolean,userJob:string,userImage:string,color:number|undefined}) => {
+  const peopleData = ({isChat, userId, userName, toggle, checkPersonInbox, userJob, userImage}:{search:string, isChat:boolean, userId:number|undefined,userName:string,toggle:boolean,checkPersonInbox:boolean,userJob:string,userImage:string}) => {
     setIsChat(isChat)
     setUserId(userId)
     setToggle(toggle)
@@ -86,13 +84,12 @@ function RightSideBox({userListData} : {userListData : any}) {
     setMember(peopleArr.filter((item: MemberDataType)=>item?.userName.toLowerCase().includes(search?.toLowerCase())));
   };
 
-  const setUserData = ({isChat, userId, userName, userImage, color, uuid, checkPersonInbox, toggle}:SetUserDataType) => {
+  const setUserData = ({isChat, userId, userName, userImage, uuid, checkPersonInbox, toggle}:SetUserDataType) => {
     setIsChat(isChat);
     setUserId(userId);
     setUserName(userName);
     setUserImage(userImage);
     setUuid(uuid);
-    setColor(color);
     setToggle(toggle);
     setCheckPersonInbox(checkPersonInbox);
   };
@@ -122,29 +119,15 @@ function RightSideBox({userListData} : {userListData : any}) {
         isChat
           ?
           <StChatBox>
-            <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} color={Number(color)} workspaceId={Number(params.workspaceId)} setToggle={v=>setToggle(v)} setIsChat={v=>setIsChat(v)} />
+            <Chat userId={userId} uuid={uuid} checkPersonInbox={checkPersonInbox} userName={userName} userJob={userJob} userImage={userImage} workspaceId={Number(params.workspaceId)} setChatListProps = {setChatListProps} setToggle={v=>setToggle(v)} setIsChat={v=>setIsChat(v)} />
           </StChatBox>
           :
-          <>
-          {
-            toggle 
-              ?
-              <StMessageListBox>
-                <MessageBox 
-                  workspaceId={Number(params.workspaceId)}
-                  setUserData={setUserData}
-                />
-              </StMessageListBox>
-              :
-              <StPeopleListBox>
-                <MembersBox 
-                  member={member}
-                  searchMember={searchMember}
-                  peopleData={peopleData}
-                />
-              </StPeopleListBox>
+          <StListBox>
+          {toggle 
+            ? <MessageBox setUserData={setUserData} chatListProps = {chatListProps}/>
+            : <MembersBox member={member} searchMember={searchMember} peopleData={peopleData} setMouseHoverSection = {setMouseHoverSection} />
           }
-          </>
+          </StListBox>
       }
     </StContainer>
   )
@@ -187,16 +170,7 @@ const StInbox = styled.h3`
   cursor: pointer;
 `;
 
-const StPeopleListBox = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  box-sizing: border-box;
-  justify-content: center;
-  align-items: center;
-`;
-
-const StMessageListBox = styled.div`
+const StListBox = styled.div`
   width: 100%;
   height: 100%;
   display: flex;

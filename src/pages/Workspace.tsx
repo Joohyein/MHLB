@@ -23,6 +23,8 @@ const Workspace = () => {
     const [workspaceInfomation, setWorkspaceInfomation] = useState<WorkspaceInformationType | undefined>();
     const [userListData, setUserListData] = useState([]);
     const [userRole, setUserRole] = useState<string>('');
+    const [mouseHoverSection, setMouseHoverSection] = useState();
+    const [chatListProps, setChatListProps] = useState();
 
     useEffect(() => {
         getMainWorkspaceInfo({workspaceId : String(params.workspaceId)})
@@ -34,7 +36,7 @@ const Workspace = () => {
 
     return (
         <Wrapper>
-            <LeftSideBar />
+            <LeftSideBar setChatListProps = {setChatListProps}/>
             <StContainer>
                 <StMainContent>
                     <StWorkspaceInfoDiv>
@@ -45,10 +47,10 @@ const Workspace = () => {
                         </StTextInfoDiv>
                         {(userRole === 'ADMIN' || userRole === 'MANAGER') ? <StConfigPageLinkButton onClick = {() => {navigate(`/workspace-config/${workspaceInfomation?.workspaceId}`)}}>관리자 페이지로 이동</StConfigPageLinkButton> : null}
                     </StWorkspaceInfoDiv>
-                    <DragDropComp setUserListData = {setUserListData}/>
+                    <DragDropComp setUserListData = {setUserListData} mouseHoverSection = {mouseHoverSection} />
                 </StMainContent>
             </StContainer>
-            <RightSideBar userListData = {userListData} />
+            <RightSideBar userListData = {userListData} setMouseHoverSection = {setMouseHoverSection} chatListProps = {chatListProps} setChatListProps = {setChatListProps}/>
         </Wrapper>
     );
 };

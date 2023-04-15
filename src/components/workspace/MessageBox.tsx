@@ -1,47 +1,32 @@
 import styled from "styled-components";
-import { useQuery } from "react-query";
-import { getChatList } from "../../api/rightSide";
 
 interface ChatListType {
   uuid: string,
   userId: number,
   userImage: string,
   userName: string,
-  color: number,
   lastChat: string,
   message: string,
-  unreadMessages: number
-};
-interface SetUSerDataType {
-  isChat: boolean,
-  userId: number,
-  userName: string,
-  uuid: string,
-  userImage: string,
-  color: number,
-  checkPersonInbox: boolean,
-  toggle: boolean
+  unreadMessages: number,
+  unreadMessage : boolean
 };
 
-function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:(v:SetUSerDataType)=>void}) {
-  
-  const { data: chatListData } = useQuery('chatList', () => getChatList(workspaceId))
+function MessageBox({setUserData, chatListProps}:{setUserData:any, chatListProps : any}) {
 
-  const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string, color:number) => {
-    console.log("username:", userName);
-    setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, color: color, checkPersonInbox:false, toggle:true})
+  const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string) => {
+    setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, checkPersonInbox:false, toggle:true})
   };
   return (
     <StContainer>
       <StInputBox>
-        <StInput name="search" placeholder="이름으로 검색" />
+        <StInput name="search" placeholder="이름으로 검색(추후 개발)" />
       </StInputBox>
       <StChatListBox>
         {
-          chatListData?.map((item:ChatListType) => {
+          chatListProps?.map((item:ChatListType) => {
             return (
-            chatListData.length ?
-              <StChatRoom key={item.userId} onClick={()=>onClickChatRoomHandler(item.uuid, item.userId, item.userName, item.userImage, item.color)}>
+            chatListProps.length ?
+              <StChatRoom key={item.userId} onClick={()=>onClickChatRoomHandler(item.uuid, item.userId, item.userName, item.userImage)}>
                 <StUserDatabox>
                 <StUserImage src={item.userImage} />
                 <StUserNameMsg>
@@ -62,14 +47,13 @@ function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:
 export default MessageBox;
 
 const StContainer = styled.div`
-  padding: 0px 18px 18px 16px;
   box-sizing: border-box;
   width: 100%;
-  height: 92%;
+  height: 100%;
 `;
 
 const StInputBox = styled.div`
-  padding: 0px 24px 12px 24px;
+  margin-top : 16px;
   width: 100%;
   box-sizing: border-box;
 `;
