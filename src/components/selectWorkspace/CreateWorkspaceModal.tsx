@@ -66,6 +66,12 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
     setCreateModal(false);
   };
 
+  const onEnterKeyDownTitle = (e : React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') {
+      workspaceDescInputRef.current.focus();
+    }
+  }
+
   const onClickImgUpload = () => {
     imgInputRef.current.click();
   };
@@ -77,11 +83,12 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
         <StModalTitle>워크스페이스 생성</StModalTitle>
         <StInputLabel isFocus = {false}>워크스페이스 이미지</StInputLabel>
         <StImgUploadBox>
-          <StImage img = {image === '' ? 'https://mhlbbucket.s3.ap-northeast-2.amazonaws.com/default/03f54651-8d39-4cc1-86b4-292040a71e12-DefaultWorkspaceImage.png' : image} onClick={onClickImgUpload} />
+          <StMypageProfileEdit onClick={onClickImgUpload}><StMypageProfileEditText>이미지 선택</StMypageProfileEditText></StMypageProfileEdit>
+          <StImage img = {image === '' ? 'https://mhlbbucket.s3.ap-northeast-2.amazonaws.com/default/03f54651-8d39-4cc1-86b4-292040a71e12-DefaultWorkspaceImage.png' : image} />
           <StImageInput type="file" name="creageWorkspaceImg" ref={imgInputRef} onChange={onImgChange} accept='image/png, image/jpg, image/jpeg, image/gif' />
         </StImgUploadBox>
         <StInputLabel htmlFor = 'title' isFocus = {workspaceTitleInputRefFocus}>워크스페이스 이름*</StInputLabel>
-        <StTitleInput id = 'title' type="text" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} maxLength={GvWorkspaceNameLength} placeholder = 'Workspace Title' ref = {workspaceTitleInputRef}/>
+        <StTitleInput id = 'title' type="text" value={name} onKeyDown = {onEnterKeyDownTitle} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} maxLength={GvWorkspaceNameLength} placeholder = 'Workspace Title' ref = {workspaceTitleInputRef}/>
         <StInputLabel htmlFor = 'desc' isFocus = {workspaceDescInputRefFocus}>워크스페이스 소개*</StInputLabel>
         <StDescInput id = 'desc' value={desc} onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => setDesc(e.target.value)} maxLength={GvWorkspaceDescLength} placeholder = 'Description of Workspace' ref = {workspaceDescInputRef}/>
         <StCreateBtn onClick={onClickCreateHandler}>워크스페이스 생성</StCreateBtn>
@@ -151,6 +158,37 @@ const StImage = styled.div`
   background-size : cover;
   background-position : center;
 `;
+
+const StMypageProfileEdit = styled.div`
+  width : 128px;
+  height : 128px;
+  border-radius : 256px;
+  position : absolute;
+  background : linear-gradient(180deg, rgba(217, 217, 217, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
+  opacity : 0%;
+  transition : 200ms;
+  color : transparent;
+  display : flex;
+  justify-content : center;
+  align-items: flex-end;
+  &:hover {
+    opacity : 100%;
+    cursor : pointer;
+  }
+`
+
+const StMypageProfileEditText = styled.div`
+  font-size : 0.75rem;
+  font-weight : 700;
+  color : white;
+  transition : 200ms;
+  opacity : 100%;
+  margin-bottom : 1rem;
+  &:hover {
+    opacity : 100%;
+    cursor : pointer;
+  }
+`
 
 const StImageInput = styled.input`
   display: none;

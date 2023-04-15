@@ -2,17 +2,25 @@ import styled from "styled-components";
 import { useState } from "react";
 import { MemberDataType } from "./RightSideBox";
 
-function PersonBox({member, peopleData, isCheckMe}: {member: MemberDataType, peopleData:any, isCheckMe:number}) {
+function PersonBox({member, peopleData, isCheckMe, setMouseHoverSection}: {member: MemberDataType, peopleData:any, isCheckMe:number, setMouseHoverSection : any}) {
   const [isHovering, setIsHovering] = useState(false);
   const onClickPersonHandler = (userId:number, userName:string, userImage:string, userJob:string, color:number) => {
     if(isCheckMe === userId) return;
     peopleData({isChat:true, userId, userName, toggle:true, checkPersonInbox:true, userJob, userImage, color})
   };
+
   const onMouseOverHandler = (status:string) => {
     setIsHovering(true);
+    setMouseHoverSection(status);
   };
+
+  const onMouseOverOutHandler = (status:string) => {
+    setIsHovering(false)
+    setMouseHoverSection(null)
+  };
+  
   return (
-    <StMembersBox onMouseOver={() => onMouseOverHandler(member?.status)} onMouseOut={() => setIsHovering(false)} key={member?.userId} onClick={()=>onClickPersonHandler(member?.userId, member?.userName, member?.userImage, member?.userJob, member?.color)} >
+    <StMembersBox onMouseOver={() => onMouseOverHandler(member?.status)} onMouseOut={() => onMouseOverOutHandler(member?.status)} key={member?.userId} onClick={()=>onClickPersonHandler(member?.userId, member?.userName, member?.userImage, member?.userJob, member?.color)} >
       <StDivideBox>
         <StProfileImg src={member?.userImage} />
         <StNameRoleBox>
@@ -20,8 +28,7 @@ function PersonBox({member, peopleData, isCheckMe}: {member: MemberDataType, peo
           <StJob>{member?.userJob}</StJob>
         </StNameRoleBox>
       </StDivideBox>
-      <StStatus bgColor={member?.color}></StStatus>        
-      {isHovering && <StHovering>{member?.status}</StHovering>}
+      <StStatus bgColor={member?.color}></StStatus>
     </StMembersBox>
   )
 }
@@ -74,22 +81,7 @@ const StJob = styled.h3`
 const StStatus = styled.div<{bgColor:number}>`
   width: 8px;
   height: 8px;
+  transition : 200ms;
   background-color: ${props => props.bgColor === 0 ? '#34C759' : props.bgColor === 1 ? '#FFCC01' : props.bgColor === 2 ? '#FF3B31' : '#7F7F7F'};
   border-radius: 50%;
-`;
-
-const StHovering = styled.div`
-  display: flex;
-  width: 163px;
-  height: 30px;
-  font-size: 12px;
-  color: #ffffff;
-  opacity: 0.8;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  right: 264px;
-  background-color: #303030;
-  border-radius: 4px;
-  z-index: 99;
 `;

@@ -5,7 +5,7 @@ import OpenMenu from "../asset/icons/OpenMenu";
 import RightSideBox from "./RightSideBox";
 import { useLocation } from "react-router-dom";
 
-const RightSideBar = ({userListData} : {userListData : any}) => {
+const RightSideBar = ({userListData, setMouseHoverSection, chatListProps, setChatListProps} : {userListData : any, setMouseHoverSection : any, chatListProps : any, setChatListProps : any}) => {
 
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -26,7 +26,7 @@ const RightSideBar = ({userListData} : {userListData : any}) => {
                 {menuOpen ? <Close size = {'36'} fill = {'#303030'} onClick = {() => {}} cursor = {'pointer'} /> : <OpenMenu size = {'36'} fill = {'#303030'}/>}
             </StOpener>
             {/* RightSideBox implement not yet */}
-            <RightSideBox userListData = {userListData} />
+            <RightSideBox userListData = {userListData} setMouseHoverSection = {setMouseHoverSection} chatListProps = {chatListProps} setChatListProps = {setChatListProps}/>
         </StRightSideContainer>
     );
 };

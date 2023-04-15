@@ -30,7 +30,7 @@ const SelectWorkspace = () => {
             connection.unsubscribe({destination: `/sub/unread-message/${userId}`});
         }
     }
-}, [data, stompClient]);
+  }, [data, stompClient]);
 
   return (
     <Wrapper>
@@ -45,6 +45,7 @@ const SelectWorkspace = () => {
           </StSelectWorkspaceInfoDiv>
           <StWorkspaceContainer>
             {data?.map((workspaceData : any) => <MyWorkspaceList key = {workspaceData.workspaceId} workspaceData={workspaceData} />)}
+            {data?.length === 0 ? <StWorkspacePlaceholder>현재 속한 워크스페이스가 없습니다.</StWorkspacePlaceholder> : null}
           </StWorkspaceContainer>
         </StMainContent>
       </StContainer>
@@ -152,3 +153,15 @@ const StWorkspaceContainer = styled.div`
   gap: 32px 16px;
   padding-bottom : 64px;
 `;
+
+const StWorkspacePlaceholder = styled.div`
+    width : 100%;
+    height : calc(100vh - 284px);
+    display : flex;
+    flex-direction : column;
+    justify-content : center;
+    align-items : center;
+    font-size : 2rem;
+    font-weight : 900;
+    color : #e1e1e1;
+`
