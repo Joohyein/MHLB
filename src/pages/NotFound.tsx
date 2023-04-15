@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 function NotFound() {
+
+  const navigate = useNavigate();
+
   return (
     <StContainer>
       <StTitle>
@@ -13,7 +17,7 @@ function NotFound() {
         <h3>요청하신 페이지의 주소가 변경, 삭제되어 찾을 수 없습니다.</h3>
         <h3>입력하신 페이지의 주소가 정확한지 다시 한 번 확인해 주세요.</h3>
       </StDesc>
-      <StHomeBtn>메인 페이지로 이동</StHomeBtn>
+      <StHomeBtn onClick = {() => {navigate(`/select-workspace`)}}>메인 페이지로 이동</StHomeBtn>
     </StContainer>
   )
 }

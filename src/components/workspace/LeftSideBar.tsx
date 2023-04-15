@@ -76,6 +76,7 @@ const LeftSideBar = () => {
                                 </Draggable>
                             )
                         })}
+                        {provided.placeholder}
                     </StLeftSideContainer>
                 )}
             </Droppable>

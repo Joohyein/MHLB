@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
 import styled from "styled-components";
 import MembersBox from "./MembersBox";
 import MessageBox from "./MessageBox";
 import Chat from "./Chat";
 import { useLocation, useParams } from "react-router-dom";
-import { getPeopleList } from "../../api/workspace";
 
 export interface MemberDataType {
   userId: number,
@@ -31,12 +29,11 @@ interface SetUserDataType {
 function RightSideBox({userListData} : {userListData : any}) {
   const params = useParams();
 
-  const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', () => getPeopleList(Number(params.workspaceId)));
+  // const { isLoading: isLoadingPeopleData, data : peopleListData } = useQuery('peopleList', () => getPeopleList(Number(params.workspaceId)));
 
   const [toggle, setToggle] = useState(false);
   const [member, setMember] = useState<any>([]);
 
-  const [statusArr, setStatusArr] = useState<any>();
   const [peopleArr, setPeopleArr] = useState<any>([]);
 
   const [isChat, setIsChat] = useState(false); // 사람 클릭시, 채팅방 클릭시 채팅방으로 이동
@@ -52,8 +49,8 @@ function RightSideBox({userListData} : {userListData : any}) {
   const location = useLocation();
 
   useEffect(() => {
-    if(peopleListData) setPeopleArr(peopleListData);
-  }, [peopleListData, isLoadingPeopleData]);
+    if(userListData) setPeopleArr(userListData);
+  }, [userListData]);
 
   useEffect(() => {
     if (location.state === null) return;
@@ -88,6 +85,7 @@ function RightSideBox({userListData} : {userListData : any}) {
   const searchMember = (search : string) => {
     setMember(peopleArr.filter((item: MemberDataType)=>item?.userName.toLowerCase().includes(search?.toLowerCase())));
   };
+
   const setUserData = ({isChat, userId, userName, userImage, color, uuid, checkPersonInbox, toggle}:SetUserDataType) => {
     setIsChat(isChat);
     setUserId(userId);

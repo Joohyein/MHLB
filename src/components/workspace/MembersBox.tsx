@@ -50,9 +50,12 @@ function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[
       <StPersonContainer ref={scrollRef}>
         {
           member?.map((item: MemberDataType) => {
-            return(
-              <PersonBox key={item.userId} member={item} peopleData={peopleData} isCheckMe={member[0].userId} />
-            )
+            if (item) {
+              return(
+                <PersonBox key={item?.userId} member={item} peopleData={peopleData} isCheckMe={member[0].userId} />
+              )
+            }
+            return null;
           })
         }
       </StPersonContainer>

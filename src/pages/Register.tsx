@@ -37,7 +37,7 @@ const Register = () => {
 
   useEffect(() => {
     if (allowedEmailValidation) {
-      if (isEmailInput) {
+      if (isEmailInput && (/[a-z0-9]+@[a-z]+\.[a-z]{2,3}|\.[a-z]{2,3}\.[a-z]{2,3}/g).test(emailValue)) {
         duplicateEmailCheck({email : duplicateEmail})
         .then((res) => {
           setDuplicateEmailValidation(false);
@@ -71,7 +71,7 @@ const Register = () => {
   const [nameValidation, setNameValidation] = useState(false);
 
   useEffect(() => {
-    if (!(passwordValue.length >= 8 && passwordValue.length <= 20 && passwordValue.search(/[0-9]/g) >= 0 && passwordValue.search(/[a-z]/g) >= 0 && passwordValue.search(/[A-Z]/g) >= 0) && isPwWriten) {
+    if (!(passwordValue.length >= 8 && passwordValue.length <= 20 && passwordValue.search(/[0-9]/g) >= 0 && passwordValue.search(/[a-z]/g) >= 0 && passwordValue.search(/[A-Z]/g) >= 0 && (/^[a-zA-Z0-9]*$/).test(passwordValue)) && isPwWriten) {
       setPasswordFormValidation(false);
     } else {
       setPasswordFormValidation(true);
@@ -119,7 +119,7 @@ const Register = () => {
       setEmptyValidation(true);
     } else if (!emailValue) {
       setEmailValidation(true);
-    } else if (!(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}|\.[a-z]{2,3}\.[a-z]{2,3}/g).test(emailValue)) {
+    } else if (!(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}|\.[a-z]{2,3}\.[a-z]{2,3}/g).test(emailValue) || emailValue.includes(' ')) {
       setEmailFormValidation(true);
     } else if (!passwordValue) {
       setPasswordValidation(true);
