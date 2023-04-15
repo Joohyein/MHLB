@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { leaveWorkspace } from '../../api/myPage';
 import Close from '../asset/icons/Close';
+import { logEvent } from '../../util/amplitude';
 
 interface DataType  {
   workspaceDesc: string,
@@ -17,10 +18,10 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspac
   const queryClient = useQueryClient();
 
   const mutation = useMutation(leaveWorkspace, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries('workspace');
-      console.log("leave workspace onSuccess response: ", response);
       setLeaveModal(false);
+      logEvent('Leave workspace Success', {from: 'My page'});
     },
     onError: (error) => console.log("error: ", error)
   });
@@ -63,9 +64,9 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspac
           {
             withDrawBtn
               ?
-              <StLeaveBtnTrue onClick={onClickLeaveWorkspaceHandler}>워크스페이스 영구적으로 삭제하기</StLeaveBtnTrue>
+              <StLeaveBtnTrue onClick={onClickLeaveWorkspaceHandler}>워크스페이스 영구적으로 탈퇴하기</StLeaveBtnTrue>
               :
-              <StLeaveBtn>워크스페이스 영구적으로 삭제하기</StLeaveBtn>
+              <StLeaveBtn>워크스페이스 영구적으로 탈퇴하기</StLeaveBtn>
           }
         </StInputBox>
       </StModalContainer>

@@ -9,6 +9,7 @@ import {
 import Close from '../asset/icons/Close';
 import Lottie from 'react-lottie';
 import animationData from '../../threeDot.json';
+import { logEvent } from '../../util/amplitude';
 
 const defaultOptions:any| Readonly<any> = { 
   src:"https://assets9.lottiefiles.com/packages/lf20_Ok9qdZVyii.json",
@@ -59,6 +60,7 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: Reac
       return;
     };
     mutationInviting.mutate({workspaceId, email});
+    logEvent('Invite member button', {from: 'Workspace config page Add member modal'});
   };
 
   useEffect(() => {
@@ -68,6 +70,7 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: Reac
 
   const onClickCancelHandler = (inviteId: number) => {
     mutationCancel.mutate({ workspaceId, inviteId });
+    logEvent('Cancel Invite member', {from: 'Worksapce config page Add member modal'});
   };
 
   const onKeyPressInvite = (e: React.KeyboardEvent<HTMLInputElement>) => {

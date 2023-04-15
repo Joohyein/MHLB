@@ -4,6 +4,7 @@ import Close from "../asset/icons/Close";
 import OpenMenu from "../asset/icons/OpenMenu";
 import RightSideBox from "./RightSideBox";
 import { useLocation } from "react-router-dom";
+import { logEvent } from "../../util/amplitude";
 
 const RightSideBar = ({userListData, setMouseHoverSection, chatListProps, setChatListProps} : {userListData : any, setMouseHoverSection : any, chatListProps : any, setChatListProps : any}) => {
 
@@ -23,7 +24,7 @@ const RightSideBar = ({userListData, setMouseHoverSection, chatListProps, setCha
     return (
         <StRightSideContainer open = {menuOpen}>
             <StOpener onClick = {() => {onMenuOpenToggleHandler()}}>
-                {menuOpen ? <Close size = {'36'} fill = {'#303030'} onClick = {() => {}} cursor = {'pointer'} /> : <OpenMenu size = {'36'} fill = {'#303030'}/>}
+                {menuOpen ? <Close size = {'36'} fill = {'#303030'} onClick = {() => {logEvent('Close Right side bar button', {from:'Main page Right side bar'})}} cursor = {'pointer'} /> : <OpenMenu size = {'36'} onClick={()=>{logEvent('Open right side bar button', {from: 'Main page right side bar'})}} fill = {'#303030'}/>}
             </StOpener>
             {/* RightSideBox implement not yet */}
             <RightSideBox userListData = {userListData} setMouseHoverSection = {setMouseHoverSection} chatListProps = {chatListProps} setChatListProps = {setChatListProps}/>
