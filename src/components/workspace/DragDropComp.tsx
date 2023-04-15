@@ -89,7 +89,7 @@ const DragDropComp = ({setUserListData} : {setUserListData : any}) => {
     const onDragEnd = (result : any) => {
         if (result.destination === null || result.source.droppableId === result.destination.droppableId) return;
         const originObj = {...currentUser, status : result.source.droppableId};
-        const tempObj = {...currentUser, status : result.destination.droppableId, color : (sectionContents.filter((val : any) => val.dropId === result.destination.droppableId)[0].color)};
+        const tempObj = {...currentUser, status : result.destination.droppableId, color : ([...sectionContents, {title : '업무 종료 🚀', name : '업무 종료', desc : '현재 업무 종료 중인 멤버', dropId : 'NotWorking', color : 3}].filter((val : any) => val.dropId === result.destination.droppableId)[0].color)};
         setCurrentUser(tempObj);
         const sendData = {status : result.destination.droppableId}
         if (stompClient.connected) {
