@@ -100,17 +100,10 @@ function RightSideBox({userListData, setMouseHoverSection, chatListProps, setCha
 
   // 배경 스크롤 막기
   const onMouseOverRightSideBox = () => {
-    document.body.style.cssText = `
-      position: fixed;
-      top: -${window.scrollY}px;
-      width: 100%;
-      overflow-y: scroll;
-    `;
+    document.body.style.overflow = 'hidden';
   };
   const onMouseOutRightSideBox = () => {
-    const scrollY = document.body.style.top;
-    document.body.style.cssText = '';
-    window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+    document.body.style.overflow = 'auto';
   };
  
   return (
