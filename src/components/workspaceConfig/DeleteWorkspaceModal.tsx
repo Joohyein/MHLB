@@ -34,6 +34,13 @@ function DeleteWorkspaceModal({deleteModalRef, workspaceInfoData, setWorkspaceDe
         })
     };
 
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = 'auto';
+        }
+    });
+
     return (
     <StWrap>
         <StModalContainer ref={deleteModalRef}>
@@ -43,12 +50,10 @@ function DeleteWorkspaceModal({deleteModalRef, workspaceInfoData, setWorkspaceDe
             <StSub>
                 <h3>삭제를 진행하신다면 모든 정보를 잃습니다.</h3>
                 <h3>그리고 복구할 수 없습니다.</h3>
-                <br></br>
-                <h3>그래도 삭제를 진행하고 싶다면</h3>
+                <h3>그래도 워크스페이스를 영구적으로 삭제하고 싶으시다면</h3>
             </StSub>
             <StSubCheck>
-                <h3>다음 빈칸에 워크스페이스의 이름을 똑같이 입력한 뒤 삭제를 눌러주세요.</h3>
-                <h3>이는 당신이 워크스페이스 삭제에 대한 모든 것을 이해하고 동의한다는 것을 의미합니다.</h3>
+                <h3>다음 빈칸에 워크스페이스의 이름을 똑같이 입력한 뒤 삭제를 눌러주세요. 이는 당신이 워크스페이스 삭제에 대한 모든 것을 이해하고 동의한다는 것을 의미합니다.</h3>
             </StSubCheck>
             <StWorkspaceNameBox>
                 <h3>워크스페이스 이름</h3>
@@ -71,7 +76,7 @@ export default DeleteWorkspaceModal;
 
 const StWrap = styled.div`
     width: 100%;
-    height: 100vh;
+    height: 100%;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.1);
     z-index : 5;
@@ -90,7 +95,10 @@ const StLeaveBtn = styled.div`
 const StModalContainer = styled.div`
     display : flex;
     flex-direction : column;
-    width : 464px;
+    width : 512px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index : 6;
     position : fixed;
     background-color : white;
@@ -103,51 +111,19 @@ const StModalContainer = styled.div`
 const StModalTitle = styled.div`
     font-size : 2rem;
     font-weight : 900;
+    margin-bottom: 24px;
 `;
-
-const StWorkspaceInfoDiv = styled.div`
-    width : 100%;
-    display : flex;
-    margin-top : 32px;
-    margin-bottom : 32px;
-`
-
-const StWorkspaceImage = styled.div`
-    width : 48px;
-    height : 48px;
-    background-image : url('${(props : {img : string | undefined}) => props.img}');
-    background-size : cover;
-    background-position : center;
-    border-radius : 48px;
-`
-
-const StWorkspaceTextBox = styled.div`
-    margin-left : 16px;
-    display : flex;
-    justify-content: center;
-    flex-direction: column;
-    gap : 4px;
-`
-
-const StWorkspaceTextTitle = styled.div`
-    font-size : 1rem;
-    font-weight : 900;
-`
-
-const StWorkspaceTextDesc = styled.div`
-    font-size : 0.75rem;
-    font-weight : 300;
-`
 
 const StSub = styled.div`
     font-size: 12px;
-
     h3 {
         font-weight: 400;
+        line-height: 24px;
     }
 `;
 const StSubCheck = styled.div`
     font-size: 12px;
+    line-height: 24px;
     h3 {
         color: #FE1F1D;
         font-weight: 400;
@@ -158,6 +134,8 @@ const StWorkspaceNameBox = styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
+    margin-bottom: 12px;
+    line-height: 24px;
     h3 {
         font-weight: 400;
     }
@@ -167,16 +145,28 @@ const StWorkspaceNameBox = styled.div`
     }
 `;
 const StInput = styled.input`
+  padding: 12px;
   border: none;
+  border-radius: 4px;
   background-color: lightgray;
-  padding: 8px;
-  &:focus {
-    outline : none;
+  margin-bottom: 12px;
+  &:focus{
+    outline: none;
   }
 `;
 const StDeleteBtn = styled.button`
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 `;
 const StDeleteBtnTrue = styled.button`
-    color: #FE1F1D;
-    cursor: pointer;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  color: #FFFFFF;
+  background-color: #FF3B31;
+  cursor: pointer;
 `;

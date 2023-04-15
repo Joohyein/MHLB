@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { createWorkspace } from '../../api/selectWorkspace';
@@ -70,6 +70,13 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
     imgInputRef.current.click();
   };
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+        document.body.style.overflow = 'auto';
+    }
+  });
+
   return (
     <StWrap>
       <StModalContainer ref={modalRef}>
@@ -94,14 +101,10 @@ export default CreateWorkspaceModal;
 
 const StWrap = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 100%;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.1);
   z-index : 5;
-  display : flex;
-  justify-content : center;
-  flex-direction : column;
-  align-items: center;
 `;
 
 const StLeaveBtn = styled.div`
@@ -121,6 +124,9 @@ const StModalContainer = styled.div`
   border-radius : 8px;
   padding : 64px;
   box-sizing: border-box;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const StModalTitle = styled.div`
