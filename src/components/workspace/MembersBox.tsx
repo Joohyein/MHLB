@@ -33,7 +33,6 @@ function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[
   };
 
   useEffect(() => {
-    console.log(scrollRef.current?.scrollHeight)
     const onShowBtn = () => {
       if(scrollRef.current && scrollRef.current.scrollTop > 24) setShowBtn(true);
       else setShowBtn(false);

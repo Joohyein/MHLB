@@ -52,6 +52,7 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
           const messageData = JSON.parse(data.body);
           if(!messageData) setWebsocketConnected(false);
           else setMessages((prev:any) => [...prev, messageData]);
+          logEvent('Subscrip Chat room', {from: 'Main page right side bar Inbox'});
         }, userIdCookie);
 
     return () => {
@@ -137,7 +138,6 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const onClickBackBtnHandler = () => {
     setIsChat(false);
     setToggle(true);
-    logEvent('Go back chat room list', {from : 'Main page right side bar Chat room'})
   };
 
   return (
