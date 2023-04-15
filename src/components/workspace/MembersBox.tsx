@@ -14,7 +14,7 @@ interface MemberDataType {
   userDesc: string
 };
 
-function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[], searchMember:any, peopleData:any}) {
+function MembersBox({member, searchMember, peopleData, setMouseHoverSection}: {member: MemberDataType[], searchMember:any, peopleData:any, setMouseHoverSection : any}) {
 
   const [inputValue, setInputValue] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -33,7 +33,6 @@ function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[
   };
 
   useEffect(() => {
-    console.log(scrollRef.current?.scrollHeight)
     const onShowBtn = () => {
       if(scrollRef.current && scrollRef.current.scrollTop > 24) setShowBtn(true);
       else setShowBtn(false);
@@ -52,7 +51,7 @@ function MembersBox({member, searchMember, peopleData}: {member: MemberDataType[
           member?.map((item: MemberDataType) => {
             if (item) {
               return(
-                <PersonBox key={item?.userId} member={item} peopleData={peopleData} isCheckMe={member[0].userId} />
+                <PersonBox key={item?.userId} member={item} peopleData={peopleData} isCheckMe={member[0].userId} setMouseHoverSection = {setMouseHoverSection}/>
               )
             }
             return null;
@@ -75,7 +74,6 @@ const StContainer = styled.div`
 `;
 
 const StInputBox = styled.div`
-  padding: 0px 12px 24px 12px;
   width: 100%;
   box-sizing: border-box;
 `;

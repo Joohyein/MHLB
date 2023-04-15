@@ -26,7 +26,7 @@ const sectionContents = [
     {title : '휴가 🏝️', name : '휴가', desc : '현재 휴가 중인 멤버', dropId : 'Leave', color : 3}
 ]
 
-const DragDropComp = ({setUserListData} : {setUserListData : any}) => {
+const DragDropComp = ({setUserListData, mouseHoverSection} : {setUserListData : any, mouseHoverSection : any}) => {
 
     const params = useParams();
     const navigate = useNavigate();
@@ -36,7 +36,6 @@ const DragDropComp = ({setUserListData} : {setUserListData : any}) => {
     const [userList, setUserList] = useState<UserInfoType[]>([]);
     const [currentUser, setCurrentUser] = useState<any>();
     const [tempData, setTempData] = useState<any>();
-    const [allUsers, setAllUsers] = useState<any>([]);
     const userIdCookie = {userId : getCookie('userId')};
 
     useEffect(() => {
@@ -86,6 +85,10 @@ const DragDropComp = ({setUserListData} : {setUserListData : any}) => {
         setUserListData([currentUser, ...userList]);
     }, [userList, currentUser]);
 
+    useEffect(() => {
+        
+    }, [mouseHoverSection])
+
     const onDragEnd = (result : any) => {
         if (result.destination === null || result.source.droppableId === result.destination.droppableId) return;
         const originObj = {...currentUser, status : result.source.droppableId};
@@ -105,7 +108,7 @@ const DragDropComp = ({setUserListData} : {setUserListData : any}) => {
                 <StSectionSize1Box>
                     {sectionContents.map((sectionItem : {title : string, name : string, desc : string, dropId : string}) => {
                         return (
-                            <StSectionSize1 key = {sectionItem.dropId}>
+                            <StSectionSize1 key = {sectionItem.dropId} hovered = {mouseHoverSection === sectionItem.dropId}>
                             <StSectionTitle>{sectionItem.title}</StSectionTitle>
                             <StSectionDesc>{sectionItem.desc}({userList?.filter((val : any) => val.status === sectionItem.dropId).length + (currentUser?.status === sectionItem?.dropId ? 1 : 0)})</StSectionDesc>
                             <StSectionHr />
@@ -153,7 +156,7 @@ const DragDropComp = ({setUserListData} : {setUserListData : any}) => {
                         )
                     })}
                 </StSectionSize1Box>
-                <StSectionSize2>
+                <StSectionSize2 hovered = {mouseHoverSection === 'NotWorking'}>
                     <StSectionTitle>업무 종료 🚀</StSectionTitle>
                     <StSectionDesc>업무를 종료한 멤버({userList?.filter((val : any) => val.status === 'NotWorking').length + (currentUser?.status === 'NotWorking' ? 1 : 0)})</StSectionDesc>
                     <StSectionHr />
@@ -219,6 +222,9 @@ const StSectionSize1 = styled.div`
     box-sizing : border-box;
     display : flex;
     flex-direction : column;
+    transition : 200ms;
+    outline : 2px solid rgba(0, 122, 255, ${(props : {hovered : boolean}) => props.hovered ? '100' : '0'});
+    outline-offset : -2px;
 `
 
 const StSectionSize2 = styled.div`
@@ -232,6 +238,8 @@ const StSectionSize2 = styled.div`
     display : flex;
     flex-direction : column;
     transition : 200ms;
+    outline : 2px solid rgba(0, 122, 255, ${(props : {hovered : boolean}) => props.hovered ? '100' : '0'});
+    outline-offset : -2px;
 `
 
 const StSectionTitle = styled.div`
