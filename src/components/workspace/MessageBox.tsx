@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useQuery } from "react-query";
 import { getChatList } from "../../api/rightSide";
+import { logEvent } from "../../util/amplitude";
 
 interface ChatListType {
   uuid: string,
@@ -30,6 +31,7 @@ function MessageBox({workspaceId, setUserData}:{workspaceId:number, setUserData:
   const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string, color:number) => {
     console.log("username:", userName);
     setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, color: color, checkPersonInbox:false, toggle:true})
+    logEvent('Click Chat room', {from : 'Main page Right side bar Inbox'})
   };
   return (
     <StContainer>

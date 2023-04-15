@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { getChatList } from "../../api/rightSide";
 import { getPeopleList } from "../../api/workspace";
 import { useNavigate } from "react-router-dom";
+import { logEvent } from "../../util/amplitude";
 
 interface workspaceListType {
     workspaceDesc: string,
@@ -46,11 +47,12 @@ function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
 
   const onClickRecentMessage = (event : any, item : any) => {
     event.stopPropagation();
+    logEvent('Move to chatroom from Select workspace page', {from: 'Select workspace page'});
     navigate(`/workspace/${workspaceData.workspaceId}`, {state : {...item}});
   }
 
   return (
-    <StWorkspaceBox onClick={() => {navigate(`/workspace/${workspaceData.workspaceId}`)}}>
+    <StWorkspaceBox onClick={() => { logEvent('Select workspace button', {from: 'Select workspace page'}); navigate(`/workspace/${workspaceData.workspaceId}`)}}>
       <StImage img={workspaceData.workspaceImage}/>
       <StTitle>{workspaceData.workspaceTitle}</StTitle>
       <StDesc>{workspaceData.workspaceDesc}</StDesc>

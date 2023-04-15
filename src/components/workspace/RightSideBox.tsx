@@ -6,6 +6,7 @@ import MessageBox from "./MessageBox";
 import Chat from "./Chat";
 import { useLocation, useParams } from "react-router-dom";
 import { getPeopleList } from "../../api/workspace";
+import { logEvent } from "../../util/amplitude";
 
 export interface MemberDataType {
   userId: number,
@@ -63,10 +64,12 @@ function RightSideBox({userListData} : {userListData : any}) {
   const onClickMemberHandler = () => {
     setToggle(false);
     setIsChat(false);
+    logEvent('Member button from Right side bar', {from: 'Main page Right side bar'});
   };
   const onClickInboxHandler = () => {
     setToggle(true);
     setIsChat(false);
+    logEvent('Inbox button from Right side bar', {from: 'Main page Right side bar'})
   };
   // 바뀐 status을 배열에 적용
 

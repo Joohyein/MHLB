@@ -20,6 +20,7 @@ import NavBarWorkspace from '../components/common/NavBarWorkspace';
 import Plus from '../components/asset/icons/Plus';
 import useInput from '../hooks/useInput';
 import { GvWorkspaceDescLength, GvWorkspaceNameLength } from '../global/LimitConfig';
+import { logEvent } from '../util/amplitude';
 
 const WorkspaceConfig = () => {
 
@@ -49,6 +50,7 @@ const WorkspaceConfig = () => {
   const [memberCopy, setMemberCopy] = useState([]);
 
   useEffect(() => {
+    logEvent('Enter Workspace config page', {from: 'Workspace config page'});
     setTitle(workspaceInfoData?.workspaceTitle);
     setDescription(workspaceInfoData?.workspaceDesc);
     setImage(workspaceInfoData?.workspaceImage);

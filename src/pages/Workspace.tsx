@@ -6,6 +6,7 @@ import Wrapper from "../components/common/Wrapper";
 import DragDropComp from "../components/workspace/DragDropComp";
 import LeftSideBar from "../components/workspace/LeftSideBar";
 import RightSideBar from "../components/workspace/RightSideBar";
+import { logEvent } from "../util/amplitude";
 
 interface WorkspaceInformationType {
     userRole : string,
@@ -25,6 +26,7 @@ const Workspace = () => {
     const [userRole, setUserRole] = useState<string>('');
 
     useEffect(() => {
+        logEvent('Enter App main page', {from: 'Main page'});
         getMainWorkspaceInfo({workspaceId : String(params.workspaceId)})
         .then((res) => {
             setUserRole(res.data.userRole);
@@ -43,7 +45,7 @@ const Workspace = () => {
                             <StWorkspaceTitle>{workspaceInfomation?.workspaceTitle}</StWorkspaceTitle>
                             <StWorkspaceDesc>{workspaceInfomation?.workspaceDesc}</StWorkspaceDesc>
                         </StTextInfoDiv>
-                        {(userRole === 'ADMIN' || userRole === 'MANAGER') ? <StConfigPageLinkButton onClick = {() => {navigate(`/workspace-config/${workspaceInfomation?.workspaceId}`)}}>관리자 페이지로 이동</StConfigPageLinkButton> : null}
+                        {(userRole === 'ADMIN' || userRole === 'MANAGER') ? <StConfigPageLinkButton onClick = {() => {logEvent('Workspace config button', {from: 'Main page'}); navigate(`/workspace-config/${workspaceInfomation?.workspaceId}`)}}>관리자 페이지로 이동</StConfigPageLinkButton> : null}
                     </StWorkspaceInfoDiv>
                     <DragDropComp setUserListData = {setUserListData}/>
                 </StMainContent>

@@ -1,6 +1,11 @@
+import { useEffect } from "react";
 import styled from "styled-components";
+import { logEvent } from "../util/amplitude";
 
 function NotFound() {
+  useEffect(() => {
+    logEvent('Enter Not found page', {from: 'Not found page'});
+  },[]);
   return (
     <StContainer>
       <StTitle>

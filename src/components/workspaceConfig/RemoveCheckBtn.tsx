@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { deleteUser } from '../../api/workspaceConfig';
+import { logEvent } from '../../util/amplitude';
 
 function RemoveCheckBtn({ userRole, userId, workspaceId }: { userRole: string, userId: number, workspaceId: number }) {
   const [removeToggle, setRemoveToggle] = useState(false);
@@ -14,6 +15,7 @@ function RemoveCheckBtn({ userRole, userId, workspaceId }: { userRole: string, u
   })
   const onClickDeleteUserHandler = (userId: number) => {
     mutation.mutate({userId, workspaceId});
+    logEvent('Delete member button', {from: 'Workspace config page'});
   };
 
   return (

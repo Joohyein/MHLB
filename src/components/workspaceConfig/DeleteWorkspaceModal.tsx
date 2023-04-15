@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Close from '../asset/icons/Close';
 import { deleteWorkspace } from '../../api/workspaceConfig';
+import { logEvent } from '../../util/amplitude';
 
 interface workspaceInfoType {
     workspaceId : number,
@@ -30,6 +31,7 @@ function DeleteWorkspaceModal({deleteModalRef, workspaceInfoData, setWorkspaceDe
     const onClickDeleteWorkspaceHandler = (workspaceId: number) => {
         deleteWorkspace({workspaceId})
         .then(() => {
+            logEvent('Delete Workspace button', {from: 'Workspace config page'});
             navigate('/select-workspace');
         })
     };

@@ -6,6 +6,7 @@ import useLogout from "../../hooks/useLogout";
 import useOutsideClick from "../../hooks/useOutsideClick"
 import { getCookie, removeCookie, setCookie } from "../../cookie/cookies";
 import { useSelector } from "react-redux";
+import { logEvent, resetAmplitude } from "../../util/amplitude";
 
 const NavBarWorkspace = () => {
 
@@ -53,6 +54,7 @@ const NavBarWorkspace = () => {
     }
 
     const onClickMyPage = () => {
+        logEvent('Mypage button from header', {from: 'Header profile'});
         if (window.location.pathname === '/my-page') return;
         navigate('/my-page');
     }
@@ -60,13 +62,15 @@ const NavBarWorkspace = () => {
     const onClickLogout = () => {
         logout();
         removeCookie('userId');
+        logEvent('Logout button from header', {from: 'Header profile'});
+        resetAmplitude();
         navigate('/');
         window.location.reload();
     }
 
     return (
         <StNavBar>
-            <StLogo onClick = {() => {navigate('/select-workspace')}}>
+            <StLogo onClick = {() => {logEvent('Logo click', {from: 'Nav bar workspace'}); navigate('/select-workspace')}}>
                 Pin me
             </StLogo>
             <StRightsideDiv ref = {dropdownRef}>

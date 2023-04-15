@@ -5,14 +5,17 @@ import Intro from "../components/landing/Intro";
 import Slider from "../components/landing/slider/Slider";
 import { useState, useEffect } from "react";
 import ArrowUp from "../components/asset/icons/ArrowUp";
+import { logEvent } from "../util/amplitude";
 
 const Landing = () => {
   const [showBtn, setShowBtn] = useState(false);
 
   const onClickScrollTop = () => {
+    logEvent('Scroll to top button', {from: 'Landing page'});
     window.scrollTo({top: 0, behavior:'smooth'});
   };
   useEffect(() => {
+    logEvent('Enter Landing page', {from: 'Landing page'});
     const onShowBtn = () => {
       if(window.scrollY > 256) setShowBtn(true);
       else setShowBtn(false);

@@ -9,6 +9,8 @@ import MyWorkspaceList from "../components/selectWorkspace/MyWorkspaceList";
 import Plus from "../components/asset/icons/Plus";
 import { useSelector } from "react-redux";
 import { getCookie } from "../cookie/cookies";
+import { logEvent } from "../../src/util/amplitude";
+import { setAmplitudeUserId } from "../util/amplitude";
 
 const SelectWorkspace = () => {
   const { data } = useQuery('workspaceList', getWorkspaceList);
@@ -20,6 +22,7 @@ const SelectWorkspace = () => {
   const stompClient = useSelector((state : any) => state.websocket.stompClient);
 
   useEffect(() => {
+    setAmplitudeUserId(`userId${userId}`);
     if(!(userId && Object.keys(stompClient).length)) return 
     const connection =  stompClient.subscribe(`/sub/unread-message/${userId}`, (data : any) => {
       console.log(JSON.parse(data.body));
@@ -32,6 +35,10 @@ const SelectWorkspace = () => {
     }
 }, [data, stompClient]);
 
+  useEffect(() => {
+    logEvent('Enter Select workspace page', {from: 'Select workspace page'});
+  },[]);
+
   return (
     <Wrapper>
       <StContainer>
@@ -41,7 +48,7 @@ const SelectWorkspace = () => {
               <StWorkspaceTitle>나의 워크스페이스</StWorkspaceTitle>
               <StWorkspaceDesc>워크스페이스를 선택하고 근태관리를 시작하세요!</StWorkspaceDesc>
             </StTextInfoDiv>
-            <StCreateWorkspaceButton onClick={() => {setCreateModal(true); document.body.style.overflow = "hidden"}}>새 워크스페이스 생성<Plus size = '24' fill = 'white' /></StCreateWorkspaceButton>
+            <StCreateWorkspaceButton onClick={() => {setCreateModal(true);  document.body.style.overflow = "hidden"; logEvent('Create workspace button', {from: 'Select workspace page'})}}>새 워크스페이스 생성<Plus size = '24' fill = 'white' /></StCreateWorkspaceButton>
           </StSelectWorkspaceInfoDiv>
           <StWorkspaceContainer>
             {data?.map((workspaceData : any) => <MyWorkspaceList key = {workspaceData.workspaceId} workspaceData={workspaceData} />)}
