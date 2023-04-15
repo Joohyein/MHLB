@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { getPrevMessages, getUuid } from "../../api/rightSide";
-import SockJS from 'sockjs-client';
-import { Stomp } from "@stomp/stompjs";
+import { getChatList, getPrevMessages, getUuid } from "../../api/rightSide";
 import { getCookie } from "../../cookie/cookies";
 import ArrowBack from "../asset/icons/ArrowBack";
 import { useSelector } from "react-redux";
@@ -14,7 +12,7 @@ interface MessagesType {
   createdAt: string,
 };
 
-function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, color, setToggle, setIsChat}:{userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; color:number; workspaceId:number, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
+function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage, userJob, setToggle, setIsChat, setChatListProps}:{userId:number|undefined, uuid:string; checkPersonInbox:boolean; userName:string; userJob:string; userImage:string; workspaceId:number, setChatListProps:any, setToggle:(v:boolean)=>void; setIsChat:(v:boolean)=>void}) {
 
   const [personBoxUuid, setPersonBoxUuid] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -32,10 +30,20 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
   const [isLastMessage, setIsLastMessage] = useState(false);
 
+  useEffect(() => {
+    return (() => {
+      getChatList(Number(workspaceId))
+      .then((res) => {
+          setChatListProps(res);
+      })
+    })
+  }, [])
+
   useEffect(()=>{
     if(checkPersonInbox) {
       getUuid(Number(workspaceId), Number(userId))
       .then((res)=>{
+        console.log(res);
         setPersonBoxUuid(res);
       });
     } else {
@@ -45,7 +53,6 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   
   useEffect(()=>{
     if(!(personBoxUuid && !(Object.keys(stompClient).length === 0))) return;
-        console.log('connected!')
         setWebsocketConnected(true);
         const tmpSub = stompClient.subscribe(`/sub/inbox/${personBoxUuid}`, (data : any) => {
           const messageData = JSON.parse(data.body);
@@ -149,7 +156,6 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
             <StUserJob>{userJob}</StUserJob>
           </StNameJobBox>
         </StLeftBox>
-        <StColor colorNum={color} ></StColor>
       </StUserData>
       <StChatBox ref={scrollRef}>
         <div ref={target} style={{position: "absolute", top: '256px'}}></div>
@@ -273,18 +279,12 @@ const StUserJob = styled.h3`
   font-weight: 400;
   color: #7f7f7f;
 `;
-const StColor = styled.div<{colorNum:number}>`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: ${props=>props.colorNum === 0 ? "#34C759" : props.colorNum === 1 ? "#FFCC01" : props.colorNum === 2 ? "#FF3B31" : "#7f7f7f"};
-`;
 
 const StChatBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
+  height : 100%;
   overflow-y: auto;
   overflow-x: hidden;
   &::-webkit-scrollbar {
