@@ -37,6 +37,13 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspac
     else setWithdrawBtn(false);
   }, [inputTitle]);
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    }
+  });
+
   return (
     <StWrap>
       <StModalContainer ref={modalRef}>
@@ -81,6 +88,7 @@ const StWrap = styled.div`
   height: 100%;
   position: absolute;
   background-color: rgba(0,0,0,0.3);
+  z-index : 5;
 `;
 const StModalContainer = styled.div`
   width: 368px;

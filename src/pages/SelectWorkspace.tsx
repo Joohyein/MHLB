@@ -68,7 +68,7 @@ const StContainer = styled.div`
     justify-content : flex-start;
     align-items : center;
     width : 1040px;
-    height : 100vh;
+    height : 100%;
     box-sizing : border-box;
     padding-top : 64px;
     background-color : transparent;
