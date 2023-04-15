@@ -11,6 +11,7 @@ import GoogleSocialIcon from "../components/asset/icons/GoogleSocialIcon";
 import { googleLoginRequest, register } from "../api/auth";
 import { setCookie } from "../cookie/cookies";
 import { GvUserJobLength, GvUserNameLength, GvUserStatusMessageLength } from "../global/LimitConfig";
+import { logEvent } from "../util/amplitude";
 
 const Register = () => {
   const isLogin = useIsLogin();
@@ -140,6 +141,7 @@ const Register = () => {
     } else {
       register({email: emailValue, password: passwordValue, userName: nameValue, userJob: jobValue, userDesc: descValue})
       .then((res) => {
+        logEvent('Success Register', {from: 'Register page'});
         navigate('/celebrate-sign-up');
       })
       .catch((error) => {
@@ -152,6 +154,7 @@ const Register = () => {
     googleLoginRequest()
     .then((res : any) => {
       setCookie('authorization', res.authorization);
+      logEvent('Google Login button from Register page', {from: 'Register page'});
       navigate('/select-workspace');
     })
     .catch((error) => {

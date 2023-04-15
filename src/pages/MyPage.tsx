@@ -11,6 +11,7 @@ import InvitedWorkspace from "../components/mypage/InvitedWorkspace";
 import { useNavigate } from "react-router-dom";
 import useInput from "../hooks/useInput";
 import { GvUserJobLength, GvUserNameLength, GvUserStatusMessageLength } from "../global/LimitConfig";
+import { logEvent } from "../util/amplitude";
 
 const MyPage = () => {
   const { data : dataUser } = useQuery('user', getUserData);
@@ -39,6 +40,7 @@ const MyPage = () => {
     setName(dataUser?.userName);
     setJob(dataUser?.userJob);
     setDesc(dataUser?.userDesc);
+    logEvent('Enter My page', {from: 'My page'});
   }, [dataUser]);
 
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {

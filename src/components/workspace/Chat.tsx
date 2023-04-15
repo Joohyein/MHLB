@@ -4,6 +4,7 @@ import { getChatList, getPrevMessages, getUuid } from "../../api/rightSide";
 import { getCookie } from "../../cookie/cookies";
 import ArrowBack from "../asset/icons/ArrowBack";
 import { useSelector } from "react-redux";
+import { logEvent } from "../../util/amplitude";
 
 interface MessagesType {
   messageId: number,
@@ -58,6 +59,7 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
           const messageData = JSON.parse(data.body);
           if(!messageData) setWebsocketConnected(false);
           else setMessages((prev:any) => [...prev, messageData]);
+          logEvent('Subscrip Chat room', {from: 'Main page right side bar Inbox'});
         }, userIdCookie);
 
     return () => {
@@ -74,15 +76,18 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
 
   const onSubmitHandler =  () => {
     setInputMessage('');
-    if(inputMessage === '\n') return;
+    const strSpace = /\s/;
+    if(inputMessage === '\n' || strSpace.exec(inputMessage)) return;
     const sendData = {
       uuid: personBoxUuid,
       message: inputMessage,
       workspaceId,
     };
     if(inputMessage && websocketConnected) {
-      stompClient.send(`/pub/inbox`, userIdCookie, JSON.stringify(sendData))
+      stompClient.send(`/pub/inbox`, userIdCookie, JSON.stringify(sendData));
+      logEvent('Send message button', {from: 'Main page Chat room'});
     };
+
   };
 
   // 무한스크롤
@@ -212,7 +217,7 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
         />
         { websocketConnected
             ? <StSendBtn backgroundColor='#007aff' onClick={onSubmitHandler}>메시지 보내기</StSendBtn>
-            : <StSendBtn backgroundColor='#7f7f7f' onClick={onSubmitHandler}>메시지 보내기</StSendBtn>}
+            : <StSendBtn backgroundColor='#7f7f7f'>메시지 보내기</StSendBtn>}
       </StChatInputBox>
     </StContainer>
   )

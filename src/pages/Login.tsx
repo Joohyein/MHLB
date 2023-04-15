@@ -8,6 +8,7 @@ import useInput from "../hooks/useInput";
 import useInputRefFocus from "../hooks/useInputRefFocus";
 import useIsLogin from "../hooks/useIsLogin";
 import { setCookie } from "../cookie/cookies";
+import { logEvent } from "../util/amplitude";
 
 const Login = () => {
 
@@ -56,6 +57,7 @@ const Login = () => {
       login({email : emailValue, password : passwordValue})
       .then((res) => {
         setCookie("authorization", res.headers.authorization);
+        logEvent('Login button', {from: 'Login page'});
         navigate("/select-workspace");
       })
       .catch((error) => {
@@ -68,6 +70,7 @@ const Login = () => {
     googleLoginRequest()
     .then((res : any) => {
       setCookie('authorization', res.authorization);
+      logEvent('Google Login Success from Login page', {from: 'Login page'});
       navigate('/select-workspace');
     })
     .catch((error) => {
@@ -82,6 +85,10 @@ const Login = () => {
     setPasswordValidation(false);
     setWrongValidation(false);
   }
+
+  useEffect(() => {
+    logEvent('Enter Login page', {from: 'Login page'});
+  }, []);
 
   return (
     <Wrapper>

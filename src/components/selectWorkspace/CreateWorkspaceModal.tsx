@@ -5,6 +5,7 @@ import { createWorkspace } from '../../api/selectWorkspace';
 import Close from '../asset/icons/Close';
 import { GvWorkspaceDescLength, GvWorkspaceNameLength } from '../../global/LimitConfig';
 import useInputRefFocus from '../../hooks/useInputRefFocus';
+import { logEvent } from '../../util/amplitude';
 
 function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.MutableRefObject<any>, setCreateModal: (v: boolean) => void}) {
   const imgInputRef = useRef<any>(null);
@@ -47,7 +48,7 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
       alert('워크스페이스 설명을 입력해주세요');
       return;
     };
-
+    logEvent('Create workspace button from Modal', {from: 'Select workspace page'})
     const body = {
       workspaceTitle: name,
       workspaceDesc: desc

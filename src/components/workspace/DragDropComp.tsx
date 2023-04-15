@@ -5,6 +5,7 @@ import styled from "styled-components"
 import { getPeopleList } from "../../api/workspace";
 import { getCookie } from "../../cookie/cookies";
 import { useSelector } from "react-redux";
+import { logEvent } from "../../util/amplitude";
 
 export interface UserInfoType {
     color : number,
@@ -100,6 +101,7 @@ const DragDropComp = ({setUserListData, mouseHoverSection} : {setUserListData : 
         } else {
             setCurrentUser(originObj);
         }
+        logEvent('Drag user status', {from: 'Main page'});
     }
 
     return (

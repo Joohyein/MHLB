@@ -7,6 +7,7 @@ import { reorderWorkspaceList } from "../../api/workspace";
 import { getCookie } from "../../cookie/cookies";
 import { useSelector } from "react-redux";
 import { getChatList } from "../../api/rightSide";
+import { logEvent } from "../../util/amplitude";
 
 export interface WorkspaceListIconType {
     unreadMessages : number,
@@ -91,6 +92,7 @@ const LeftSideBar = ({setChatListProps} : {setChatListProps : any}) => {
         const [removedArr] = tempArr.splice(result.source.index, 1);
         tempArr.splice(result.destination.index, 0, removedArr);
         setWorkspaceList(tempArr);
+        logEvent('Drag Workspace Icon from Left side bar', {from : 'Main page Left side bar'})
     }
 
     return (
@@ -102,7 +104,7 @@ const LeftSideBar = ({setChatListProps} : {setChatListProps : any}) => {
                             return (
                                 <Draggable key = {String(obj.workspaceId)} draggableId = {String(obj.workspaceId)} index = {index}>
                                     {(provided) => (
-                                        <StIcon onClick = {() => {navigate(`/workspace/${obj.workspaceId}`); window.location.reload()}} img = {obj.workspaceImage} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>{obj.unreadMessage ? <StAlarm /> : null}</StIcon>
+                                        <StIcon onClick = {() => {navigate(`/workspace/${obj.workspaceId}`); logEvent('Workspace Profile Icon from Left side bar', {from : 'Main page Left side bar'}); window.location.reload()}} img = {obj.workspaceImage} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>{obj.unreadMessage ? <StAlarm /> : null}</StIcon>
                                     )}
                                 </Draggable>
                             )

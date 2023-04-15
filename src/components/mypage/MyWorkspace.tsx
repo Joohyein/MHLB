@@ -19,7 +19,7 @@ function MyWorkspace({setLeaveModal, dataWorkspace, setWorkspaceId}:{setLeaveMod
   const navigate = useNavigate();
   
   const leaveModalOpenHandler = (workspaceId: number) => {
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
     setLeaveModal(true);
     setWorkspaceId(workspaceId);
   };

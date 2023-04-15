@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { logEvent } from "../../util/amplitude";
 
 interface ChatListType {
   uuid: string,
@@ -15,6 +16,7 @@ function MessageBox({setUserData, chatListProps}:{setUserData:any, chatListProps
 
   const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string) => {
     setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, checkPersonInbox:false, toggle:true})
+    logEvent('Click Chat room', {from : 'Main page Right side bar Inbox'})
   };
   return (
     <StContainer>

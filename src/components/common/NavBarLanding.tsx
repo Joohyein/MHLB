@@ -1,3 +1,4 @@
+import { logEvent } from "../../../src/util/amplitude";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -11,8 +12,8 @@ const NavBarLanding = () => {
                 Pin me
             </StLogo>
             <StLinkDiv>
-                <StLinkButton statusProp = {false} onClick = {() => {navigate('/login')}}>로그인</StLinkButton>
-                <StLinkButton statusProp = {true} onClick = {() => {navigate('/register')}}>회원가입</StLinkButton>
+                <StLinkButton statusProp = {false} onClick = {() => {navigate('/login'); logEvent('Login button click', {from: 'Landing page'})}}>로그인</StLinkButton>
+                <StLinkButton statusProp = {true} onClick = {() => {navigate('/register'); logEvent('Register button click', {from: 'Landing page'})}}>회원가입</StLinkButton>
             </StLinkDiv>
         </StNavBar>
     )

@@ -2,6 +2,7 @@ import { useMotionValue, useMotionValueEvent, useTransform } from 'framer-motion
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { logEvent } from '../../util/amplitude';
 
 function MoveBtn() {
   const navigate = useNavigate();
@@ -22,7 +23,10 @@ function MoveBtn() {
   const crossPathB = useTransform(x, [-50, -100], [0, 1]);
 
   useMotionValueEvent(x, "animationStart", () => {
-    if(x.get() > 100) navigate('/register')
+    if(x.get() > 100) {
+      logEvent('Motion value event', {from: 'Landing page'});
+      navigate('/register');
+    }
   });
   
   return (

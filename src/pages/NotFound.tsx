@@ -1,10 +1,15 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import styled from "styled-components";
+import { logEvent } from "../util/amplitude";
 
 function NotFound() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    logEvent('Enter Not found page', {from: 'Not found page'});
+  },[]);
   return (
     <StContainer>
       <StTitle>
