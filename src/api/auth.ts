@@ -33,8 +33,7 @@ const getGoogleCode = async (code : string) => {
 }
 
 const googleLoginRequest = async () => {
-  const redirectUri = encodeURIComponent('http://localhost:3000/google-auth');
-  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=766535092476-o59t1krg7rku29jflccpiuo9g98o5pvl.apps.googleusercontent.com&redirect_uri=${redirectUri}&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=766535092476-o59t1krg7rku29jflccpiuo9g98o5pvl.apps.googleusercontent.com&redirect_uri=https://pinme.site/google-auth&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
   
   window.open(authUrl,'Pin me AUTH','width=430,height=500,location=yes,status=no,scrollbars=yes');
  
