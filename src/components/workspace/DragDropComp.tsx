@@ -296,7 +296,7 @@ const StMemberPinProfile = styled.div`
 `
 
 const StMemberPinName = styled.div`
-    font-size : 0.75px;
+    font-size : 0.75rem;
     font-weight : 700;
 `
 
@@ -314,7 +314,7 @@ const StUserPinProfile = styled.div`
 `
 
 const StUserPinName = styled.div`
-    font-size : 0.75px;
+    font-size : 0.75rem;
     font-weight : 900;
     color : #007AFF;
 `
