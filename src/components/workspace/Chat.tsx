@@ -76,8 +76,8 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
 
   const onSubmitHandler =  () => {
     setInputMessage('');
-    const strSpace = /\s/;
-    if(inputMessage === '\n' || strSpace.exec(inputMessage)) return;
+    const tmp = inputMessage.replaceAll(' ','');
+    if(inputMessage === '\n' || tmp === '') return;
     const sendData = {
       uuid: personBoxUuid,
       message: inputMessage,
