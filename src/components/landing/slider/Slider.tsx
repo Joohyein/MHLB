@@ -28,6 +28,9 @@ function Slider() {
 
   return (
     <StMain>
+      <StTitle>
+        <h3>Pin me</h3>&nbsp;사용법
+      </StTitle>
       <StLine />
       <StContainer>
         <StArrowBtn>
@@ -65,13 +68,20 @@ const StMain = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 24px;
-  margin-bottom: 64px;
+`;
+const StTitle = styled.div`
+  font-size: 52px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  h3 {
+    color: #007aff;
+  }
 `;
 const StLine = styled.div`
   width: 30%;
   border: 1px solid #303030;
-  margin-bottom: 24px;
+  margin: 24px;
 `;
 
 const StContainer = styled.div`
