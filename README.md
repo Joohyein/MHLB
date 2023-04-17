@@ -1,4 +1,5 @@
-![header](https://capsule-render.vercel.app/api?type=waving&color=007aff&height=300&section=header&text=Pin%20me-nl-&desc=Giga%20Jet&fontSize=90&fontColor=ffffff&animation=scaleIn)
+![pinme](https://user-images.githubusercontent.com/108849398/232507054-44ce276f-7931-4713-b7ca-84f5aa884e7d.png)
+
 <br />
 <br />
 <br />
