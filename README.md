@@ -91,20 +91,30 @@
 
 # 🛠 프로젝트 아키텍쳐
 
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/49e6d90b-2d41-4f8f-a538-b2b6ae1ffd7b/Untitled.png)
+
+# ERD
+
+[https://www.erdcloud.com/d/eh6nvvmLaA5bRwwFg](https://www.erdcloud.com/d/eh6nvvmLaA5bRwwFg)
+
 <br />
 <br />
 <br />
 
 # 🔎 기술적 의사 결정
 
-| 기술   | 사용 이유                                                                                                                                                                                                                             |
-| :----- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Axios  | Javascript에서 fetch를 대체하는 라이브러리이다. fetch에 없는 처리 방법(response timeout)이 있고 Promise 기반으로 만들어졌기 때문에 데이터를 다루기 편리하다는 장점이 있다. 또한, 크로스 브라우징 최적화로 브라우저 호환성이 우수하다. |
-| Stomp  |                                                                                                                                                                                                                                       |
-| SockJS | Sockjs를 사용하여 websocket을 지원하지 않는 브라우저에서 http기반의 다른 기술로 전환해 연결을 시도할 수 있다.                                                                                                                         |
-|        |                                                                                                                                                                                                                                       |
-|        |                                                                                                                                                                                                                                       |
-|        |                                                                                                                                                                                                                                       |
+| 기술                                                                  | 사용 이유                                                                                                                                                                                                                                             | 구분   |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| SockJS                                                                | Sockjs를 사용하여 websocket을 지원하지 않는 브라우저에서 http기반의 다른 기술로 전환해 연결을 시도할 수 있다.                                                                                                                                         | FE, BE |
+| Stomp                                                                 | 프로그램 특성상 여러 구독을 해야하기 때문에 Pub/Sub 기능을 제공하는 Stomp를 사용하게 됐다.                                                                                                                                                            | FE, BE |
+| Axios                                                                 | Javascript에서 fetch를 대체하는 라이브러리이다. fetch에 없는 처리 방법(response timeout)이 있고 Promise 기반으로 만들어졌기 때문에 데이터를 다루기 편리하다는 장점이 있다. 또한, 크로스 브라우징 최적화로 브라우저 호환성이 우수하다.                 | FE     |
+| redux                                                                 | 스테이트를 중앙 관리하기 위해 도입했다.                                                                                                                                                                                                               | FE     |
+| Typescript                                                            | 주고 받는 데이터의 타입을 지정해서 통신이나 값을 관리할 때 오류를 방지하기 위해 도입                                                                                                                                                                  | FE     |
+| thumbnailator                                                         | 이미지 리사이징을 위한 라이브러리. pin me는 이미지 작업을 많이, 섬세하게 할 필요가 없는 프로그램이기 때문에 다른 라이브러리보다 가볍고 다루기 쉬운 thumbnailator를 선택하게 됐다.                                                                     | BE     |
+| tika                                                                  | multipart file 확장자를 확인하기 위해 의존성을 추가한 라이브러리. multipar file 객체의 content type을 확인하는 메서드로도 검사가 가능하지만, 중간에 content type의 값이 변경되면 원래 확장자를 확인할 수 없기 때문에 tika 라이브러리를 사용하게 됐다. | BE     |
+| MongoDB                                                               | 메세지를 영구적이면서 빠르고 쉽게 저장하고 조회할 수 있는 DB를 고르다 Redis보다 안정적이면서 RDBS보다 가벼운 MongoDB를 선택하게 됐다.                                                                                                                 | BE     |
+| Redis                                                                 | 유효 기간을 설정해야 하거나, 채팅방에 들어와 있는 사람을 확인하기 위한 임시 데이터를 위한 캐시 메모리로 사용했고,                                                                                                                                     |
+| Kafka나 RabbitMQ보다 러닝 커브가 낮을 것 같아 외부 브로커로 사용했다. | BE                                                                                                                                                                                                                                                    |
 
 <br />
 <br />
@@ -138,5 +148,3 @@
 [Frontend Repository](https://github.com/GIGA-JET/MHLB-FE)  
 [Backend Repository](https://github.com/GIGA-JET/MHLB-BE)  
 [Giga Jet Notion](https://daydreampioneer.notion.site/GIGA-JET-8dce960c73884b9499afa03b33e97ff4)
-<img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/>
-<img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=TypeScript&logoColor=white"/>
