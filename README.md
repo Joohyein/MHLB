@@ -95,7 +95,7 @@
 
 # ERD
 
-[https://www.erdcloud.com/d/eh6nvvmLaA5bRwwFg](https://www.erdcloud.com/d/eh6nvvmLaA5bRwwFg)
+<img src="https://www.erdcloud.com/d/eh6nvvmLaA5bRwwFg" width='700' height='370 />
 
 <br />
 <br />
