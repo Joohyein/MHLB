@@ -1,4 +1,6 @@
-![pinme](https://user-images.githubusercontent.com/108849398/232507054-44ce276f-7931-4713-b7ca-84f5aa884e7d.png)
+<div align=center>
+<img src='https://user-images.githubusercontent.com/108849398/232507054-44ce276f-7931-4713-b7ca-84f5aa884e7d.png' width='700' />
+</div>
 
 <br />
 <br />
