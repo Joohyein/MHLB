@@ -18,6 +18,7 @@ function DeleteWorkspaceModal({deleteModalRef, workspaceInfoData, setWorkspaceDe
 
     const [inputTitle, setInputTitle] = useState('');
     const [deleteBtn, setDeleteBtn] = useState(false);
+    const [deleteCheck, setDeleteCheck] = useState(false);
 
     const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputTitle(e.target.value);
@@ -31,9 +32,13 @@ function DeleteWorkspaceModal({deleteModalRef, workspaceInfoData, setWorkspaceDe
     const onClickDeleteWorkspaceHandler = (workspaceId: number) => {
         deleteWorkspace({workspaceId})
         .then(() => {
+            setDeleteCheck(true);
             logEvent('Delete Workspace button', {from: 'Workspace config page'});
-            navigate('/select-workspace');
         })
+    };
+
+    const onClickDeleteCheckBtn = () => {
+        navigate('/select-workspace');
     };
 
     useEffect(() => {
@@ -46,28 +51,36 @@ function DeleteWorkspaceModal({deleteModalRef, workspaceInfoData, setWorkspaceDe
     return (
     <StWrap>
         <StModalContainer ref={deleteModalRef}>
-            <StLeaveBtn><Close size="36" fill="#303030" onClick={() => setWorkspaceDeleteModal(false)} cursor="pointer" /></StLeaveBtn>
-            <StModalTitle>워크스페이스 삭제</StModalTitle>
-            
-            <StSub>
-                <h3>삭제를 진행하신다면 모든 정보를 잃습니다.</h3>
-                <h3>그리고 복구할 수 없습니다.</h3>
-                <h3>그래도 워크스페이스를 영구적으로 삭제하고 싶으시다면</h3>
-            </StSub>
-            <StSubCheck>
-                <h3>다음 빈칸에 워크스페이스의 이름을 똑같이 입력한 뒤 삭제를 눌러주세요. 이는 당신이 워크스페이스 삭제에 대한 모든 것을 이해하고 동의한다는 것을 의미합니다.</h3>
-            </StSubCheck>
-            <StWorkspaceNameBox>
-                <h3>워크스페이스 이름</h3>
-                <h5>"{workspaceInfoData.workspaceTitle}"</h5>
-            </StWorkspaceNameBox>
-            <StInput value={inputTitle} onChange={onChangeHandler} />
             {
-                deleteBtn
-                    ?
-                    <StDeleteBtnTrue onClick={() => onClickDeleteWorkspaceHandler(workspaceInfoData.workspaceId)}>삭제하기</StDeleteBtnTrue>
-                    :
-                    <StDeleteBtn>삭제하기</StDeleteBtn>
+                deleteCheck
+                ? <StDeleteMsg>
+                    <h3>워크스페이스가 삭제되었습니다.</h3>
+                    <StDeleteCompleteBtn onClick={onClickDeleteCheckBtn}>확인</StDeleteCompleteBtn>
+                </StDeleteMsg> 
+                : <>
+                <StLeaveBtn><Close size="36" fill="#303030" onClick={() => setWorkspaceDeleteModal(false)} cursor="pointer" /></StLeaveBtn>
+                <StModalTitle>워크스페이스 삭제</StModalTitle>
+                <StSub>
+                    <h3>삭제를 진행하신다면 모든 정보를 잃습니다.</h3>
+                    <h3>그리고 복구할 수 없습니다.</h3>
+                    <h3>그래도 워크스페이스를 영구적으로 삭제하고 싶으시다면</h3>
+                </StSub>
+                <StSubCheck>
+                    <h3>다음 빈칸에 워크스페이스의 이름을 똑같이 입력한 뒤 삭제를 눌러주세요. 이는 당신이 워크스페이스 삭제에 대한 모든 것을 이해하고 동의한다는 것을 의미합니다.</h3>
+                </StSubCheck>
+                <StWorkspaceNameBox>
+                    <h3>워크스페이스 이름</h3>
+                    <h5>"{workspaceInfoData.workspaceTitle}"</h5>
+                </StWorkspaceNameBox>
+                <StInput value={inputTitle} onChange={onChangeHandler} />
+                {
+                    deleteBtn
+                        ?
+                        <StDeleteBtnTrue onClick={() => onClickDeleteWorkspaceHandler(workspaceInfoData.workspaceId)}>삭제하기</StDeleteBtnTrue>
+                        :
+                        <StDeleteBtn>삭제하기</StDeleteBtn>
+                }
+                </> 
             }
         </StModalContainer>
     </StWrap>
@@ -171,4 +184,38 @@ const StDeleteBtnTrue = styled.button`
   color: #FFFFFF;
   background-color: #FF3B31;
   cursor: pointer;
+`;
+
+const StDeleteMsg = styled.h3`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 36px;
+    h3 {
+        font-size: 24px;
+        font-weight: 400;
+    }
+`;
+const StDeleteCompleteBtn = styled.button`
+  margin-left : 16px;
+  border : none;
+  border-radius : 4px;
+  padding : 10px 18px;
+  background : #007aff;
+  color : white;
+  font-size : 16px;
+  font-weight : 700;
+  display: flex;
+  align-items: center;
+  transition : 200ms;
+  flex-shrink : 0;
+  &:hover {
+    cursor : pointer;
+    background : #3395ff;
+  }
+  &:active {
+    scale : 1.05;
+  }
 `;
