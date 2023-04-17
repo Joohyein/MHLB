@@ -15,6 +15,9 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
   const [imgFile, setImgFile] = useState<any>();
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
+  const [validation, setValidation] = useState(false);
+  const [nameValidation, setNameValidation] = useState(false);
+  const [descValidation, setDescValidation] = useState(false);
 
   const [workspaceTitleInputRef, workspaceTitleInputRefFocus] = useInputRefFocus();
   const [workspaceDescInputRef, workspaceDescInputRefFocus] = useInputRefFocus();
@@ -40,12 +43,17 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
   };
 
   const onClickCreateHandler = (e: any) => {
+    if(!name && !desc) {
+      setNameValidation(true);
+      setDescValidation(true);
+      return;
+    }
     if(!name){
-      alert('워크스페이스 이름을 입력해주세요');
+      setNameValidation(true);
       return;
     };
     if(!desc){
-      alert('워크스페이스 설명을 입력해주세요');
+      setDescValidation(true);
       return;
     };
     logEvent('Create workspace button from Modal', {from: 'Select workspace page'})
@@ -96,9 +104,11 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
           <StImageInput type="file" name="creageWorkspaceImg" ref={imgInputRef} onChange={onImgChange} accept='image/png, image/jpg, image/jpeg, image/gif' />
         </StImgUploadBox>
         <StInputLabel htmlFor = 'title' isFocus = {workspaceTitleInputRefFocus}>워크스페이스 이름*</StInputLabel>
-        <StTitleInput id = 'title' type="text" value={name} onKeyDown = {onEnterKeyDownTitle} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} maxLength={GvWorkspaceNameLength} placeholder = 'Workspace Title' ref = {workspaceTitleInputRef}/>
+        <StTitleInput id = 'title' type="text" value={name} onKeyDown = {onEnterKeyDownTitle} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setName(e.target.value); setNameValidation(false); setDescValidation(false);}} maxLength={GvWorkspaceNameLength} placeholder = 'Workspace Title (50자 이내)' ref = {workspaceTitleInputRef}/>
+        <StValidationTextBox>{nameValidation && <StValidationText>워크스페이스 이름을 입력해 주세요.</StValidationText>}</StValidationTextBox>
         <StInputLabel htmlFor = 'desc' isFocus = {workspaceDescInputRefFocus}>워크스페이스 소개*</StInputLabel>
-        <StDescInput id = 'desc' value={desc} onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => setDesc(e.target.value)} maxLength={GvWorkspaceDescLength} placeholder = 'Description of Workspace' ref = {workspaceDescInputRef}/>
+        <StDescInput id = 'desc' value={desc} onChange={(e:React.ChangeEvent<HTMLTextAreaElement>) => {setDesc(e.target.value); setDescValidation(false); setNameValidation(false)}} maxLength={GvWorkspaceDescLength} placeholder = 'Description of Workspace (200자 이내)' ref = {workspaceDescInputRef}/>
+        <StValidationTextBox>{descValidation && <StValidationText>워크스페이스 소개를 입력해주세요.</StValidationText>}</StValidationTextBox>
         <StCreateBtn onClick={onClickCreateHandler}>워크스페이스 생성</StCreateBtn>
       </StModalContainer>
     </StWrap>
@@ -143,7 +153,7 @@ const StModalTitle = styled.div`
 `;
 
 const StInputLabel = styled.label`
-  margin-top : 32px;
+  margin-top : 36px;
   font-size : 1rem;
   font-weight : 700;
   transition : 200ms;
@@ -228,6 +238,7 @@ const StDescInput = styled.textarea`
   width : 100%;
   height : 96px;
   margin-top : 8px;
+  margin-bottom: 0.5rem;
   border : none;
   outline : 1px solid #dbdbdb;
   outline-offset : -1px;
@@ -247,7 +258,7 @@ const StDescInput = styled.textarea`
 `;
 
 const StCreateBtn = styled.button`
-  margin-top : 32px;
+  margin-top : 42px;
   width : 100%;
   height : 35px;
   font-size : 1rem;
@@ -270,4 +281,15 @@ const StCreateBtn = styled.button`
   &:active {
       scale : 1.05;
   }
+`;
+
+const StValidationTextBox = styled.div`
+  position: relative;
+`;
+const StValidationText = styled.div`
+  font-size : 0.75rem;
+  font-weight : 400;
+  color : #ff3b30;
+  position : absolute; 
+  top : 0;
 `;
