@@ -129,14 +129,14 @@
 
 # ⚡️ Giga Jet Team
 
-| Role |  Name  | GitHub     |
-| :--- | :----: | :--------- |
-| FE👑 | 황지상 | [GitHub]() |
-| FE   | 주혜인 | [GitHub]() |
-| FE   | 김병무 | [GitHub]() |
-| BE👑 | 전다빈 | [GitHub]() |
-| BE   | 홍우람 | [GitHub]() |
-| BE   | 권재현 | [GitHub]() |
+| Role |  Name  | GitHub                                        |
+| :--- | :----: | :-------------------------------------------- |
+| FE👑 | 황지상 | [GitHub](https://github.com/RyumForCode)      |
+| FE   | 주혜인 | [GitHub](https://github.com/Joohyein)         |
+| FE   | 김병무 | [GitHub](https://github.com/Moozzang-Bassman) |
+| BE👑 | 전다빈 | [GitHub](https://github.com/samjan29)         |
+| BE   | 홍우람 | [GitHub](https://github.com/Galmaeki)         |
+| BE   | 권재현 | [GitHub](https://github.com/WooramHong1996)   |
 
 <br />
 <br />
