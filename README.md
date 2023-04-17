@@ -1,12 +1,12 @@
 <div align=center>
-<img src='https://user-images.githubusercontent.com/108849398/232507054-44ce276f-7931-4713-b7ca-84f5aa884e7d.png' width='700' />
+<img src='https://user-images.githubusercontent.com/108849398/232507054-44ce276f-7931-4713-b7ca-84f5aa884e7d.png' width='100%' />
 </div>
 
 <br />
 <br />
 <br />
 
-## 목차
+# 🪧 목차
 
 1. [프로젝트 소개 ](#-프로젝트-소개)
 2. [주요 기능 ](#-주요-기능)
