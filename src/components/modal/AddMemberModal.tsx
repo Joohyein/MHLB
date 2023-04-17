@@ -148,6 +148,7 @@ const StWrap = styled.div`
   height: 100%;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.3);
+  z-index: 6;
 `;
 const StModalContainer = styled.div`
   display: flex;
@@ -260,20 +261,26 @@ const StInviting = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: scroll;
+  max-height: 256px;
+  padding-right: 12px;
+  box-sizing: border-box;
   h3{
     font-size: 12px;
     font-weight: 400;
     color: #7f7f7f;
     margin-top: 32px;
-  }
+  };
 `;
 
 const StUser = styled.div`
   width: 100%;
+  max-height: 245px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  overflow: auto;
+  padding: 24px 0;
+  box-sizing: border-box;
   h5 {
     font-size: 16px; 
     color: #7f7f7f;
@@ -282,6 +289,7 @@ const StUser = styled.div`
 `;
 const StUserBox = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
