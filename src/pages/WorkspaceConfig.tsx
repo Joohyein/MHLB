@@ -16,7 +16,6 @@ import {
 import RemoveCheckBtn from '../components/workspaceConfig/RemoveCheckBtn';
 import DeleteWorkspaceModal from '../components/workspaceConfig/DeleteWorkspaceModal';
 import { useNavigate, useParams } from 'react-router-dom';
-import NavBarWorkspace from '../components/common/NavBarWorkspace';
 import Plus from '../components/asset/icons/Plus';
 import useInput from '../hooks/useInput';
 import { GvWorkspaceDescLength, GvWorkspaceNameLength } from '../global/LimitConfig';
@@ -29,7 +28,6 @@ const WorkspaceConfig = () => {
 
   const { isLoading: isLoadingInfo, data: workspaceInfoData } = useQuery('workspaceInfo',() => getWorkspaceInfo({workspaceId : params.workspaceId}));
   const { isLoading: isLoadingMember, data: workspaceMember } = useQuery('workspaceMember',() => getWorkspaceMember({workspaceId : params.workspaceId}));
-  // const imgInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null);
   const imgInputRef = useRef<any>(null);
   const titleInputRef:React.MutableRefObject<any> = useRef(null);
 
@@ -44,6 +42,8 @@ const WorkspaceConfig = () => {
   const [image, setImage] = useState(workspaceInfoData?.workspaceImage);
   const [title, setTitle] = useInput(workspaceInfoData?.workspaceTitle);
   const [description, setDescription] = useInput(workspaceInfoData?.workspaceDesc);
+  const [titleValidation, setTitleValidation] = useState(false);
+  const [descValidation, setDescValidation] = useState(false);
 
   const [search, setSearch] = useState('');
   const [member, setMember] = useState(['']);
@@ -115,8 +115,9 @@ const WorkspaceConfig = () => {
   }, [imgFile]);
 
   const onClickEditCompleteTitleHandler = (workspaceTitle: string, workspaceId: number) => {
-    if (!workspaceTitle) {
-      alert('워크스페이스 이름을 입력해주세요');
+    const tmpWorkspaceTitle = workspaceTitle.replaceAll(' ', '');
+    if (!workspaceTitle || !tmpWorkspaceTitle) {
+      setTitleValidation(true);
       return;
     }
     setEditTitle(false);
@@ -124,8 +125,9 @@ const WorkspaceConfig = () => {
   };
 
   const onClickEditCompleteDescHandler = (workspaceDesc: string, workspaceId: number) => {
-    if (!workspaceDesc) {
-      alert('워크스페이스 설명을 입력해주세요');
+    const tmpWorkspaceDesc = workspaceDesc.replaceAll(' ', '');
+    if (!workspaceDesc || !tmpWorkspaceDesc) {
+      setDescValidation(true);
       return;
     }
     setEditDesc(false);
@@ -134,7 +136,6 @@ const WorkspaceConfig = () => {
 
   const onClickEditTitleHandler = () => {
     setEditTitle(true);
-    // titleInputRef.current.focus();
   };
 
   // onKeyPress
@@ -199,14 +200,17 @@ const WorkspaceConfig = () => {
             {editTitle ? <StSubTitleEdit onClick={() => onClickEditCompleteTitleHandler(title, workspaceInfoData?.workspaceId)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={onClickEditTitleHandler}>편집</StSubTitleEdit>}
           </StSubTitleDiv>
           {editTitle
-          ? <StWorkspaceTextInput
-            name = "workspaceTitle"
-            value = {title}
-            onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-            onKeyPress = {onKeyPressTitleHandler}
-            ref = {titleInputRef}
-            maxLength={GvWorkspaceNameLength}
+          ? <>
+            <StWorkspaceTextInput
+              name = "workspaceTitle"
+              value = {title}
+              onChange = {(e: React.ChangeEvent<HTMLInputElement>) => {setTitle(e.target.value); setTitleValidation(false)}}
+              onKeyPress = {onKeyPressTitleHandler}
+              ref = {titleInputRef}
+              maxLength={GvWorkspaceNameLength}
             />
+            <StInputValidationBox>{titleValidation && <StInputValidationText>워크스페이스 이름을 입력해 주세요.</StInputValidationText>}</StInputValidationBox>
+            </>
           : <StWorkspaceText>{title}</StWorkspaceText>
           }
           <StSubTitleDiv>
@@ -214,13 +218,16 @@ const WorkspaceConfig = () => {
             {editDesc ? <StSubTitleEdit onClick={() => onClickEditCompleteDescHandler(description, workspaceInfoData?.workspaceId)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={() => {setEditDesc(true)}}>편집</StSubTitleEdit>}
           </StSubTitleDiv>
           {editDesc
-          ? <StWorkspaceTextInput
-            name="workspaceDesc"
-            value={description}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
-            onKeyPress={onKeyPressDescHandler}
-            maxLength={GvWorkspaceDescLength}
+          ? <>
+            <StWorkspaceTextInput
+              name="workspaceDesc"
+              value={description}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setDescription(e.target.value); setDescValidation(false)}}
+              onKeyPress={onKeyPressDescHandler}
+              maxLength={GvWorkspaceDescLength}
             />
+            <StInputValidationBox>{descValidation && <StInputValidationText>워크스페이스 소개를 입력해 주세요.</StInputValidationText>}</StInputValidationBox>
+            </>
           : <StWorkspaceText>{description}</StWorkspaceText>
           }
         </StWorkspaceProfileDiv>
@@ -617,3 +624,15 @@ const StWorkspaceDeleteButton = styled.button`
     cursor : pointer;
   }
 `
+
+const StInputValidationBox = styled.div`
+  position: relative;
+  width: 100%; 
+`;
+const StInputValidationText = styled.h3`
+  position: absolute;
+  top: 0;
+  font-size : 0.75rem;
+  font-weight : 400;
+  color : #ff3b30;
+`;

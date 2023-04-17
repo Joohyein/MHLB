@@ -29,6 +29,9 @@ const MyPage = () => {
   const [job, setJob] = useInput(dataUser?.userJob);
   const [editDesc, setEditDesc] = useState(false);
   const [desc, setDesc] = useInput(dataUser?.userDesc);
+  const [userNameValidation, setUserNameValidation] = useState(false);
+  const [userJobValidation, setUserJobValidation] = useState(false);
+  const [descValidation, setDescValidation] = useState(false);
 
   const [workspaceId, setWorkspaceId] = useState<any>();
 
@@ -83,24 +86,27 @@ const MyPage = () => {
 
   // onClickHandler
   const onClickEditNameHandler = (userName: string) => {
-    if(!userName) {
-      alert('이름을 입력해주세요');
+    const tmpUserName = userName.replaceAll(' ', '');
+    if(!userName || !tmpUserName) {
+      setUserNameValidation(true);
       return;
     };
     setEditName(false);
     mutationName.mutate({userName});
   };
   const onClickEditJobHandler = (userJob: string) => {
-    if(!userJob) {
-      alert('직업을 입력해주세요');
+    const tmpUserJob = userJob.replaceAll(' ', '');
+    if(!userJob || !tmpUserJob) {
+      setUserJobValidation(true);
       return;
     };
     setEditJob(false);
     mutationJob.mutate({userJob});
   }
   const onClickEditDescHandler = (userDesc: string) => {
-    if(!userDesc) {
-      alert('상태 메시지를 입력해주세요');
+    const tmpUserDesc = userDesc.replaceAll(' ', '');
+    if(!userDesc || !tmpUserDesc) {
+      setDescValidation(true);
       return;
     };
     setEditDesc(false);
@@ -151,16 +157,22 @@ const MyPage = () => {
           </StMypageProfile>
           <StSubTitleDiv>
             <StSubTitle>내 이름</StSubTitle>
-            {editName ? <StSubTitleEdit onClick={() => onClickEditNameHandler(name)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={() => {setEditName(true)}}>편집</StSubTitleEdit>}
+            {editName 
+              ? <StSubTitleEdit onClick={() => onClickEditNameHandler(name)}>편집 완료</StSubTitleEdit> 
+              : <StSubTitleEdit onClick={() => {setEditName(true)}}>편집</StSubTitleEdit>}
           </StSubTitleDiv>
           {editName
-          ? <StMypageTextInput
-            name = "userName"
-            value = {name}
-            onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-            onKeyPress = {onKeyPressNameHandler}
-            maxLength={GvUserNameLength}
+          ? 
+            <>
+            <StMypageTextInput
+              name = "userName"
+              value = {name}
+              onChange = {(e: React.ChangeEvent<HTMLInputElement>) => {setName(e.target.value);setUserNameValidation(false)}}
+              onKeyPress = {onKeyPressNameHandler}
+              maxLength={GvUserNameLength}
             />
+            <StInputValidationBox>{userNameValidation && <StInputValidationText>이름을 입력해 주세요.</StInputValidationText>}</StInputValidationBox>
+            </>
           : <StMypageText>{name}</StMypageText>
           }
           <StSubTitleDiv>
@@ -168,13 +180,16 @@ const MyPage = () => {
             {editJob ? <StSubTitleEdit onClick={() => onClickEditJobHandler(job)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={() => {setEditJob(true)}}>편집</StSubTitleEdit>}
           </StSubTitleDiv>
           {editJob
-          ? <StMypageTextInput
-            name="userJob"
-            value={job}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value)}
-            onKeyPress={onKeyPressJobHandler}
-            maxLength={GvUserJobLength}
+          ? <>
+            <StMypageTextInput
+              name="userJob"
+              value={job}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setJob(e.target.value); setUserJobValidation(false)}}
+              onKeyPress={onKeyPressJobHandler}
+              maxLength={GvUserJobLength}
             />
+            <StInputValidationBox>{userJobValidation && <StInputValidationText>직업을 입력해 주세요.</StInputValidationText>}</StInputValidationBox>
+            </>
           : <StMypageText>{job}</StMypageText>
           }
           <StSubTitleDiv>
@@ -182,13 +197,16 @@ const MyPage = () => {
             {editDesc ? <StSubTitleEdit onClick={() => onClickEditDescHandler(desc)}>편집 완료</StSubTitleEdit> : <StSubTitleEdit onClick={() => {setEditDesc(true)}}>편집</StSubTitleEdit>}
           </StSubTitleDiv>
           {editDesc
-          ? <StMypageTextInput
-            name="userDesc"
-            value={desc}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDesc(e.target.value)}
-            onKeyPress={onKeyPressDescHandler}
-            maxLength={GvUserStatusMessageLength}
+          ? <>
+            <StMypageTextInput
+              name="userDesc"
+              value={desc}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setDesc(e.target.value); setDescValidation(false)}}
+              onKeyPress={onKeyPressDescHandler}
+              maxLength={GvUserStatusMessageLength}
             />
+            <StInputValidationBox>{descValidation && <StInputValidationText>상태 메세지를 입력해 주세요.</StInputValidationText>}</StInputValidationBox>
+            </>
           : <StMypageText>{desc}</StMypageText>
           }
         </StMypageProfileDiv>
@@ -343,6 +361,17 @@ const StMypageTextInput = styled.input`
     outline : none;
   }
 `
+const StInputValidationBox = styled.div`
+  position: relative;
+  width: 100%; 
+`;
+const StInputValidationText = styled.h3`
+  position: absolute;
+  top: 0;
+  font-size : 0.75rem;
+  font-weight : 400;
+  color : #ff3b30;
+`;
 
 const StMypageWorkspaceDiv = styled.div`
   display : flex;
