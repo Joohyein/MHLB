@@ -136,7 +136,8 @@ const Register = () => {
   };
 
   const onClickRegister = () => {
-    if (!nameValue) {
+    const tmpNameValue = nameValue.replaceAll(' ', '');
+    if (!nameValue || !tmpNameValue) {
       setNameValidation(true);
     } else {
       register({email: emailValue, password: passwordValue, userName: nameValue, userJob: jobValue, userDesc: descValue})
