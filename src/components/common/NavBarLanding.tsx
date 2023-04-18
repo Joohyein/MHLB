@@ -6,9 +6,14 @@ const NavBarLanding = () => {
 
     const navigate = useNavigate();
 
+    const onClickLogo = () => {
+        if (window.location.pathname === '/') return;
+        navigate('/')
+    };
+
     return (
         <StNavBar>
-            <StLogo onClick = {() => {navigate('/')}}>
+            <StLogo onClick = {() => {onClickLogo()}}>
                 Pin me
             </StLogo>
             <StLinkDiv>
