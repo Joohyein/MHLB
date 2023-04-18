@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Wrapper from "../components/common/Wrapper";
 import useInput from "../hooks/useInput";
 import useInputRefFocus from "../hooks/useInputRefFocus";
-import useIsLogin from "../hooks/useIsLogin";
 import useDebounce from "../hooks/useDebounce";
 import { duplicateEmailCheck } from "../api/general";
 import GoogleSocialIcon from "../components/asset/icons/GoogleSocialIcon";
@@ -14,12 +13,8 @@ import { GvUserJobLength, GvUserNameLength, GvUserStatusMessageLength } from "..
 import { logEvent } from "../util/amplitude";
 
 const Register = () => {
-  const isLogin = useIsLogin();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isLogin === true) return navigate("/select-workspace");
-  }, [isLogin]);
+  const navigate = useNavigate();
 
   const [emailValue, setEmailValue] = useInput();
   const [passwordValue, setPasswordValue] = useInput();

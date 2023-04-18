@@ -49,6 +49,12 @@ const NavBarWorkspace = () => {
         })
     }, [])
 
+    const onClickLogo = () => {
+        if (window.location.pathname === '/select-workspace') return;
+        logEvent('Logo click', {from: 'Nav bar workspace'});
+        navigate('/select-workspace');
+    };
+
     const onClickProfileImage = () => {
         setOpenProfile(!openProfile);
     }
@@ -70,7 +76,7 @@ const NavBarWorkspace = () => {
 
     return (
         <StNavBar>
-            <StLogo onClick = {() => {logEvent('Logo click', {from: 'Nav bar workspace'}); navigate('/select-workspace')}}>
+            <StLogo onClick = {() => {onClickLogo()}}>
                 Pin me
             </StLogo>
             <StRightsideDiv ref = {dropdownRef}>
