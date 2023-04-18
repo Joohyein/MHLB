@@ -6,12 +6,7 @@ import useIsLogin from "../hooks/useIsLogin";
 
 const ResetPasswordSent = () => {
 
-    const isLogin = useIsLogin();
     const navigate = useNavigate();
-  
-    useEffect(() => {
-      if(isLogin === true) return navigate('/select-workspace');
-    }, [isLogin])
 
     return (
     <Wrapper>

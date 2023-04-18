@@ -6,18 +6,12 @@ import GoogleSocialIcon from "../components/asset/icons/GoogleSocialIcon";
 import Wrapper from "../components/common/Wrapper";
 import useInput from "../hooks/useInput";
 import useInputRefFocus from "../hooks/useInputRefFocus";
-import useIsLogin from "../hooks/useIsLogin";
 import { setCookie } from "../cookie/cookies";
 import { logEvent } from "../util/amplitude";
 
 const Login = () => {
 
-  const isLogin = useIsLogin();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if(isLogin === true) return navigate('/select-workspace');
-  }, [isLogin])
 
   const [emailValue, setEmailValue] = useInput();
   const [passwordValue, setPasswordValue] = useInput();

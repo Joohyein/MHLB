@@ -5,16 +5,10 @@ import { resetPassword } from "../api/auth";
 import Wrapper from "../components/common/Wrapper";
 import useInput from "../hooks/useInput";
 import useInputRefFocus from "../hooks/useInputRefFocus";
-import useIsLogin from "../hooks/useIsLogin";
 
 const ResetPassword = () => {
 
-    const isLogin = useIsLogin();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (isLogin === true) return navigate("/select-workspace");
-    }, [isLogin]);
 
     const params = useParams();
 

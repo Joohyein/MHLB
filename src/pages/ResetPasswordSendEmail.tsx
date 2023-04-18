@@ -7,16 +7,10 @@ import Wrapper from "../components/common/Wrapper";
 import useDebounce from "../hooks/useDebounce";
 import useInput from "../hooks/useInput";
 import useInputRefFocus from "../hooks/useInputRefFocus";
-import useIsLogin from "../hooks/useIsLogin";
 
 const ResetPasswordSendEmail = () => {
 
-    const isLogin = useIsLogin();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if(isLogin === true) return navigate('/select-workspace');
-    }, [isLogin])
 
     const [emailValue, setEmailValue] = useInput();
 
