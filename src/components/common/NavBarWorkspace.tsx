@@ -30,15 +30,14 @@ const NavBarWorkspace = () => {
         if(!toast) {
             setToastAnimation('close');
             return;
-        }
-        let timer2:any;
-        const timer = setTimeout(() => {
+        };
+        setTimeout(() => {
             setToastAnimation('open');
-            timer2 = setTimeout(() => {
+            setTimeout(() => {
                 setToast(false);
             },3000);
-        }, 3000);
-        return () => {clearTimeout(timer); clearTimeout(timer2); setToast(false)}
+        }, 0);
+        return () => {}
     }, [toast]);
 
     useEffect(()=>{
@@ -105,7 +104,8 @@ const NavBarWorkspace = () => {
                     </StProfileDropdownDiv>
                     : null}
             </StRightsideDiv>
-            <StToast toast={toastAnimation} onClick={() => navigate('/my-page')}>
+            <StToast toast={toastAnimation} onClick={() => {navigate('/my-page'); setToast(false)}}>
+                <StToastBadge></StToastBadge>
                 <h3>새로운 초대가 도착했습니다.</h3>
             </StToast>
         </StNavBar>
@@ -235,6 +235,7 @@ const StToast = styled.div<{toast:string}>`
     display: ${props => props.toast === 'none' ? 'none' : 'flex'};
     justify-content: center;
     align-items: center;
+    gap: 8px;
     position: fixed;
     top:72px;
     right:12px;
@@ -250,4 +251,10 @@ const StToast = styled.div<{toast:string}>`
     box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.05);
     cursor: pointer;
     animation: ${props => props.toast === 'open' ? slideIn : slideOut} 0.5s ease-in-out 0s 1 normal forwards;
+`;
+const StToastBadge = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: #007aff;
+  border-radius: 50%;
 `;
