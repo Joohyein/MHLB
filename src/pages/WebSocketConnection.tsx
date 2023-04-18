@@ -12,7 +12,7 @@ const WebSocketConnection = () => {
     
     const dispatch = useDispatch();
 
-    const isLogin = useIsLogin();
+    const isLogin = useIsLogin(true);
     const navigate = useNavigate();
 
     useEffect(() => {
