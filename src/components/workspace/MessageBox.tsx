@@ -18,16 +18,14 @@ function MessageBox({setUserData, chatListProps}:{setUserData:any, chatListProps
     setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, checkPersonInbox:false, toggle:true})
     logEvent('Click Chat room', {from : 'Main page Right side bar Inbox'})
   };
+
   return (
     <StContainer>
-      <StInputBox>
-        <StInput name="search" placeholder="이름으로 검색(추후 개발)" />
-      </StInputBox>
       <StChatListBox>
         {
+          chatListProps.length ?
           chatListProps?.map((item:ChatListType) => {
             return (
-            chatListProps.length ?
               <StChatRoom key={item.userId} onClick={()=>onClickChatRoomHandler(item.uuid, item.userId, item.userName, item.userImage)}>
                 <StUserDatabox>
                 <StUserImage src={item.userImage} />
@@ -38,8 +36,13 @@ function MessageBox({setUserData, chatListProps}:{setUserData:any, chatListProps
                 </StUserDatabox>
                 {item.unreadMessages === 0 ? null : <StUnreadMsg>{item.unreadMessages}</StUnreadMsg>}
               </StChatRoom>
-             :  <StNoneText>아직 대화방이 없습니다.</StNoneText> )
+             )
           })
+          :  <StNoneText>
+            <h3>아직 대화방이 없습니다.</h3>
+            <h3>멤버 목록에서 멤버를 클릭하여</h3>
+            <h3>대화를 시작해 보세요!</h3>
+          </StNoneText>
         }
       </StChatListBox>
     </StContainer>
@@ -54,30 +57,11 @@ const StContainer = styled.div`
   height: 100%;
 `;
 
-const StInputBox = styled.div`
-  margin-top : 16px;
-  width: 100%;
-  box-sizing: border-box;
-`;
-const StInput = styled.input`
-  padding: 12px 16px;
-  width: 100%;
-  box-sizing: border-box;
-  border: none;
-  border-radius: 18px;
-  box-shadow: 0 0 5px 0 lightgray;
-  &:focus {
-    outline: none;
-  }
-  &::-webkit-input-placeholder {
-    color: #B1B1B1;
-    font-weight: 200;
-  }
-`;
 const StChatListBox = styled.div`
   display: flex;
   flex-direction: column;
   height: 88%;
+  margin-top: 24px;
 `;
 const StChatRoom = styled.div`
   padding: 16px 0px;
@@ -127,7 +111,16 @@ const StUnreadMsg = styled.div`
   color: #ffffff;
   font-size: 12px;
 `;
-const StNoneText = styled.h3`
-  font-size: 12px;
-  color: #7f7f7f;
+const StNoneText = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  h3 {
+    font-size: 12px;
+    font-weight: 400;
+    color: #7f7f7f;
+    line-height: 24px;
+  }
 `;
