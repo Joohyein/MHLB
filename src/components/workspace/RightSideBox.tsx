@@ -4,8 +4,8 @@ import MembersBox from "./MembersBox";
 import MessageBox from "./MessageBox";
 import Chat from "./Chat";
 import { useLocation, useParams } from "react-router-dom";
-import { getPeopleList } from "../../api/workspace";
 import { logEvent } from "../../util/amplitude";
+import useOutsideClick from "../../hooks/useOutsideClick";
 
 export interface MemberDataType {
   userId: number,
@@ -28,7 +28,7 @@ interface SetUserDataType {
   toggle: boolean
 };
 
-function RightSideBox({userListData, setMouseHoverSection, chatListProps, setChatListProps} : {userListData : any, setMouseHoverSection : any, chatListProps : any, setChatListProps : any}) {
+function RightSideBox({userListData, setMouseHoverSection, chatListProps, setChatListProps, menuOpen} : {userListData : any, setMouseHoverSection : any, chatListProps : any, setChatListProps : any, menuOpen:boolean}) {
   const params = useParams();
 
   const [toggle, setToggle] = useState(false);
@@ -36,8 +36,8 @@ function RightSideBox({userListData, setMouseHoverSection, chatListProps, setCha
 
   const [peopleArr, setPeopleArr] = useState<any>([]);
 
-  const [isChat, setIsChat] = useState(false); // 사람 클릭시, 채팅방 클릭시 채팅방으로 이동
-  const [userId, setUserId] = useState<number>(); // 채팅방 id <Chat /> 에 넘겨주기
+  const [isChat, setIsChat] = useState(false); 
+  const [userId, setUserId] = useState<number>(); 
   const [userName, setUserName] = useState('');
   const [userImage, setUserImage] = useState('');
   const [userJob, setUserJob] = useState('');
@@ -45,6 +45,8 @@ function RightSideBox({userListData, setMouseHoverSection, chatListProps, setCha
 
   const [uuid, setUuid] = useState('');
   const [checkPersonInbox, setCheckPersonInbox] = useState(true);
+  const [openHelp, setOpenHelp] = useState(true);
+  const dropdownRef = useOutsideClick(() => {setOpenHelp(false)});
 
   const location = useLocation();
 
@@ -126,6 +128,17 @@ function RightSideBox({userListData, setMouseHoverSection, chatListProps, setCha
           }
           </StListBox>
       }
+      {!toggle && menuOpen && <StHelpBoxDiv ref={dropdownRef}>
+        <StHelpBtn onClick={() => setOpenHelp(!openHelp)}>?</StHelpBtn>
+        {openHelp
+            && <StHelpDropdownDiv>
+                <StHelpDropdownContent><StStatus bgColor={0}></StStatus>근무</StHelpDropdownContent>
+                <StHelpDropdownContent><StStatus bgColor={1}></StStatus>회의, 식사, 자리비움</StHelpDropdownContent>
+                <StHelpDropdownContent><StStatus bgColor={2}></StStatus>출장</StHelpDropdownContent>
+                <StHelpDropdownContent><StStatus bgColor={3}></StStatus>휴가, 업무 종료</StHelpDropdownContent>
+            </StHelpDropdownDiv>
+        }
+      </StHelpBoxDiv>}
     </StContainer>
   )
 }
@@ -137,6 +150,7 @@ const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
 `;
 const StSelectBox = styled.div`
   display: flex;
@@ -174,4 +188,64 @@ const StListBox = styled.div`
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
+`;
+
+const StHelpBoxDiv = styled.div`
+
+`;
+const StHelpBtn = styled.button`
+    position: absolute;
+    bottom: 16px;
+    left: -64px;
+    z-index: 999;
+    display : flex;
+    flex-direction : column;
+    align-items : center;
+    justify-content : center;
+    width : 48px;
+    height : 48px;
+    border: none;
+    border-radius : 64px;
+    background-color : white;
+    box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.1);
+    font-size: 24px;
+    color: #303030;
+    cursor : pointer;
+`;
+
+
+const StHelpDropdownDiv = styled.div`
+    position : absolute;
+    background-color : white;
+    border-radius : 4px;
+    width : auto;
+    height : auto;
+    bottom: 24px;
+    left : -264px;
+    box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.05);
+    padding : 16px;
+    display : flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap : 16px;
+    z-index: 4;
+`
+
+const StHelpDropdownContent = styled.div`
+    font-size : 1rem;
+    font-weight : 400;
+    color : #303030;
+    transition : 200ms;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+`;
+const StStatus = styled.div<{bgColor:number}>`
+  width: 8px;
+  height: 8px;
+  transition : 200ms;
+  background-color: ${props => props.bgColor === 0 ? '#34C759' : props.bgColor === 1 ? '#FFCC01' : props.bgColor === 2 ? '#FF3B31' : '#7F7F7F'};
+  border-radius: 50%;
+  margin-right: 4px;
 `;

@@ -27,7 +27,7 @@ const RightSideBar = ({userListData, setMouseHoverSection, chatListProps, setCha
                 {menuOpen ? <Close size = {'36'} fill = {'#303030'} onClick = {() => {logEvent('Close Right side bar button', {from:'Main page Right side bar'})}} cursor = {'pointer'} /> : <OpenMenu size = {'36'} onClick={()=>{logEvent('Open right side bar button', {from: 'Main page right side bar'})}} fill = {'#303030'}/>}
             </StOpener>
             {/* RightSideBox implement not yet */}
-            <RightSideBox userListData = {userListData} setMouseHoverSection = {setMouseHoverSection} chatListProps = {chatListProps} setChatListProps = {setChatListProps}/>
+            <RightSideBox userListData = {userListData} setMouseHoverSection = {setMouseHoverSection} chatListProps = {chatListProps} setChatListProps = {setChatListProps} menuOpen={menuOpen}/>
         </StRightSideContainer>
     );
 };
