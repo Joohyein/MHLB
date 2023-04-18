@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { navBarProfileImage } from "../../api/general";
 import useLogout from "../../hooks/useLogout";
 import useOutsideClick from "../../hooks/useOutsideClick"
@@ -22,12 +22,30 @@ const NavBarWorkspace = () => {
     const stompClient = useSelector((state : any) => state.websocket.stompClient);
     const myUserId = getCookie('userId');
     const [inviteBadge, setInviteBadge] = useState(false);
+    const [toast, setToast] = useState(false);
+    const [toastAnimation, setToastAnimation] = useState('none');
+
+    useEffect(() => {
+        if(toastAnimation === 'none') return;
+        if(!toast) {
+            setToastAnimation('close');
+            return;
+        };
+        setTimeout(() => {
+            setToastAnimation('open');
+            setTimeout(() => {
+                setToast(false);
+            },3000);
+        }, 0);
+        return () => {}
+    }, [toast]);
 
     useEffect(()=>{
         if(Object.keys(stompClient).length) {
             stompClient.subscribe(`/sub/workspace-invite/${myUserId}`, (data : any) => {
-                console.log(data.body);
                 setInviteBadge((JSON.parse(data.body)).invitedWorkspace);
+                setToast((JSON.parse(data.body)).invitedWorkspace);
+                setToastAnimation('');
             });
         }
         return () => {
@@ -92,6 +110,10 @@ const NavBarWorkspace = () => {
                     </StProfileDropdownDiv>
                     : null}
             </StRightsideDiv>
+            <StToast toast={toastAnimation} onClick={() => {navigate('/my-page'); setToast(false)}}>
+                <StToastBadge></StToastBadge>
+                <h3>새로운 초대가 도착했습니다.</h3>
+            </StToast>
         </StNavBar>
     )
 };
@@ -193,5 +215,52 @@ const StInviteBadge = styled.div`
   width: 8px;
   height: 8px;
   background-color: #ff5f5f ;
+  border-radius: 50%;
+`;
+
+
+
+const slideIn = keyframes`
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateY(0%);
+    }
+`;
+const slideOut = keyframes`
+    from {
+        transform: translateX(0%);
+    }
+    to {
+        transform: translateX(300%);
+    }
+`;
+
+const StToast = styled.div<{toast:string}>`
+    display: ${props => props.toast === 'none' ? 'none' : 'flex'};
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    position: fixed;
+    top:72px;
+    right:12px;
+    width: 256px;
+    height: 76px;
+    h3 {
+        font-size: 16px;
+        font-weight: 400;
+    }
+    background-color: #ffffff;
+    border: 1px solid #007aff;
+    border-radius: 10px;
+    box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    animation: ${props => props.toast === 'open' ? slideIn : slideOut} 0.5s ease-in-out 0s 1 normal forwards;
+`;
+const StToastBadge = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: #007aff;
   border-radius: 50%;
 `;
