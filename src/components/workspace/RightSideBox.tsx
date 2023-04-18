@@ -45,7 +45,7 @@ function RightSideBox({userListData, setMouseHoverSection, chatListProps, setCha
 
   const [uuid, setUuid] = useState('');
   const [checkPersonInbox, setCheckPersonInbox] = useState(true);
-  const [openHelp, setOpenHelp] = useState(true);
+  const [openHelp, setOpenHelp] = useState(false);
   const dropdownRef = useOutsideClick(() => {setOpenHelp(false)});
 
   const location = useLocation();
