@@ -78,7 +78,7 @@ function CreateWorkspaceModal({modalRef, setCreateModal}: {modalRef: React.Mutab
       } else if(error.response.data.code === 'E-03') {
         alert(`이미지 확장자를 변경해 주세요.
 가능한 이미지 파일 확장자: .png, .jpg, .jpeg, .gif`);
-      }
+      } 
     });
     setCreateModal(false);
   };

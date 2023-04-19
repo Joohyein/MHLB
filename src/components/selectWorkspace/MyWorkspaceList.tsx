@@ -12,13 +12,16 @@ interface workspaceListType {
     workspaceTitle: string
 };
 
-function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
+function MyWorkspaceList({workspaceData} : {workspaceData: workspaceListType}) {
 
   const navigate = useNavigate();
 
   const [userList, setUserList] = useState<any>([]);
   const [userListLength, setUserListLength] = useState<any>();
   const [recentMessage, setRecentMessage] = useState<any>();
+
+  const [isGetPeopleListError, setIsGetPeopleListError] = useState(false);
+  const [isGetChatListError, setIsGetChatListError] = useState(false);
 
   const recentMessageRef = useRef<any>(null);
 
@@ -34,14 +37,14 @@ function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
       }
     })
     .catch((error) =>{
-      console.log(error);
+      if(error.response.data.code === 'W-01') setIsGetPeopleListError(true);
     })
     getChatList(workspaceData.workspaceId)
     .then((res) => {
       setRecentMessage(res.slice(0, 3));
     })
     .catch((error) => {
-      console.log(error);
+      if(error.response.data.code === 'W-01') setIsGetChatListError(true);
     })
   }, [workspaceData])
 
@@ -68,9 +71,10 @@ function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
             </StProfileDiv>
             )
           })}
-          {userListLength <= 7 ? null : <StUserListOverCount>+{userListLength - 6}</StUserListOverCount>}
+          {userListLength && userListLength > 7 && <StUserListOverCount>+{userListLength - 6}</StUserListOverCount>}
         </StUserListDiv>
-        {userListLength === 0 ? <StEmptyPlaceholder>현재 근무 중인 멤버가 없습니다.</StEmptyPlaceholder> : null}
+        {userListLength === 0 && !isGetPeopleListError ? <StEmptyPlaceholder>현재 근무 중인 멤버가 없습니다.</StEmptyPlaceholder> : null}
+        {isGetPeopleListError && <StEmptyPlaceholder>현재 근무 중인 멤버 목록을 불러오지 못했습니다.</StEmptyPlaceholder>}
       </StCurrentUserDiv>
       <StHrTag />
       <StRecentMessageListDiv>
@@ -88,7 +92,8 @@ function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
                 </StMessageContentDiv>
               )
           })}
-          {recentMessage?.length === 0 ? <StEmptyPlaceholder>읽지 않은 메세지가 없습니다.</StEmptyPlaceholder> : null}
+          {!isGetChatListError && recentMessage?.length === 0 ? <StEmptyPlaceholder>읽지 않은 메세지가 없습니다.</StEmptyPlaceholder> : null}
+          {isGetChatListError && <StEmptyPlaceholder>최근 메시지 목록을 불러오지 못했습니다.</StEmptyPlaceholder>}
         </StRecentMessageList>
       </StRecentMessageListDiv>
   </StWorkspaceBox>

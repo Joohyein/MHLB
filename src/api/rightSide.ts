@@ -1,7 +1,7 @@
 import instance from "./instance/instance";
 
 const getChatList = async (workspaceId:number) => {
-  const response = await instance.get(`/api/inbox?id=${workspaceId}`);
+  const response = await instance.get(`/api/inbox?id=${345}`);
   return response.data;
 };
 

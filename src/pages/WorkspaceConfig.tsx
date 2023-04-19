@@ -20,14 +20,16 @@ import Plus from '../components/asset/icons/Plus';
 import useInput from '../hooks/useInput';
 import { GvWorkspaceDescLength, GvWorkspaceNameLength } from '../global/LimitConfig';
 import { logEvent } from '../util/amplitude';
+import IsLoading from '../components/common/IsLoading';
+import IsError from '../components/common/IsError';
 
 const WorkspaceConfig = () => {
 
   const params = useParams();
   const navigate = useNavigate();
 
-  const { isLoading: isLoadingInfo, data: workspaceInfoData } = useQuery('workspaceInfo',() => getWorkspaceInfo({workspaceId : params.workspaceId}));
-  const { isLoading: isLoadingMember, data: workspaceMember } = useQuery('workspaceMember',() => getWorkspaceMember({workspaceId : params.workspaceId}));
+  const { isLoading: isLoadingInfo, isError: isErrorInfo, data: workspaceInfoData } = useQuery('workspaceInfo',() => getWorkspaceInfo({workspaceId : params.workspaceId}));
+  const { isLoading: isLoadingMember, isError: isErrorMember, data: workspaceMember } = useQuery('workspaceMember',() => getWorkspaceMember({workspaceId : params.workspaceId}));
   const imgInputRef = useRef<any>(null);
   const titleInputRef:React.MutableRefObject<any> = useRef(null);
 
@@ -169,6 +171,9 @@ const WorkspaceConfig = () => {
     const workspaceId = workspaceInfoData?.workspaceId;
     mutationRole.mutate({ userId, userRole, workspaceId });
   };
+
+  if(isLoadingMember || isLoadingInfo) return IsLoading();
+  if(isErrorMember || isErrorInfo) return IsError();
 
   return (
     <Wrapper>
