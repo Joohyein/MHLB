@@ -25,6 +25,7 @@ const Login = () => {
   const [emailValidation, setEmailValidation] = useState(false);
   const [passwordValidation, setPasswordValidation] = useState(false);
   const [wrongValidation, setWrongValidation] = useState(false);
+  const [socialAccountErrorValidation, setSocialAccountErrorValidation] = useState(false);
 
   const onEnterKeyDownEmail = (e : React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === 'Enter') {
@@ -56,6 +57,7 @@ const Login = () => {
       })
       .catch((error) => {
         if(error.response.data.code === 'U-02') return setWrongValidation(true);
+        if(error.response.data.code === 'U-04') return setSocialAccountErrorValidation(true);
       })
     }
   }
@@ -78,6 +80,7 @@ const Login = () => {
     setEmailValidation(false);
     setPasswordValidation(false);
     setWrongValidation(false);
+    setSocialAccountErrorValidation(false);
   }
 
   useEffect(() => {
@@ -102,6 +105,7 @@ const Login = () => {
             {passwordValidation ? <StValidationText>비밀번호를 입력해주세요.</StValidationText> : null}
             {emptyValidation ? <StValidationText>모든 정보를 입력해주세요.</StValidationText> : null}
             {wrongValidation ? <StValidationText>이메일이나 비밀번호가 틀렸습니다.</StValidationText> : null}
+            {socialAccountErrorValidation ? <StValidationText>소셜로그인으로 가입된 계정입니다.</StValidationText> : null}
             <StFindPassword to = '/reset-password-send-email'>비밀번호를 잊어버리셨나요?</StFindPassword>
           </StValidationTextDiv>
           <StLoginButton ref = {loginButtonRef} onClick = {() => {onClickLogin()}}>로그인</StLoginButton>
