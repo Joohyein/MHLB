@@ -42,7 +42,9 @@ const Register = () => {
           }
         })
         .catch((error) => {
-          setDuplicateEmailValidation(true);
+          if(error.response.data.code === 'U-01') {
+            setDuplicateEmailValidation(true);
+          }
         });
       }
     }
