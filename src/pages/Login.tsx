@@ -55,7 +55,7 @@ const Login = () => {
         navigate("/select-workspace");
       })
       .catch((error) => {
-        if(error.response.status === 400) return setWrongValidation(true);
+        if(error.response.data.code === 'U-02') return setWrongValidation(true);
       })
     }
   }
