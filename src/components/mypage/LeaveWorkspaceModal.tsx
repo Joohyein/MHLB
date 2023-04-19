@@ -23,7 +23,12 @@ function LeaveWorkspaceModal({modalRef, setLeaveModal, dataWorkspace, myWorkspac
       setLeaveModal(false);
       logEvent('Leave workspace Success', {from: 'My page'});
     },
-    onError: (error) => console.log("error: ", error)
+    onError: (error:any) => {
+      if(error.response.data.code === 'W-01') {
+        alert('존재하지 않는 워크스페이스입니다.');
+        window.location.reload();
+      }
+    }
   });
   
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,11 +154,7 @@ const StWarnningText = styled.div`
     font-weight: 400;
     color: #676767;
   }
-  strong {
-    font-size: 12px;
-    color: #000000; 
-    font-weight: 600;
-  }
+
 `;
 
 const StInputBox = styled.div`
@@ -178,7 +179,11 @@ const StLeaveBtnTrue = styled.button`
   border-radius: 4px;
   color: #FFFFFF;
   background-color: #FF3B31;
+  outline: none;
   cursor: pointer;
+  &:focus{
+    outline: none;
+  }
 `;
 const StLeaveBtn = styled.button`
   padding: 10px;
@@ -186,4 +191,7 @@ const StLeaveBtn = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  &:focus{
+    outline: none;
+  }
 `;

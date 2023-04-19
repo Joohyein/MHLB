@@ -14,18 +14,26 @@ function InvitedWorkspace({invitedWorkspaceData}:{invitedWorkspaceData:InvitedWo
   const queryClient = useQueryClient();
 
   const mutationAccept = useMutation(acceptInvite, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries('workspace');
-      console.log(response);
     },
-    onError: (error) => console.log(error)
+    onError: (error: any) => {
+      if(error.response.data.code === 'W-01') {
+        alert('삭제된 워크스페이스이거나 존재하지 않는 워크스페이스 입니다.');
+        window.location.reload();
+      }
+    }
   });
   const mutationReject = useMutation(rejectInvite, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries('workspace');
-      console.log(response);
     },
-    onError: (error) => console.log(error)
+    onError: (error: any) => {
+      if(error.response.data.code === 'W-01') {
+        alert('삭제된 워크스페이스이거나 존재하지 않는 워크스페이스 입니다.');
+        window.location.reload();
+      }
+    }
   });
 
   const onClickAcceptHandler = (workspaceId: number) => {

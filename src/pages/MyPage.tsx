@@ -63,25 +63,33 @@ const MyPage = () => {
   const mutationImg = useMutation(editProfileImg, {
     onSuccess: () => {
       queryClient.invalidateQueries('user');
+    }, 
+    onError: (error: any) => {
+      if(error.response.data.code === 'E-01') {
+        alert('이미지 파일이 첨부되지 않았습니다.');
+      } else if(error.response.data.code === 'E-02' || error.response.data.code === 'E-04') {
+        alert('예상치 못한 오류가 발생했습니다.');
+        window.location.reload();
+      } else if(error.response.data.code === 'E-03') {
+        alert(`이미지 확장자를 변경해 주세요.
+가능한 이미지 파일 확장자: .png, .jpg, .jpeg, .gif`);
+      };
     }
   });
   const mutationName = useMutation(editUserName, {
     onSuccess: () => {
       queryClient.invalidateQueries('user');
-    },
-    onError: (error) =>{console.log("error : ", error)}
+    }
   });
   const mutationJob = useMutation(editUserJob, {
     onSuccess: () => {
       queryClient.invalidateQueries('user');
-    },
-    onError: (error) => {console.log(error)}
+    }
   })
   const mutationDesc = useMutation(editUserDesc, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries('user');
-    },
-    onError: (error) => {console.log(error)}
+    }
   })
 
   // onClickHandler
