@@ -60,6 +60,11 @@ const ResetPassword = () => {
             .then((res) => {
                 navigate('/reset-password-succeed')
             })
+            .catch((error) => {
+              if (error.response.data.code === 'U-05') {
+                alert('시간이 지났거나 유효하지 않은 비밀번호 변경입니다.');
+              }
+            })
         }
     }
 
