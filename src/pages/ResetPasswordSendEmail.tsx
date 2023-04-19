@@ -25,32 +25,10 @@ const ResetPasswordSendEmail = () => {
     const [duplicateEmailValidation, setDuplicateEmailValidation] = useState(false);
     const [allowEmailMessage, setAllowEmailMessage] = useState(false);
     const [errorMessageToggle, setErrorMessageToggle] = useState(false);
+    const [socialAccountErrorValidation, setSocialAccountErrorValidation] = useState(false);
 
     const [enableSendEmail, setEnableSendEmail] = useState(false);
     const [disableEmail, setDisableEmail] = useState(true);
-
-    const onClickFindPassword = () => {
-        if (!emailValue) {
-            setEmptyValidation(true);
-        } else if (!(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}|\.[a-z]{2,3}\.[a-z]{2,3}/g).test(emailValue)) {
-            setEmailFormValidation(true);
-        } else {
-            if (enableSendEmail) {
-                setDisableEmail(false);
-                sendResetPasswordEmail({email : emailValue})
-                .then((res) => {
-                    console.log(res);
-                    setDisableEmail(true);
-                    navigate('/reset-password-sent');
-                })
-                .catch((error) => {
-                    setDisableEmail(true);
-                    setErrorMessageToggle(true);
-                    setDuplicateEmailValidation(false);
-                })
-            }
-        }
-    };
 
     useEffect(() => {
         if (allowedEmailValidation) {
@@ -62,7 +40,7 @@ const ResetPasswordSendEmail = () => {
                     setEnableSendEmail(true);
                     })
                     .catch((error) => {
-                    if(error.response.status === 400) {
+                    if(error.response.data.code === 'U-02') {
                       setDuplicateEmailValidation(false);
                       setAllowEmailMessage(true);
                       setEnableSendEmail(false);
@@ -79,12 +57,42 @@ const ResetPasswordSendEmail = () => {
         }
     }
 
+    const onClickFindPassword = () => {
+      if (!emailValue) {
+          setEmptyValidation(true);
+      } else if (!(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}|\.[a-z]{2,3}\.[a-z]{2,3}/g).test(emailValue)) {
+          setEmailFormValidation(true);
+      } else {
+          if (enableSendEmail) {
+              setDisableEmail(false);
+              sendResetPasswordEmail({email : emailValue})
+              .then((res) => {
+                  console.log(res);
+                  setDisableEmail(true);
+                  navigate('/reset-password-sent');
+              })
+              .catch((error) => {
+                  if (error.response.data.code === 'U-04') {
+                    setSocialAccountErrorValidation(true);
+                    setDisableEmail(true);
+                    setDuplicateEmailValidation(false);
+                  } else {
+                    setErrorMessageToggle(true);
+                    setDisableEmail(true);
+                    setDuplicateEmailValidation(false);
+                  }
+              })
+          }
+      }
+  };
+
     const clearWarningMessage = () => {
         setAllowedEmailValidation(true);
         setIsEmailInput(false);
         setEmptyValidation(false);
         setEmailFormValidation(false);
         setErrorMessageToggle(false);
+        setSocialAccountErrorValidation(false);
       };
 
     return (
@@ -100,6 +108,7 @@ const ResetPasswordSendEmail = () => {
                       {emailFormValidation ? <StValidationText>이메일 형식을 확인해주세요.</StValidationText> : null}
                       {emptyValidation ? <StValidationText>이메일을 입력해주세요.</StValidationText> : null}
                       {errorMessageToggle ? <StValidationText>오류가 발생했습니다. 다시 시도해주세요.</StValidationText> : null}
+                      {socialAccountErrorValidation ? <StValidationText>소셜로그인으로 처리된 이메일입니다.</StValidationText> : null}
                     </StValidationTextDiv>
                     {disableEmail ? <StActivatedButton onClick = {() => {onClickFindPassword()}}>비밀번호 재설정 메일 보내기</StActivatedButton> : <StDeactivatedButton>비밀번호 재설정 메일 보내기</StDeactivatedButton>}
                     <StValidationTextDiv>
