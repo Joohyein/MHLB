@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import Wrapper from "./Wrapper";
 
 const IsLoading = () => {
-    return <StLoadingDiv><StMotionLoading initial={{ scale : 0 }} animate={{ scale : 1 }} transition={{ duration : 0.5, repeat: Infinity }} /></StLoadingDiv>;
+    return <Wrapper>
+        <StLoadingDiv><StMotionLoading initial={{ scale : 0 }} animate={{ scale : 1 }} transition={{ duration : 0.5, repeat: Infinity }} /></StLoadingDiv>
+    </Wrapper>
 };
 
 export default IsLoading;

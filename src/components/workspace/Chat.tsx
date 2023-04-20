@@ -5,6 +5,7 @@ import { getCookie } from "../../cookie/cookies";
 import ArrowBack from "../asset/icons/ArrowBack";
 import { useSelector } from "react-redux";
 import { logEvent } from "../../util/amplitude";
+import { useNavigate } from "react-router-dom";
 
 interface MessagesType {
   messageId: number,
@@ -22,7 +23,6 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
 
   const [messages, setMessages] = useState<MessagesType[]>([]); 
   const [prevMessages, setPrevMessages] = useState<MessagesType[]>([]);
-  // const [stompClient, setStompClient] = useState<any>(null);
   const [inputMessage, setInputMessage] = useState('');
   const [websocketConnected, setWebsocketConnected] = useState(false);
 
@@ -31,11 +31,20 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
   const [isLastMessage, setIsLastMessage] = useState(false);
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     return (() => {
       getChatList(Number(workspaceId))
       .then((res) => {
           setChatListProps(res);
+      })
+      .catch((error) => {
+        if(error.response.data.code === 'W-01') {
+          alert('워크스페이스가 삭제되었거나 존재하지 않는 워크스페이스입니다.');
+          navigate('/select-workspace');
+        }
+        
       })
     })
   }, [])
@@ -44,7 +53,6 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
     if(checkPersonInbox) {
       getUuid(Number(workspaceId), Number(userId))
       .then((res)=>{
-        console.log(res);
         setPersonBoxUuid(res);
       });
     } else {
@@ -123,7 +131,12 @@ function Chat({userId, uuid, checkPersonInbox, workspaceId, userName, userImage,
         }
         setPrevMessages((prev:MessagesType[]) => [...res, ...prev]);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        if(error.response.data.code === 'W-01'){
+          alert('워크스페이스가 삭제되었거나 존재하지 않는 워크스페이스입니다.');
+          navigate('/select-workspace');
+        }
+      });
     }
   }, [scrollIndex]);
 

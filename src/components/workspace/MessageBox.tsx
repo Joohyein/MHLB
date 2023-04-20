@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { logEvent } from "../../util/amplitude";
 
-interface ChatListType {
+export interface ChatListType {
   uuid: string,
   userId: number,
   userImage: string,
@@ -12,8 +12,8 @@ interface ChatListType {
   unreadMessage : boolean
 };
 
-function MessageBox({setUserData, chatListProps}:{setUserData:any, chatListProps : any}) {
-
+function MessageBox({setUserData, chatListProps}:{setUserData:any, chatListProps : ChatListType[]}) {
+    
   const onClickChatRoomHandler = (uuid:string, userId:number, userName:string, userImage:string) => {
     setUserData({isChat:true, userId:userId, userName:userName, uuid:uuid, userImage: userImage, checkPersonInbox:false, toggle:true})
     logEvent('Click Chat room', {from : 'Main page Right side bar Inbox'})
@@ -23,7 +23,7 @@ function MessageBox({setUserData, chatListProps}:{setUserData:any, chatListProps
     <StContainer>
       <StChatListBox>
         {
-          chatListProps.length ?
+          chatListProps?.length ?
           chatListProps?.map((item:ChatListType) => {
             return (
               <StChatRoom key={item.userId} onClick={()=>onClickChatRoomHandler(item.uuid, item.userId, item.userName, item.userImage)}>

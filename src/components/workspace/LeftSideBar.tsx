@@ -54,6 +54,12 @@ const LeftSideBar = ({setChatListProps} : {setChatListProps : any}) => {
             setChatListProps(res);
             setChatListData(res);
         })
+        .catch((error) =>{
+            if(error.response.data.code === 'W-01'){
+                alert('워크스페이스가 삭제되었거나 존재하지 않는 워크스페이스입니다.');
+                navigate('/select-workspace');
+            }
+        })
     }, [])
 
     useEffect(() => {

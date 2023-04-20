@@ -10,6 +10,7 @@ import Close from '../asset/icons/Close';
 import Lottie from 'react-lottie';
 import animationData from '../../threeDot.json';
 import { logEvent } from '../../util/amplitude';
+import { useNavigate } from 'react-router-dom';
 
 const defaultOptions:any| Readonly<any> = { 
   src:"https://assets9.lottiefiles.com/packages/lf20_Ok9qdZVyii.json",
@@ -24,6 +25,7 @@ const defaultOptions:any| Readonly<any> = {
 function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: React.MutableRefObject<any>; workspaceId: number; setInviteModal: (v: boolean) => void;}) {
   const { data } = useQuery('inviting', async () => getInviteMembers(workspaceId));
 
+  const navigate = useNavigate();
   const [inviteLoading, setInviteLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [emailValidation, setEmailValidation] = useState(false);
@@ -43,13 +45,39 @@ function AddMemberModal({modalRef, workspaceId, setInviteModal}: {modalRef: Reac
       setEmail('');
     },
     onError: (error:any) => {
-      if(error.response.data.statusCode === 400) setAlreadyInvited(true);
+      if(error.response.data.code === 'W-01') {
+        alert('해당 워크스페이스가 삭제되었거나 현재 존재하지 않는 워크스페이스입니다.');
+        navigate('/select-workspace');
+      } else if(error.response.data.code === 'M-01') {
+        setAlreadyInvited(true);
+      } else if(error.response.data.code === 'E-11') {
+        alert('해당 워크스페이스에 대한 접근 권한이 없습니다.');
+      } else if(error.response.data.code === 'SC-11') {
+        alert(`해당 워크스페이스 관리자 페이지에 대한 접근 권한이 없습니다.
+워크스페이스 관리자에게 문의하세요.`);
+        navigate('/select-workspace');
+      }
     }
   })
   const mutationCancel = useMutation(cancelInvite, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries('inviting');
-      console.log(response);
+    },
+    onError: (error: any) => {
+      if(error.response.data.code === 'W-01') {
+        alert('해당 워크스페이스가 삭제되었거나 존재하지 않는 워크스페이스입니다.');
+        navigate('/select-workspace');
+      } else if(error.response.data.code === 'W-02') {
+        alert('해당 멤버가 워크스페이스를 탈퇴했거나 현재 존재하지 않는 사용자입니다.');
+        window.location.reload();
+      } else if(error.response.data.code === 'E-11'){
+        alert('해당 워크스페이스에 대한 접근 권한이 없습니다.');
+        navigate('/select-workspace');
+      } else if(error.response.data.code === 'SC-11') {
+        alert(`해당 워크스페이스에 대한 접근 권한이 없습니다.
+워크스페이스 관리자에게 문의하세요`);
+        navigate('/select-workspace');
+      }
     }
   });
 
