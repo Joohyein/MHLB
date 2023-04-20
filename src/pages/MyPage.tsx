@@ -12,10 +12,12 @@ import { useNavigate } from "react-router-dom";
 import useInput from "../hooks/useInput";
 import { GvUserJobLength, GvUserNameLength, GvUserStatusMessageLength } from "../global/LimitConfig";
 import { logEvent } from "../util/amplitude";
+import IsLoading from "../components/common/IsLoading";
+import IsError from "../components/common/IsError";
 
 const MyPage = () => {
-  const { data : dataUser } = useQuery('user', getUserData);
-  const { data : dataWorkspace } = useQuery('workspace', getWorkspaces);
+  const { data : dataUser, isLoading: getUserDataIsLoading, isError: getUserDataIsError } = useQuery('user', getUserData);
+  const { data : dataWorkspace, isLoading: getWorkspacesIsLoading, isError: getWorkspacesIsError } = useQuery('workspace', getWorkspaces);
 
   const imgInputRef = useRef<any>(null);
 
@@ -37,7 +39,7 @@ const MyPage = () => {
 
   const [leaveModal, setLeaveModal] = useState(false);
   const modalRef = useOutsideClick(() => setLeaveModal(false));
-
+  
   useEffect(() => {
     setImage(dataUser?.userImage);
     setName(dataUser?.userName);
@@ -45,7 +47,7 @@ const MyPage = () => {
     setDesc(dataUser?.userDesc);
     logEvent('Enter My page', {from: 'My page'});
   }, [dataUser]);
-
+  
   const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if(e.target.files) {
       if(e.target.files[0].size >= 1024 ** 2 * 10){
@@ -63,26 +65,44 @@ const MyPage = () => {
   const mutationImg = useMutation(editProfileImg, {
     onSuccess: () => {
       queryClient.invalidateQueries('user');
+    }, 
+    onError: (error: any) => {
+      if(error.response.data.code === 'E-01') {
+        alert('이미지 파일이 첨부되지 않았습니다.');
+      } else if(error.response.data.code === 'E-02' || error.response.data.code === 'E-04') {
+        alert('예상치 못한 오류가 발생했습니다.');
+        window.location.reload();
+      } else if(error.response.data.code === 'E-03') {
+        alert(`이미지 확장자를 변경해 주세요.
+가능한 이미지 파일 확장자: .png, .jpg, .jpeg, .gif`);
+      };
     }
   });
   const mutationName = useMutation(editUserName, {
     onSuccess: () => {
       queryClient.invalidateQueries('user');
-    },
-    onError: (error) =>{console.log("error : ", error)}
+    }
   });
   const mutationJob = useMutation(editUserJob, {
     onSuccess: () => {
       queryClient.invalidateQueries('user');
-    },
-    onError: (error) => {console.log(error)}
+    }
   })
   const mutationDesc = useMutation(editUserDesc, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries('user');
-    },
-    onError: (error) => {console.log(error)}
+    }
   })
+
+  useEffect(()=>{
+    if(!imgFile) return;
+    const userImage = new FormData();
+    userImage.append('userImage', imgFile);
+    mutationImg.mutate(userImage);
+  }, [imgFile]);
+
+  if(getUserDataIsLoading || getWorkspacesIsLoading) return IsLoading();
+  if(getUserDataIsError || getWorkspacesIsError) return IsError();
 
   // onClickHandler
   const onClickEditNameHandler = (userName: string) => {
@@ -112,14 +132,6 @@ const MyPage = () => {
     setEditDesc(false);
     mutationDesc.mutate({userDesc});
   };
-
-  useEffect(()=>{
-    if(!imgFile) return;
-    const userImage = new FormData();
-    userImage.append('userImage', imgFile);
-    mutationImg.mutate(userImage);
-  }, [imgFile]);
-
 
   const onKeyPressNameHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === 'Enter') onClickEditNameHandler(name);

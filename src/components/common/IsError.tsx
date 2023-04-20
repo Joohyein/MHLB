@@ -1,7 +1,10 @@
 import styled from "styled-components";
+import Wrapper from "./Wrapper";
 
 const IsError = () => {
-    return <StErrorDiv>An Error Has Been Occurred!</StErrorDiv>
+    return <Wrapper>
+        <StErrorDiv>An Error Has Been Occurred!</StErrorDiv>
+    </Wrapper> 
 };
 
 export default IsError;

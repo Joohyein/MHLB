@@ -17,7 +17,6 @@ const editUserJob = async({userJob}: {userJob: string}) => {
 
 const editUserDesc = async({userDesc}: {userDesc: string}) => {
   const response = await instance.patch('/api/mypage/status-message', {userDesc});
-  console.log(response)
   return response.data;
 }
 
