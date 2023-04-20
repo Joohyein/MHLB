@@ -253,7 +253,7 @@ const StToast = styled.div<{toast:string}>`
     }
     background-color: #ffffff;
     border: 1px solid #007aff;
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow : 0px 0px 1rem rgba(0, 0, 0, 0.05);
     cursor: pointer;
     animation: ${props => props.toast === 'open' ? slideIn : slideOut} 0.5s ease-in-out 0s 1 normal forwards;
