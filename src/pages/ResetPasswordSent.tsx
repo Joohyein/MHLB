@@ -1,8 +1,6 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Wrapper from "../components/common/Wrapper";
-import useIsLogin from "../hooks/useIsLogin";
 
 const ResetPasswordSent = () => {
 

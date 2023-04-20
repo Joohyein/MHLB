@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { navBarProfileImage } from "../../api/general";
 import useLogout from "../../hooks/useLogout";

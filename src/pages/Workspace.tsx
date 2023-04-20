@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getMainWorkspaceInfo } from "../api/workspace";
 import Wrapper from "../components/common/Wrapper";

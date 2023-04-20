@@ -1,4 +1,3 @@
-import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import { WorkspaceListIconType } from "./LeftSideBar";
 

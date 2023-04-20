@@ -1,12 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-interface WorkspaceDataType {
-  workspaceId: number,
-  workspaceTitle: string,
-  workspaceImage: string,
-  workspaceDesc: string
-};
 interface DataWorkspaceType {
   workspaceId: number,
   workspaceTitle: string,
