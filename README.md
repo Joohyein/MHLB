@@ -12,7 +12,8 @@
 2. [주요 기능 ](#-주요-기능)
 3. [기술 스택 ](#-기술-스택)
 4. [프로젝트 아키텍쳐 ](#-프로젝트-아키텍쳐)
-5. [기술적 의사 결정 ](#-기술적-의사-결정)
+5. [ERD ](#-erd)
+6. [기술적 의사 결정 ](#-기술적-의사-결정)
 
 <br />
 <br />
@@ -115,7 +116,15 @@
 
 # 🛠 프로젝트 아키텍쳐
 
-# ERD
+<img width="1440" alt="front" src="https://user-images.githubusercontent.com/108849398/233392654-06216408-181d-4aa7-bdb3-b7ca7bab4655.png">
+
+<img width="1440" alt="back" src="https://user-images.githubusercontent.com/108849398/233392677-6e82148d-010a-4c19-9565-40204ac34723.png">
+
+<br/>
+<br />
+<br />
+
+# 📒 ERD
 
 ![eh6nvvmLaA5bRwwFg](https://user-images.githubusercontent.com/108849398/232505696-36cd9698-b741-4f6b-9bfc-c5e514bd8d3c.png)
 
