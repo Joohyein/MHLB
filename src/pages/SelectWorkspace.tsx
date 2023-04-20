@@ -141,6 +141,7 @@ const StCreateWorkspaceButton = styled.button`
     flex-shrink : 0;
     &:hover {
         background-color : #479fff;
+        cursor : pointer;
     }
     &:active {
         scale : 1.05;
