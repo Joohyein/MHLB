@@ -11,7 +11,7 @@ import { logEvent } from "../util/amplitude";
 interface WorkspaceInformationType {
     userRole : string,
     workspaceDesc : string,
-    workspaceId : number,
+    workspaceId : number,      
     workspaceImage : string,
     workspaceTitle : string
 }
@@ -28,7 +28,7 @@ const Workspace = () => {
     const [chatListProps, setChatListProps] = useState();
 
     useEffect(() => {
-        getMainWorkspaceInfo({workspaceId : String(params.workspaceId)})
+        getMainWorkspaceInfo({workspaceId : Number(params.workspaceId)})
         .then((res) => {
             setUserRole(res.data.userRole);
             setWorkspaceInfomation(res.data);
@@ -36,7 +36,7 @@ const Workspace = () => {
         })
         .catch((error) => {
             if(error.response.data.code === 'W-01') {
-                alert('워크스페이스가 삭제되었거나 존재하지 않는 워크스페이스입니다.');
+                alert('워크스페이스가 삭제되었거나 현재 존재하지 않는 워크스페이스입니다.');
                 navigate('/select-workspace');
             } else if(error.response.data.code === 'E-11') {
                 alert('해당 워크스페이스에 대한 접근 권한이 없습니다.');

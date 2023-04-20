@@ -28,8 +28,28 @@ const WorkspaceConfig = () => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const { isLoading: isLoadingInfo, isError: isErrorInfo, data: workspaceInfoData } = useQuery('workspaceInfo',() => getWorkspaceInfo({workspaceId : params.workspaceId}));
-  const { isLoading: isLoadingMember, isError: isErrorMember, data: workspaceMember } = useQuery('workspaceMember',() => getWorkspaceMember({workspaceId : params.workspaceId}));
+  const { isLoading: isLoadingInfo, isError: isErrorInfo, data: workspaceInfoData } = useQuery('workspaceInfo', () => getWorkspaceInfo({workspaceId : params.workspaceId}), 
+    {
+      onError:(error:any) => {
+      if (error.response.data.code === 'W-01') {
+        alert('워크스페이스가 삭제되었거나 현재 존재하지 않는 워크스페이스입니다.');
+        navigate('/select-workspace');
+      } else if(error.response.data.code === 'E-11'){
+        alert('해당 워크스페이스에 대한 접근 권한이 없습니다.');
+        navigate('/select-workspace');
+      } else if(error.response.data.code === 'SC-11') {
+        alert(`해당 워크스페이스 관리자 페이지에 대한 접근 권한이 없습니다.
+워크스페이스 관리자에게 문의하세요.`);
+        navigate('/select-workspace');
+      }
+    }
+    }
+  );
+  const { isLoading: isLoadingMember, isError: isErrorMember, data: workspaceMember } = useQuery('workspaceMember',() => getWorkspaceMember({workspaceId : params.workspaceId}),
+    {onError:(error:any) => {
+      if( error.response.data.code === 'W-01') setIsGetWorkspaceMemberError(true);
+    }}
+  );
   const imgInputRef = useRef<any>(null);
   const titleInputRef:React.MutableRefObject<any> = useRef(null);
 
@@ -46,16 +66,17 @@ const WorkspaceConfig = () => {
   const [description, setDescription] = useInput(workspaceInfoData?.workspaceDesc);
   const [titleValidation, setTitleValidation] = useState(false);
   const [descValidation, setDescValidation] = useState(false);
+  const [isGetWorkspaceMemberError, setIsGetWorkspaceMemberError] = useState(false);
 
   const [search, setSearch] = useState('');
   const [member, setMember] = useState(['']);
   const [memberCopy, setMemberCopy] = useState([]);
 
   useEffect(() => {
-    logEvent('Enter Workspace config page', {from: 'Workspace config page'});
     setTitle(workspaceInfoData?.workspaceTitle);
     setDescription(workspaceInfoData?.workspaceDesc);
     setImage(workspaceInfoData?.workspaceImage);
+    logEvent('Enter Workspace config page', {from: 'Workspace config page'});
   }, [workspaceInfoData, isLoadingInfo]);
 
   useEffect(() => {
@@ -69,8 +90,14 @@ const WorkspaceConfig = () => {
     onSuccess: async () => {
       queryClient.invalidateQueries('workspaceInfo');
     },
-    onError: (error) => {
-      console.log('error : ', error);
+    onError: (error:any) => {
+      if(error.response.data.code === 'W-01'){
+        alert('워크스페이스가 삭제되었거나 존재하지 않는 워크스페이스입니다.');
+        navigate('/select-workspace');
+      } else if(error.response.data.code === 'E-11' || error.response.data.code === 'SC-11') {
+        alert(`'${workspaceInfoData?.workspaceTitle}' 워크스페이스에 대한 접근 권한이 없습니다.`);
+        navigate('/select-workspace');
+      }
     },
   });
 
@@ -78,8 +105,14 @@ const WorkspaceConfig = () => {
     onSuccess: () => {
       queryClient.invalidateQueries('workspaceInfo');
     },
-    onError: (error) => {
-      console.log('error : ', error);
+    onError: (error:any) => {
+      if(error.response.data.code === 'W-01'){
+        alert('워크스페이스가 삭제되었거나 존재하지 않는 워크스페이스입니다.');
+        navigate('/select-workspace');
+      } else if(error.response.data.code === 'E-11' || error.response.data.code === 'SC-11') {
+        alert(`'${workspaceInfoData?.workspaceTitle}' 워크스페이스에 대한 접근 권한이 없습니다.`);
+        navigate('/select-workspace');
+      }
     },
   });
 
@@ -87,14 +120,32 @@ const WorkspaceConfig = () => {
     onSuccess: () => {
       queryClient.invalidateQueries('workspaceInfo');
     },
-    onError: (error) => {
-      console.log('error : ', error);
+    onError: (error:any) => {
+      if(error.response.data.code === 'W-01'){
+        alert('워크스페이스가 삭제되었거나 존재하지 않는 워크스페이스입니다.');
+        navigate('/select-workspace');
+      } else if(error.response.data.code === 'E-11' || error.response.data.code === 'SC-11') {
+        alert(`'${workspaceInfoData?.workspaceTitle}' 워크스페이스에 대한 접근 권한이 없습니다.`);
+        navigate('/select-workspace');
+      }
     },
   });
 
   const mutationRole = useMutation(editUserRole, {
     onSuccess: () => {
       queryClient.invalidateQueries('workspaceMember');
+    },
+    onError: (error:any) => {
+      if(error.response.data.code === 'W-01'){
+        alert('워크스페이스가 삭제되었거나 존재하지 않는 워크스페이스입니다.');
+        navigate('/select-workspace');
+      } else if(error.response.data.code === 'E-11' || error.response.data.code === 'SC-11') {
+        alert(`'${workspaceInfoData?.workspaceTitle}' 워크스페이스에 대한 접근 권한이 없습니다.`);
+        navigate('/select-workspace');
+      } else if(error.response.data.code === 'W-02') {
+        alert('해당 멤버가 탈퇴했거나 존재하지 않는 사용자입니다.');
+        window.location.reload();
+      }
     },
   });
 
@@ -242,33 +293,36 @@ const WorkspaceConfig = () => {
             <StMemberSearch onChange={(e) => setSearch(e.target.value)} placeholder="Search People"/>
             <StMemberInviteButton onClick={() => {setInviteModal(true); document.body.style.overflow = 'hidden'}}>멤버 추가하기<Plus size = '24' fill = 'white'/></StMemberInviteButton>
           </StMemberManagementDiv>
-          <StMemberList>
-            {member?.map((item : any) => {
-              return (
-                <StMemberInfoDiv key={String(item.userId)}>
-                  <StMemberProfileImage img = {item.userImage} />
-                  <StMemberTextInfoDiv>
-                    <StMemberNameAndEmail>
-                      <StMemberName>{item.userName}</StMemberName>
-                      <StMemberEmail>{item.userEmail}</StMemberEmail>
-                    </StMemberNameAndEmail>
-                    <StMemberJob>{item.userJob}</StMemberJob>
-                  </StMemberTextInfoDiv>
-                  {item.userRole === 'ADMIN'
-                    ?<StRoleDiv role = 'ADMIN'>
-                    <StRole>{item.userRole}</StRole>
-                    </StRoleDiv>
-                    :<StRoleDiv role = 'other'>
-                      {item.userRole === 'MANAGER' ? <StRoleCheckbox type = 'checkbox' checked={true} onChange={() => onChangeCheckboxHandler(item.userId, item.userRole)} />
-                        : <StRoleCheckbox type = 'checkbox' checked={false} onChange={() => onChangeCheckboxHandler(item.userId, item.userRole)} />}
-                      <StRole>{item.userRole}</StRole>
-                    </StRoleDiv>
-                  }
-                  {item.userRole === 'ADMIN' ? null : <RemoveCheckBtn userRole={item.userRole}userId={item.userId} workspaceId={workspaceInfoData?.workspaceId}/>}
-                </StMemberInfoDiv>
-              )
-            })}
-          </StMemberList>
+          { isGetWorkspaceMemberError
+            ? <StGetMemberErrorDiv><h3>'{workspaceInfoData?.workspaceTitle}' 워크스페이스의 멤버 목록을 불러오지 못했습니다.</h3></StGetMemberErrorDiv>
+              : <StMemberList>
+                {member?.map((item : any) => {
+                  return (
+                    <StMemberInfoDiv key={String(item.userId)}>
+                      <StMemberProfileImage img = {item.userImage} />
+                      <StMemberTextInfoDiv>
+                        <StMemberNameAndEmail>
+                          <StMemberName>{item.userName}</StMemberName>
+                          <StMemberEmail>{item.userEmail}</StMemberEmail>
+                        </StMemberNameAndEmail>
+                        <StMemberJob>{item.userJob}</StMemberJob>
+                      </StMemberTextInfoDiv>
+                      {item.userRole === 'ADMIN'
+                        ?<StRoleDiv role = 'ADMIN'>
+                        <StRole>{item.userRole}</StRole>
+                        </StRoleDiv>
+                        :<StRoleDiv role = 'other'>
+                          {item.userRole === 'MANAGER' ? <StRoleCheckbox type = 'checkbox' checked={true} onChange={() => onChangeCheckboxHandler(item.userId, item.userRole)} />
+                            : <StRoleCheckbox type = 'checkbox' checked={false} onChange={() => onChangeCheckboxHandler(item.userId, item.userRole)} />}
+                          <StRole>{item.userRole}</StRole>
+                        </StRoleDiv>
+                      }
+                      {item.userRole === 'ADMIN' ? null : <RemoveCheckBtn userRole={item.userRole}userId={item.userId} workspaceId={workspaceInfoData?.workspaceId}/>}
+                    </StMemberInfoDiv>
+                  )
+                })}
+              </StMemberList>
+          }
         </StWorkspaceMemberDiv>
         { workspaceInfoData?.userRole === 'ADMIN' &&
           <StWorkspaceDeleteDiv>
@@ -641,3 +695,15 @@ const StInputValidationText = styled.h3`
   font-weight : 400;
   color : #ff3b30;
 `;
+
+const StGetMemberErrorDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 34px;
+  h3 {
+    font-size: 14px;
+    font-weight: 400;
+    color: #7f7f7f;
+  }
+`

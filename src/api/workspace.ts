@@ -10,7 +10,7 @@ const reorderWorkspaceList = async ({orders} : {orders : {workspaceId : number, 
     return response;
 }
 
-const getMainWorkspaceInfo = async ({workspaceId} : {workspaceId : string}) => {
+const getMainWorkspaceInfo = async ({workspaceId} : {workspaceId : Number}) => {
   const response = await instance.get(`/api/workspaces/?id=${workspaceId}`);
   return response;
 }

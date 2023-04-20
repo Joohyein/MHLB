@@ -71,7 +71,7 @@ function MyWorkspaceList({workspaceData} : {workspaceData: workspaceListType}) {
             </StProfileDiv>
             )
           })}
-          {userListLength && userListLength > 7 && <StUserListOverCount>+{userListLength - 6}</StUserListOverCount>}
+          {userListLength > 7 && <StUserListOverCount>+{userListLength - 6}</StUserListOverCount>}
         </StUserListDiv>
         {userListLength === 0 && !isGetPeopleListError ? <StEmptyPlaceholder>현재 근무 중인 멤버가 없습니다.</StEmptyPlaceholder> : null}
         {isGetPeopleListError && <StEmptyPlaceholder>현재 근무 중인 멤버 목록을 불러오지 못했습니다.</StEmptyPlaceholder>}

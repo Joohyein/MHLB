@@ -1,7 +1,7 @@
 import instance from "./instance/instance";
 
 const getWorkspaceInfo = async ({workspaceId} : {workspaceId : string | undefined}) => {
-    const response = await instance.get(`/api/managing?id=${32634}`);
+    const response = await instance.get(`/api/managing?id=${workspaceId}`);
     return response.data;
 };
 
