@@ -3,25 +3,14 @@ import styled from "styled-components";
 import { getChatList } from "../../api/rightSide";
 import { getPeopleList } from "../../api/workspace";
 import { useNavigate } from "react-router-dom";
-import { logEvent } from "../../util/amplitude";
 
-interface workspaceListType {
-    workspaceDesc: string,
-    workspaceId: number,
-    workspaceImage: string,
-    workspaceTitle: string
-};
-
-function MyWorkspaceList({workspaceData} : {workspaceData: workspaceListType}) {
+function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
 
   const navigate = useNavigate();
 
   const [userList, setUserList] = useState<any>([]);
   const [userListLength, setUserListLength] = useState<any>();
   const [recentMessage, setRecentMessage] = useState<any>();
-
-  const [isGetPeopleListError, setIsGetPeopleListError] = useState(false);
-  const [isGetChatListError, setIsGetChatListError] = useState(false);
 
   const recentMessageRef = useRef<any>(null);
 
@@ -37,25 +26,24 @@ function MyWorkspaceList({workspaceData} : {workspaceData: workspaceListType}) {
       }
     })
     .catch((error) =>{
-      if(error.response.data.code === 'W-01') setIsGetPeopleListError(true);
+      console.log(error);
     })
     getChatList(workspaceData.workspaceId)
     .then((res) => {
       setRecentMessage(res.slice(0, 3));
     })
     .catch((error) => {
-      if(error.response.data.code === 'W-01') setIsGetChatListError(true);
+      console.log(error);
     })
   }, [workspaceData])
 
   const onClickRecentMessage = (event : any, item : any) => {
     event.stopPropagation();
-    logEvent('Move to chatroom from Select workspace page', {from: 'Select workspace page'});
     navigate(`/workspace/${workspaceData.workspaceId}`, {state : {...item}});
   }
 
   return (
-    <StWorkspaceBox onClick={() => { logEvent('Select workspace button', {from: 'Select workspace page'}); navigate(`/workspace/${workspaceData.workspaceId}`)}}>
+    <StWorkspaceBox onClick={() => {navigate(`/workspace/${workspaceData.workspaceId}`)}}>
       <StImage img={workspaceData.workspaceImage}/>
       <StTitle>{workspaceData.workspaceTitle}</StTitle>
       <StDesc>{workspaceData.workspaceDesc}</StDesc>
@@ -71,10 +59,9 @@ function MyWorkspaceList({workspaceData} : {workspaceData: workspaceListType}) {
             </StProfileDiv>
             )
           })}
-          {userListLength > 7 && <StUserListOverCount>+{userListLength - 6}</StUserListOverCount>}
+          {userListLength <= 7 ? null : <StUserListOverCount>+{userListLength - 6}</StUserListOverCount>}
         </StUserListDiv>
-        {userListLength === 0 && !isGetPeopleListError ? <StEmptyPlaceholder>현재 근무 중인 멤버가 없습니다.</StEmptyPlaceholder> : null}
-        {isGetPeopleListError && <StEmptyPlaceholder>현재 근무 중인 멤버 목록을 불러오지 못했습니다.</StEmptyPlaceholder>}
+        {userListLength === 0 ? <StEmptyPlaceholder>현재 근무 중인 멤버가 없습니다.</StEmptyPlaceholder> : null}
       </StCurrentUserDiv>
       <StHrTag />
       <StRecentMessageListDiv>
@@ -92,8 +79,7 @@ function MyWorkspaceList({workspaceData} : {workspaceData: workspaceListType}) {
                 </StMessageContentDiv>
               )
           })}
-          {!isGetChatListError && recentMessage?.length === 0 ? <StEmptyPlaceholder>읽지 않은 메세지가 없습니다.</StEmptyPlaceholder> : null}
-          {isGetChatListError && <StEmptyPlaceholder>최근 메시지 목록을 불러오지 못했습니다.</StEmptyPlaceholder>}
+          {recentMessage?.length === 0 ? <StEmptyPlaceholder>읽지 않은 메세지가 없습니다.</StEmptyPlaceholder> : null}
         </StRecentMessageList>
       </StRecentMessageListDiv>
   </StWorkspaceBox>

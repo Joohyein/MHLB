@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import MoveBtn from "./MoveBtn";
 import { motion } from "framer-motion";
 
 function Intro() {
