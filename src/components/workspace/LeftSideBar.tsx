@@ -7,7 +7,7 @@ import { reorderWorkspaceList } from "../../api/workspace";
 import { getCookie } from "../../cookie/cookies";
 import { useSelector } from "react-redux";
 import { getChatList } from "../../api/rightSide";
-import { logEvent } from "../../util/amplitude";
+import LeftSideIcon from "./LeftSideIcon";
 
 export interface WorkspaceListIconType {
     unreadMessages : number,
@@ -54,12 +54,6 @@ const LeftSideBar = ({setChatListProps} : {setChatListProps : any}) => {
             setChatListProps(res);
             setChatListData(res);
         })
-        .catch((error) =>{
-            if(error.response.data.code === 'W-01'){
-                alert('워크스페이스가 삭제되었거나 존재하지 않는 워크스페이스입니다.');
-                navigate('/select-workspace');
-            }
-        })
     }, [])
 
     useEffect(() => {
@@ -75,7 +69,7 @@ const LeftSideBar = ({setChatListProps} : {setChatListProps : any}) => {
             setChatListData(tmpChatListData);
             setChatListProps(tmpChatListData);
         } else if (Object.keys(data).length > 3) {
-            const tmpChatListData = [...chatListData, {lastChat : data.lastChat, message : data.lastMessage, unreadMessages : 1, userId : data.senderId, userImage : data.senderImage, userName : data.senderName, uuid : data.uuid}]
+            const tmpChatListData = [{lastChat : data.lastChat, message : data.lastMessage, unreadMessages : 1, userId : data.senderId, userImage : data.senderImage, userName : data.senderName, uuid : data.uuid}, ...chatListData]
             setChatListData(tmpChatListData);
             setChatListProps(tmpChatListData);
         } else if (Object.keys(data).length === 3) {
@@ -98,7 +92,6 @@ const LeftSideBar = ({setChatListProps} : {setChatListProps : any}) => {
         const [removedArr] = tempArr.splice(result.source.index, 1);
         tempArr.splice(result.destination.index, 0, removedArr);
         setWorkspaceList(tempArr);
-        logEvent('Drag Workspace Icon from Left side bar', {from : 'Main page Left side bar'})
     }
 
     return (
@@ -110,7 +103,11 @@ const LeftSideBar = ({setChatListProps} : {setChatListProps : any}) => {
                             return (
                                 <Draggable key = {String(obj.workspaceId)} draggableId = {String(obj.workspaceId)} index = {index}>
                                     {(provided) => (
-                                        <StIcon onClick = {() => {navigate(`/workspace/${obj.workspaceId}`); logEvent('Workspace Profile Icon from Left side bar', {from : 'Main page Left side bar'}); window.location.reload()}} img = {obj.workspaceImage} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>{obj.unreadMessage ? <StAlarm /> : null}</StIcon>
+                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                            <LeftSideIcon onClick = {() => {navigate(`/workspace/${obj.workspaceId}`); window.location.reload()}} img = {obj.workspaceImage} obj = {obj}>
+                                                {obj.unreadMessage ? <StAlarm /> : null}
+                                            </LeftSideIcon>
+                                        </div>
                                     )}
                                 </Draggable>
                             )
@@ -144,19 +141,6 @@ const StLeftSideContainer = styled.div`
     @media screen and (max-width : 672px) {
         display : none;
     }
-`
-
-const StIcon = styled.div`
-    width : 48px;
-    height : 48px;
-    border-radius : 64px;
-    background-image : url('${(props : {img : string}) => props.img}');
-    background-size : cover;
-    background-position : center;
-    cursor : pointer;
-    margin-top : 16px;
-    flex-shrink : 0;
-    position : relative;
 `
 
 const StAlarm = styled.div`
