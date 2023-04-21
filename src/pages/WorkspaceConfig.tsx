@@ -514,6 +514,8 @@ const StMemberSearch = styled.input`
   height : 48px;
   border-radius : 32px;
   box-shadow : 0px 0px 16px 4px rgba(0, 0, 0, 0.05);
+  outline : 2px solid rgba(0, 122, 255, 0);
+  outline-offset : -2px;
   padding-left : 24px;
   box-sizing : border-box;
   transition : 200ms;
@@ -521,7 +523,7 @@ const StMemberSearch = styled.input`
     color : #7F7F7F
   }
   &:focus {
-    outline : 2px solid #007aff;
+    outline : 2px solid rgba(0, 122, 255, 1);
     outline-offset : -2px;
     color : #007aff;
   }
