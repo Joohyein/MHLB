@@ -75,7 +75,7 @@ function MyWorkspaceList({workspaceData} : {workspaceData: any}) {
                     <StMessageName>{item.userName}</StMessageName>
                     <StMessageRecent>{item.message}</StMessageRecent>
                   </StMessageTextDiv>
-                  <StMessageBadge>{item.unreadMessages}</StMessageBadge>
+                  {item.unreadMessages === 0 ? null : <StMessageBadge>{item.unreadMessages}</StMessageBadge>}
                 </StMessageContentDiv>
               )
           })}
