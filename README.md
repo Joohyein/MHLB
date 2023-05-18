@@ -116,7 +116,7 @@
 
 # 🛠 프로젝트 아키텍쳐
 
-<img width="1440" alt="front" src="https://github.com/GIGA-JET/MHLB-FE/assets/108849398/1ffce2cf-9680-430a-aadc-d0753088ca3d">
+<img width="1440" alt="front" src="https://github.com/GIGA-JET/MHLB-FE/assets/108849398/55139469-d291-4e1e-b218-1dc3ab8d81c4">
 
 <img width="1440" alt="back" src="https://user-images.githubusercontent.com/108849398/233392677-6e82148d-010a-4c19-9565-40204ac34723.png">
 
